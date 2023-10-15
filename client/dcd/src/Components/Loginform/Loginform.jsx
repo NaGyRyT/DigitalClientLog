@@ -8,7 +8,6 @@ export default function Loginform( { setToken, setLoggedInUser }) {
 	const [username, setUserName] = useState('');
 	const [password, setPassword] = useState('');
 	const [message, setMessage] = useState('')
-/* 	const [validated, setValidated] = useState(false); */
 
 	async function loginUser(credentials) {
 		await axios.post('http://localhost:8080/login', {username : credentials.username.trim(), 
@@ -17,12 +16,10 @@ export default function Loginform( { setToken, setLoggedInUser }) {
 			if (data.data.length !== 0) {
 				setMessage('');
 				setToken(true);
-				/* debugger; */
 				setLoggedInUser(data.data[0].username);
 				sessionStorage.setItem("token", data.data[0].username + data.data[0].password);
 			} else {
 				setMessage('Rossz felhasználónév vagy jelszó');
-			/* 	setValidated(true); */
 			}
 		})
 	}

@@ -9,25 +9,25 @@ export default function Deleteuser( {listItem, loadUserList} ) {
     
     const handleShowDeleteUserForm = () => setShowDeleteUserForm(true);
     
-    const handleDeleteUserSubmit = async (e) => {
+    const handleDeleteUserSubmit = (e) => {
 		e.preventDefault();
         if (checkExistDiary()) {
             axios.post('http://localhost:8080/inactiveuser', {id : listItem.id})
             .then(() => {
-                loadUserList();
+                loadUserList(false);
                 setShowDeleteUserForm(false);
             })
         } else {
             axios.post('http://localhost:8080/deleteuser', {id : listItem.id})
             .then(() => {
-                loadUserList();
+                loadUserList(false);
                 setShowDeleteUserForm(false);
             })
         }
 		
 	}
 
-    function checkExistDiary(){
+    function checkExistDiary() {
         
         // TODO itt kell ellenőrizni, hogy van-e naplóbejegyzése a felhasználónak
         // ha kész lesz a napló...

@@ -13,6 +13,7 @@ import './App.css';
 function App() {
     const [ token, setToken ] = useState(false);
     const [ loggedInUser, setLoggedInUser ] = useState(getLoggedInUser);
+    
     function getToken() {
         let username = getLoggedInUser();
         let password = getLoggedInPassword();

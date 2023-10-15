@@ -41,7 +41,7 @@ export default function Edituser( { listItem, loadUserList, groupList } ) {
 			password : '',
 			
 			})
-			loadUserList();
+			loadUserList(false);
 			setShowEditUserForm(false);
 		})
 		}
