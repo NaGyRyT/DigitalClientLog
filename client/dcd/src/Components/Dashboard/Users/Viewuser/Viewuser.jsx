@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 
-export default function Viewuser( {listItem} ) {
+export default function Viewuser( { listItem } ) {
     const [showViewUserForm, setShowViewUserForm] = useState(false);
     const handleCloseViewUserForm = () => setShowViewUserForm(false);  
     const handleShowViewUserForm = () => setShowViewUserForm(true);

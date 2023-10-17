@@ -12,7 +12,10 @@ törlés/inaktiválás
 ### Felhasználó felvétele
 
 ### Felhasználó módosítása
+felhasználónév nem módosítható
+admin felhasználó csoportját nem lehet módosítani
 
 ### Felhasználó törlése
 ha nincs naplóbejegyzése a felhasználónak akkor törölhető
 egyébként csak inaktiválható
+admin felhasználót nem lehet törölni

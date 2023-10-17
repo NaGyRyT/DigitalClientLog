@@ -6,14 +6,14 @@ import Users from './Components/Dashboard/Users/Users';
 import Clients from './Components/Dashboard/Clients/Clients';
 import Diary from './Components/Dashboard/Diary/Diary';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Button, Form } from 'react-bootstrap';
 import './App.css';
 
 function App() {
     const [ token, setToken ] = useState(false);
     const [ loggedInUser, setLoggedInUser ] = useState(getLoggedInUser);
-    
+    const [ darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') ? localStorage.getItem('darkMode') : false);
+
     function getToken() {
         let username = getLoggedInUser();
         let password = getLoggedInPassword();
@@ -23,7 +23,6 @@ function App() {
                 password : password
             })
             .then ((data) => {
-    /*             console.log(data.data) */
                 setToken(data.data);
             }
             )
@@ -44,7 +43,6 @@ function App() {
 
     function getLoggedInUser( ) {
         let token = sessionStorage.getItem('token');
-        /* console.log('lefutott a getLoggedInUser függvény', token); */
         let username = '';
         if (token !== null) {
             for (let char of token){
@@ -62,37 +60,53 @@ function App() {
         return <Loginform setToken={setToken} setLoggedInUser={setLoggedInUser}/>
     };
 
+    useEffect(() => {
+        document.body.setAttribute('data-bs-theme', darkMode ? 'dark' : 'light')
+        localStorage.setItem('darkMode', darkMode);
+    }, [darkMode] )
+
     useEffect(getToken, []);
     
     if (!token) {         
         return <Loginform setToken={setToken} setLoggedInUser={setLoggedInUser}/>
     }
-    
+
     return (
-        <>
-        <BrowserRouter>
-            <div className="menu">
-                <div>{loggedInUser}</div>
-                <Button variant="secondary" size="sm" onClick={handleLogOut}>Kilépés</Button>
-{/*                 <Link to="/">Home</Link> */}
-                <Link to="/dashboard/users">Felhasználók</Link>
-                <Link to="/dashboard/clients">Ügyfelek</Link>
-                <Link to="/dashboard/diary">Napló</Link>
-                <Link to="/dashboard/statements">Kimutatások</Link>
-            </div>
-            
-              {/*   <Route path="/" element={<Dashboard setToken={setToken} loggedInUser={loggedInUser}/>}/>
-                <Route path="/dashboard" element={<Dashboard setToken={setToken} loggedInUser={loggedInUser} setLoggedInUser={{setLoggedInUser}}/>}/> */}
-            <div className="dashboard-items">
-                <Routes>
-                    <Route path="/dashboard/users" element={<Users className="dashboard-items"/>}/>
-                    <Route path="/dashboard/clients" element={<Clients/>}/>
-                    <Route path="/dashboard/diary" element={<Diary/>}/>
-                    <Route path="/dashboard/statements" element={<Statements/>}/>
-                </Routes>
-            </div>
-        </BrowserRouter>
-        </>
+        <div data-bs-theme={darkMode ? 'dark' : 'light'}>
+            <BrowserRouter>
+                <div className="menu">
+                    <div>{loggedInUser}</div>
+                    <Button variant="secondary" size="sm" onClick={handleLogOut}>Kilépés</Button>
+                    <Link to="/dashboard/users">Felhasználók</Link>
+                    <Link to="/dashboard/clients">Ügyfelek</Link>
+                    <Link to="/dashboard/diary">Napló</Link>
+                    <Link to="/dashboard/statements">Kimutatások</Link>
+{/*                        <Form.Check
+                        className='dark-mode-switcher'
+                        type="switch"
+                        id="custom-switch"
+                        defaultChecked={ darkMode }
+                        onChange={(e) => setDarkMode(e.target.checked)}
+                        label="☼"
+                    /> */}
+                    <div
+                        className='dark-mode-switcher cursor-pointer'
+                        onClick={() => setDarkMode(darkMode ? false : true)}>
+                        {darkMode ? '☼' : '☾'}
+                    </div>
+                </div>
+
+                <div className="dashboard-items">
+                    <Routes>
+                        <Route path="/" element={<Users darkMode={darkMode}/>}/>
+                        <Route path="/dashboard/users" element={<Users className="dashboard-items" darkMode={darkMode}/>}/>
+                        <Route path="/dashboard/clients" element={<Clients/>}/>
+                        <Route path="/dashboard/diary" element={<Diary/>}/>
+                        <Route path="/dashboard/statements" element={<Statements/>}/>
+                    </Routes>
+                </div>
+            </BrowserRouter>
+        </div>
     );
 }
 

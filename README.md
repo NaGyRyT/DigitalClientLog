@@ -1,7 +1,6 @@
 # Digital Client Diary
 
-{
-MySQL,
-Node.js (express, cors, body-parser, bcrypt),
-React (react-router-dom, react-bootstrap)
-}
+- Database: MySQL,
+- Server: Node.js (express, cors, body-parser, bcrypt),
+- Client: React (react-router-dom, react-bootstrap, bcryptjs-react)
+

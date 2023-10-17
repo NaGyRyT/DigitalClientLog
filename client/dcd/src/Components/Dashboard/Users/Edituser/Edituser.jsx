@@ -2,7 +2,6 @@ import React, { useState} from 'react'
 import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal } from 'react-bootstrap';
 import bcrypt from "bcryptjs-react";
-import './Edituser.css'
 
 export default function Edituser( { listItem, loadUserList, groupList } ) {
 	const [password, setPassword] = useState('');
@@ -70,22 +69,19 @@ export default function Edituser( { listItem, loadUserList, groupList } ) {
 
   return (
     <>
-		  <OverlayTrigger
-				placement="top"
-				delay={{ show: 50, hide: 100 }}
-				overlay={renderTooltip}
-    	>
+		<OverlayTrigger
+			placement="top"
+			delay={{ show: 50, hide: 100 }}
+			overlay={renderTooltip}>
 			<Button 
 				size = "sm"
-				className = "mx-1"
+				className = "m-1"
 				variant = "info"
 				onClick = {handleShowEditUserForm}>
-					&#x270D;
-    	</Button>
+				&#x270D;
+    		</Button>
 		</OverlayTrigger>
-    
-
-    <Modal show={showEditUserForm} onHide={handleCloseEditUserForm}>
+    	<Modal show={showEditUserForm} onHide={handleCloseEditUserForm}>
 				<Modal.Header closeButton>
 					<Modal.Title>Felhasználó szerkesztése</Modal.Title>
 				</Modal.Header>
@@ -115,7 +111,7 @@ export default function Edituser( { listItem, loadUserList, groupList } ) {
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}/>
 						</Form.Group>
-						<Form.Group  className={listItem.username === "admin" ? "display-none" : ""} controlId="formSelectFromGroup">
+						<Form.Group  className={listItem.username === "admin" ? "d-none" : ""} controlId="formSelectFromGroup">
 							<Form.Label>Csoport</Form.Label>
 							<Form.Select onChange={(e) => setSelectedGroup(Number(e.target.value))}>
 								{groupList

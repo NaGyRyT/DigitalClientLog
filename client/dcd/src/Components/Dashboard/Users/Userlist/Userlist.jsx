@@ -1,67 +1,57 @@
 import React, { useState } from 'react';
-import { Table, Form, Pagination } from 'react-bootstrap';
-import '../Userlist/Userlist.css';
+import { Table, Form, Pagination, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Edituser from '../Edituser/Edituser';
 import Deleteuser from '../Deleteuser/Deleteuser';
 import Activateuser from '../Activateuser/Activateuser';
+import Viewuser from '../Viewuser/Viewuser'
+import '../Userlist/Userlist.css';
 
-export default function Userlist({ userList, loadUserList, groupList, handleSort, sortDirection, sortedColumn }) {
+export default function Userlist({
+    userList, 
+    loadUserList,
+    groupList,
+    handleSort,
+    sortDirection,
+    sortedColumn,
+    viewHideInactivedUser,
+    setViewHideInactivedUser
+}) {
   const [usernameSearch, setUsernameSearch] = useState('')
   const [nameSearch, setNameSearch] = useState('')
   const [groupSearch, setGroupSearch] = useState('')
-/*   const [sortDirection, setSortDirection] = useState(sessionStorage.getItem('usersTableSortDirection'));
-  const [sortedColumn, setSortedColumn] = useState(sessionStorage.getItem('usersTableSortedColumnName')); */
-
-  /* const handleSort = (sortParam) => {
-    let sortedList
-    sessionStorage.setItem('usersTableSortedColumnName', sortParam);
-    if (sortDirection === 'asc') {
-      sortedList = userList.sort((a,b) => 
-        (a[sortParam] > b[sortParam]) ? 1 : ((b[sortParam] > a[sortParam]) ? -1 : 0));
-      setSortDirection('des');
-    } else {
-      sortedList = userList.sort((a,b) => (a[sortParam] < b[sortParam]) ? 1 : ((b[sortParam] < a[sortParam]) ? -1 : 0));
-      setSortDirection('asc');
-    }
-    sessionStorage.setItem('usersTableSortedColumnName', sortParam);
-    sessionStorage.setItem('usersTableSortDirection', sortDirection);
-    setSortedColumn(sortParam);
-    setUserList(sortedList);
-    console.log('sortedList', sortedList);
-  } */
-
+  const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>
+  const renderTooltip = (props) => (
+    <Tooltip id="view-hide-inactive-user-tooltip" {...props}>
+      Inaktivált felhasználók elrejtése/megjelenítése
+    </Tooltip>
+  );
+  
   return (
     <div className='user-list'>
-      <Table responsive striped bordered hover /* variant="dark" */ size="sm">
+      <Table striped bordered hover size="sm">
         <thead>
-          <tr><th colSpan={6}>Felhasználók listája</th></tr>
+          <tr><th colSpan={5}>Felhasználók listája</th></tr>
           <tr>
-            <th>
-              #
-            </th>
-            <th>
-              Felhasználónév
+            <th>#</th>
+            <th>Felhasználónév
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => handleSort(userList, 'username')}>
-                  {sortedColumn === 'username' ? 
-                   sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>&#8645;</>}
+                {chooseOrderSign('username')}
               </span>
             </th>
-            <th>
-              Név
+            <th>Név
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => handleSort(userList, 'name')}>
-                  {sortedColumn === 'name' ? sortDirection === "asc" ? <>&#8657;</> : <>&#8659;</> : <>&#8645;</>}
+                 {chooseOrderSign('name')}
               </span>
             </th>
-            <th>
-              Csoport
+            <th className='display-none'>Csoport
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => handleSort(userList, 'group_name')}>
-                  {sortedColumn === 'group_name' ? sortDirection === "asc" ? <>&#8657;</> : <>&#8659;</> : <>&#8645;</>}
+                {chooseOrderSign('group_name')}
               </span>
             </th>
             <th></th>
@@ -69,27 +59,43 @@ export default function Userlist({ userList, loadUserList, groupList, handleSort
           <tr>
             <th></th>
             <th>
-              <Form.Control 
+              <Form.Control
+                id="userNameSearch" 
                 onChange={(e) => {
                   setUsernameSearch(e.target.value)
                 }}
                 placeholder = "Felhasználónév keresés..." />
             </th>
             <th>
-            <Form.Control 
+            <Form.Control
+                id="nameSearch"
                 onChange={(e) => setNameSearch(e.target.value)}
                 placeholder = "Név keresés..." />
             </th>
-            <th>
-            <Form.Control 
+            <th className='display-none'>
+            <Form.Control
+              id="groupSearch"
                 onChange={(e) => setGroupSearch(e.target.value)}
                 placeholder = "Csoport keresés..." />
             </th>
-            <th></th>
+            <th /* className='table-cell-align-center' */>
+              <OverlayTrigger
+              			placement="top"
+                    delay={{ show: 50, hide: 100 }}
+                    overlay={renderTooltip}>
+                <Form.Check
+                  type='switch'
+                  id='view-delete-switcher'
+                  defaultChecked={viewHideInactivedUser}
+                  onChange={(e) => setViewHideInactivedUser(e.target.checked)}
+                  />
+              </OverlayTrigger>
+            </th>
           </tr>
         </thead>
         <tbody>
           {userList
+            .filter((listItem) => viewHideInactivedUser ? listItem.inactive === 0 : listItem) 
             .filter((listItem) => usernameSearch.toLowerCase() === '' ? listItem 
               : listItem.username.toLowerCase().includes(usernameSearch.toLowerCase()))
             .filter((listItem) => nameSearch.toLowerCase() === '' 
@@ -104,8 +110,8 @@ export default function Userlist({ userList, loadUserList, groupList, handleSort
                 <td>{listItem.id}</td>
                 <td>{listItem.username}</td>
                 <td>{listItem.name}</td>
-                <td>{listItem.group_name}</td>
-                <td>
+                <td className='display-none'>{listItem.group_name}</td>
+                <td className='width-150'>
                   {listItem.inactive === 1 ? 
                     <Activateuser
                       listItem = {listItem}
@@ -114,6 +120,10 @@ export default function Userlist({ userList, loadUserList, groupList, handleSort
                       sortedColumn = {sortedColumn}
                     /> : 
                     <>
+                      <Viewuser
+                        className='m-1'
+                        listItem = {listItem}
+                      />
                       <Edituser
                         listItem = {listItem}
                         loadUserList = {loadUserList}
@@ -142,13 +152,22 @@ export default function Userlist({ userList, loadUserList, groupList, handleSort
             <th>
               Név
             </th>
-            <th>
+            <th className='display-none'>
               Csoport
             </th>
-            <th></th>
+            <th ></th>
           </tr>
         </tfoot>
       </Table>
+      <Pagination>
+        <Pagination.Prev /> 
+          <Pagination.Ellipsis /> 
+          <Pagination.Item>{3}</Pagination.Item> 
+          <Pagination.Item active>{4}</Pagination.Item> 
+          <Pagination.Item>{5}</Pagination.Item> 
+          <Pagination.Ellipsis /> 
+          <Pagination.Next /> 
+        </Pagination>
     </div>
   )
 }

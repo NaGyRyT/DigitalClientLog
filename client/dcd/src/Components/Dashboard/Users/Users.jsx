@@ -7,8 +7,15 @@ import Newuser from './Newuser/Newuser';
 export default function Users() {
     const [userList, setUserList] = useState([]);
     const [groupList, setGroupList] = useState([]);
-    const [sortDirection, setSortDirection] = useState(sessionStorage.getItem('usersTableSortDirection') ? sessionStorage.getItem('usersTableSortDirection') : 'asc');
-    const [sortedColumn, setSortedColumn] = useState(sessionStorage.getItem('usersTableSortedColumnName') ? sessionStorage.getItem('usersTableSortedColumnName') : 'username');
+    const [sortDirection, setSortDirection] = 
+        useState(
+            sessionStorage.getItem('usersTableSortDirection') ? 
+            sessionStorage.getItem('usersTableSortDirection') : 'asc');
+    const [sortedColumn, setSortedColumn] = 
+        useState(
+            sessionStorage.getItem('usersTableSortedColumnName') ? 
+            sessionStorage.getItem('usersTableSortedColumnName') : 'username');
+    const [viewHideInactivedUser, setViewHideInactivedUser] = useState(true);
 
    function handleSort (listToSort, sortByColumn, needToChangeOrderDirection = true) {
         let sortedList
@@ -31,11 +38,17 @@ export default function Users() {
     }
 
     function orderAscend(listToSort, sortByColumn) {
-        return listToSort.sort((a,b) => (a[sortByColumn].toLowerCase() > b[sortByColumn].toLowerCase()) ? 1 : ((b[sortByColumn].toLowerCase() > a[sortByColumn].toLowerCase()) ? -1 : 0));
+        return listToSort.sort((a,b) => (
+            a[sortByColumn].toLowerCase() > b[sortByColumn].toLowerCase()) ? 1 :
+            ((b[sortByColumn].toLowerCase() > a[sortByColumn].toLowerCase()) ? -1 : 0)
+        );
     }
 
     function orderDescend(listToSort, sortByColumn) {
-        return listToSort.sort((a,b) => (a[sortByColumn].toLowerCase() < b[sortByColumn].toLowerCase()) ? 1 : ((b[sortByColumn].toLowerCase() < a[sortByColumn].toLowerCase()) ? -1 : 0));
+        return listToSort.sort((a,b) => (
+            a[sortByColumn].toLowerCase() < b[sortByColumn].toLowerCase()) ? 1 : 
+            ((b[sortByColumn].toLowerCase() < a[sortByColumn].toLowerCase()) ? -1 : 0)
+        );
     }
      
     function loadUserList(needToChanegeOrderDirection = true) {
@@ -62,18 +75,19 @@ export default function Users() {
 
   return (
     <>
-        <Newuser 
+        <Newuser
             loadUserList = {loadUserList}
             groupList = {groupList}
         />
-        <Userlist 
+        <Userlist
             userList = {userList}
             loadUserList = {loadUserList}
             groupList = {groupList}
-            sortDirection={sortDirection}
-            sortedColumn={sortedColumn}
-            handleSort={handleSort}
-
+            sortDirection = {sortDirection}
+            sortedColumn = {sortedColumn}
+            handleSort = {handleSort}
+            viewHideInactivedUser = {viewHideInactivedUser}
+            setViewHideInactivedUser = {setViewHideInactivedUser}
         />
     </>
   )
