@@ -15,24 +15,37 @@ html {
   scroll-behavior: smooth;
 }
 
-.menu {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  width: 150px;
-  height: 100vh;
-}
-
-.dashboard-items {
-  position: absolute;
-  left: 150px;
-  width: calc(100vw - 200px);
-  padding: 1rem;
-}
-
 .dark-mode-switcher{
   font-size: 1.4rem;
-  margin: 0 auto;
+}
+
+.menuAssets{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+}
+
+.cursor-pointer {
+  user-select: none;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .display-none {
+      display: none;
+  }
+
+  .menuAssets{
+    justify-content: flex-start;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    gap: 1rem;
+  }
+
 }

@@ -6,13 +6,17 @@ import Users from './Components/Dashboard/Users/Users';
 import Clients from './Components/Dashboard/Clients/Clients';
 import Diary from './Components/Dashboard/Diary/Diary';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
-import { Button, Form } from 'react-bootstrap';
+import { Nav, Navbar, Container, Offcanvas} from 'react-bootstrap';
+import * as Icon from 'react-bootstrap-icons';
+
 import './App.css';
 
 function App() {
     const [ token, setToken ] = useState(false);
     const [ loggedInUser, setLoggedInUser ] = useState(getLoggedInUser);
     const [ darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') ? localStorage.getItem('darkMode') : false);
+    const [activeMenuItem, setActiveMenuItem] = useState('users');
+    const [showOffcanvasMenu, setShowOffcanvasMenu] = useState(false);
 
     function getToken() {
         let username = getLoggedInUser();
@@ -72,41 +76,63 @@ function App() {
     }
 
     return (
-        <div data-bs-theme={darkMode ? 'dark' : 'light'}>
-            <BrowserRouter>
-                <div className="menu">
-                    <div>{loggedInUser}</div>
-                    <Button variant="secondary" size="sm" onClick={handleLogOut}>Kilépés</Button>
-                    <Link to="/dashboard/users">Felhasználók</Link>
-                    <Link to="/dashboard/clients">Ügyfelek</Link>
-                    <Link to="/dashboard/diary">Napló</Link>
-                    <Link to="/dashboard/statements">Kimutatások</Link>
-{/*                        <Form.Check
-                        className='dark-mode-switcher'
-                        type="switch"
-                        id="custom-switch"
-                        defaultChecked={ darkMode }
-                        onChange={(e) => setDarkMode(e.target.checked)}
-                        label="☼"
-                    /> */}
-                    <div
-                        className='dark-mode-switcher cursor-pointer'
-                        onClick={() => setDarkMode(darkMode ? false : true)}>
-                        {darkMode ? '☼' : '☾'}
-                    </div>
-                </div>
-
-                <div className="dashboard-items">
-                    <Routes>
-                        <Route path="/" element={<Users darkMode={darkMode}/>}/>
-                        <Route path="/dashboard/users" element={<Users className="dashboard-items" darkMode={darkMode}/>}/>
-                        <Route path="/dashboard/clients" element={<Clients/>}/>
-                        <Route path="/dashboard/diary" element={<Diary/>}/>
-                        <Route path="/dashboard/statements" element={<Statements/>}/>
-                    </Routes>
-                </div>
-            </BrowserRouter>
-        </div>
+        <>
+        <BrowserRouter>
+            <Navbar key='md' expand='md' className="bg-body-tertiary mb-3">
+                <Container fluid>
+                    <Navbar.Brand>DCD</Navbar.Brand>
+                    <Navbar.Toggle 
+                        onClick={()=> setShowOffcanvasMenu(true)}
+                        aria-controls={`offcanvasNavbar-expand-md`} />
+                    <Navbar.Offcanvas
+                        id={`offcanvasNavbar-expand-md`}                       
+                        placement="end"
+                        show={showOffcanvasMenu}
+                        className='w-auto'>
+                        <Offcanvas.Header>
+                            <Offcanvas.Title id={`offcanvasNavbarLabel-expand-md`}>
+                                {loggedInUser}
+                            </Offcanvas.Title>
+                            <button type="button" className="btn-close" onClick={()=> setShowOffcanvasMenu(false)}></button>
+                        </Offcanvas.Header>
+                        <Offcanvas.Body>
+                            <Nav 
+                                className='me-auto'
+                                activeKey={activeMenuItem}
+                                onSelect={(selectedKey) => setActiveMenuItem(selectedKey)}
+                                onClick={()=> setShowOffcanvasMenu(false)}>
+                                <Nav.Link eventKey='users'as={Link} to='/dashboard/users'>Felhasználók</Nav.Link>
+                                <Nav.Link eventKey='clients'as={Link} to='/dashboard/clients'>Ügyfelek</Nav.Link>
+                                <Nav.Link eventKey='diary'as={Link} to='/dashboard/diary'>Napló</Nav.Link>
+                                <Nav.Link eventKey='statements'as={Link} to='/dashboard/statements'>Kimutatások</Nav.Link>
+                            </Nav>
+                            <Container className='menuAssets'>
+                                <span
+                                    className='dark-mode-switcher cursor-pointer'
+                                    onClick={() => setDarkMode(darkMode ? false : true)}
+                                    title={darkMode ? 'Világos mód' : 'Sötét mód'}>
+                                    {darkMode ? <Icon.BrightnessHighFill/> : <Icon.MoonStars/>}    
+                                </span>
+                                <span title='Bejelentkezett felhasználó' className='display-none'>{loggedInUser}</span>
+                                 <Icon.BoxArrowInRight 
+                                    onClick={handleLogOut} 
+                                    title='Kilépés'
+                                    className='cursor-pointer'
+                                    size={28}/>                         
+                            </Container>
+                        </Offcanvas.Body>
+                    </Navbar.Offcanvas>
+                </Container>
+        </Navbar>
+        <Routes className='mx-3'>
+            <Route path='/' element={<Users darkMode={darkMode}/>}/>
+            <Route path='/dashboard/users' element={<Users darkMode={darkMode}/>}/>
+            <Route path='/dashboard/clients' element={<Clients/>}/>
+            <Route path='/dashboard/diary' element={<Diary/>}/>
+            <Route path='/dashboard/statements' element={<Statements/>}/>
+        </Routes>
+      </BrowserRouter>
+    </>
     );
 }
 

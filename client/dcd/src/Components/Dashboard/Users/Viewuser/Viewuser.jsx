@@ -5,21 +5,19 @@ export default function Viewuser( { listItem } ) {
     const [showViewUserForm, setShowViewUserForm] = useState(false);
     const handleCloseViewUserForm = () => setShowViewUserForm(false);  
     const handleShowViewUserForm = () => setShowViewUserForm(true);
-    
-  
-  
-        const renderTooltip = (props) => (
-            <Tooltip id="View-button-tooltip" {...props}>
-              Megnéz
-            </Tooltip>
-          );
+   
+    const renderTooltip = (props) => (
+        <Tooltip id="View-button-tooltip" >
+            {props}
+        </Tooltip>
+        );
     
       return (
         <>
             <OverlayTrigger
                 placement="top"
                 delay={{ show: 50, hide: 100 }}
-                overlay={renderTooltip}
+                overlay={renderTooltip('Megnéz')}
             >
                 <Button 
                     size="sm"
@@ -34,7 +32,6 @@ export default function Viewuser( { listItem } ) {
                         <Modal.Title>Részletek</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    
                     <p>Felhasználónév: {listItem.username}</p>
                     <p>Név: {listItem.name}</p>
                     <p>Csoport: {listItem.group_name}</p>

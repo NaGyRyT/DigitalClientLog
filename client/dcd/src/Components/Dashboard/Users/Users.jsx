@@ -68,8 +68,7 @@ export default function Users() {
   
     useEffect(() => {
         if (userList.length === 0) loadUserList()
-    }
-        , [userList.length]);
+    }, [userList.length]);
 
     useEffect(loadGroupList, []);
 

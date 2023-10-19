@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { Table, Form, Pagination, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Table, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Edituser from '../Edituser/Edituser';
 import Deleteuser from '../Deleteuser/Deleteuser';
 import Activateuser from '../Activateuser/Activateuser';
 import Viewuser from '../Viewuser/Viewuser'
+import Tablepagination from '../../Tablepagination/Tablepagination';
 import '../Userlist/Userlist.css';
 
 export default function Userlist({
-    userList, 
+    userList,
     loadUserList,
     groupList,
     handleSort,
@@ -25,7 +26,27 @@ export default function Userlist({
       Inaktivált felhasználók elrejtése/megjelenítése
     </Tooltip>
   );
+
+  const filteredList = userList
+                        .filter((listItem) => viewHideInactivedUser ? listItem.inactive === 0 : listItem) 
+                        .filter((listItem) => usernameSearch.toLowerCase() === '' ? listItem 
+                          : listItem.username.toLowerCase().includes(usernameSearch.toLowerCase()))
+                        .filter((listItem) => nameSearch.toLowerCase() === '' 
+                          ? listItem 
+                          : listItem.name.toLowerCase().includes(nameSearch.toLowerCase()))
+                        .filter((listItem) => groupSearch.toLowerCase() === '' 
+                          ? listItem 
+                          : listItem.group_name.toLowerCase().includes(groupSearch.toLowerCase()))
   
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowPerPage] = useState(5);
+  
+  useEffect ( () => {
+    if (userList.length > filteredList.length) setCurrentPage(1)}, [filteredList.length]);
+
+  const paginatedList = filteredList.slice(currentPage * rowsPerPage - rowsPerPage, currentPage * rowsPerPage);
+  
+
   return (
     <div className='user-list'>
       <Table striped bordered hover size="sm">
@@ -78,7 +99,7 @@ export default function Userlist({
                 onChange={(e) => setGroupSearch(e.target.value)}
                 placeholder = "Csoport keresés..." />
             </th>
-            <th /* className='table-cell-align-center' */>
+            <th>
               <OverlayTrigger
               			placement="top"
                     delay={{ show: 50, hide: 100 }}
@@ -94,16 +115,7 @@ export default function Userlist({
           </tr>
         </thead>
         <tbody>
-          {userList
-            .filter((listItem) => viewHideInactivedUser ? listItem.inactive === 0 : listItem) 
-            .filter((listItem) => usernameSearch.toLowerCase() === '' ? listItem 
-              : listItem.username.toLowerCase().includes(usernameSearch.toLowerCase()))
-            .filter((listItem) => nameSearch.toLowerCase() === '' 
-              ? listItem 
-              : listItem.name.toLowerCase().includes(nameSearch.toLowerCase()))
-            .filter((listItem) => groupSearch.toLowerCase() === '' 
-              ? listItem 
-              : listItem.group_name.toLowerCase().includes(groupSearch.toLowerCase()))
+          {paginatedList
             .map((listItem) => {
               return (
               <tr className={listItem.inactive === 1 ? "line-through" : ""} key={listItem.id}>
@@ -159,15 +171,13 @@ export default function Userlist({
           </tr>
         </tfoot>
       </Table>
-      <Pagination>
-        <Pagination.Prev /> 
-          <Pagination.Ellipsis /> 
-          <Pagination.Item>{3}</Pagination.Item> 
-          <Pagination.Item active>{4}</Pagination.Item> 
-          <Pagination.Item>{5}</Pagination.Item> 
-          <Pagination.Ellipsis /> 
-          <Pagination.Next /> 
-        </Pagination>
+      <Tablepagination 
+        tableRows = {filteredList}
+        rowsPerPage={rowsPerPage}
+        setRowPerPage={setRowPerPage}
+        setCurrentPage = {setCurrentPage}
+        currentPage={currentPage}
+      />
     </div>
   )
 }

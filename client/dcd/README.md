@@ -19,3 +19,9 @@ admin felhasználó csoportját nem lehet módosítani
 ha nincs naplóbejegyzése a felhasználónak akkor törölhető
 egyébként csak inaktiválható
 admin felhasználót nem lehet törölni
+
+
+### Források
+https://react.dev/
+https://react-bootstrap.netlify.app/
+https://www.npmjs.com/package/react-bootstrap-pagination-control

@@ -25,7 +25,7 @@ export default function Activateuser( { listItem, loadUserList} ) {
     	>
       <Button 
           size="sm"
-          className="mx-1"
+          className="m-1"
           variant="warning"
           onClick={handleActivateUser}>
           &#x21BB;
