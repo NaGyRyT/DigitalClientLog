@@ -41,7 +41,7 @@ return (
 					'' :
 					<Alert variant="danger">{message}</Alert>	
 				}
-			<Form noValidate /* validated={validated} */ onSubmit={handleLoginSubmit}>
+			<Form noValidate onSubmit={handleLoginSubmit}>
 				<Form.Group className="mb-3" controlId="formUsername">
 					<Form.Label>Felhasználónév</Form.Label>
 					<Form.Control 
