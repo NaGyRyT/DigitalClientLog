@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Table, Form, OverlayTrigger, Tooltip, CloseButton, InputGroup } from 'react-bootstrap';
 import Edituser from '../Edituser/Edituser';
 import Deleteuser from '../Deleteuser/Deleteuser';
 import Activateuser from '../Activateuser/Activateuser';
 import Viewuser from '../Viewuser/Viewuser'
 import Tablepagination from '../../Tablepagination/Tablepagination';
 import '../Userlist/Userlist.css';
+import InputGroupText from 'react-bootstrap/esm/InputGroupText';
 
 export default function Userlist({
     userList,
@@ -39,10 +40,10 @@ export default function Userlist({
                           : listItem.group_name.toLowerCase().includes(groupSearch.toLowerCase()))
   
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowPerPage] = useState(5);
+  const [rowsPerPage, setRowPerPage] = useState(10);
   
   useEffect ( () => {
-    if (userList.length > filteredList.length) setCurrentPage(1)}, [filteredList.length]);
+    if (userList.length > filteredList.length) setCurrentPage(1)}, [userList.length, filteredList.length]);
 
   const paginatedList = filteredList.slice(currentPage * rowsPerPage - rowsPerPage, currentPage * rowsPerPage);
   
@@ -53,7 +54,13 @@ export default function Userlist({
         <thead>
           <tr><th colSpan={5}>Felhasználók listája</th></tr>
           <tr>
-            <th>#</th>
+            <th>#
+            <span 
+                className="cursor-pointer mx-2"
+                onClick={() => handleSort(userList, 'id')}>
+                {chooseOrderSign('id')}
+              </span>
+            </th>
             <th>Felhasználónév
               <span 
                 className="cursor-pointer mx-2"
@@ -80,24 +87,36 @@ export default function Userlist({
           <tr>
             <th></th>
             <th>
-              <Form.Control
-                id="userNameSearch" 
-                onChange={(e) => {
-                  setUsernameSearch(e.target.value)
-                }}
-                placeholder = "Felhasználónév keresés..." />
+              <InputGroup>
+                <Form.Control
+                  id="userNameSearch" 
+                  onChange={(e) => {
+                    setUsernameSearch(e.target.value)
+                  }}
+                  placeholder = "Felhasználónév keresés..."
+                  value={usernameSearch}/>
+                {usernameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setUsernameSearch('')}/></InputGroupText> : ''}
+              </InputGroup>
             </th>
             <th>
-            <Form.Control
-                id="nameSearch"
-                onChange={(e) => setNameSearch(e.target.value)}
-                placeholder = "Név keresés..." />
+              <InputGroup>
+                <Form.Control
+                  id="nameSearch"
+                  onChange={(e) => setNameSearch(e.target.value)}
+                  placeholder = "Név keresés..."
+                  value={nameSearch}/>
+                {nameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setNameSearch('')}/></InputGroupText> : ''}
+              </InputGroup>
             </th>
             <th className='display-none'>
-            <Form.Control
-              id="groupSearch"
-                onChange={(e) => setGroupSearch(e.target.value)}
-                placeholder = "Csoport keresés..." />
+              <InputGroup>
+                <Form.Control
+                  id="groupSearch"
+                  onChange={(e) => setGroupSearch(e.target.value)}
+                  placeholder = "Csoport keresés..."
+                  value={groupSearch}/>
+                {groupSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setGroupSearch('')}/></InputGroupText> : ''}
+              </InputGroup>
             </th>
             <th>
               <OverlayTrigger
