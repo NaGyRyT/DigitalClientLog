@@ -38,23 +38,24 @@ export default function Users() {
     }
 
     function orderAscend(listToSort, sortByColumn) {
-        return listToSort.sort((a,b) => (
-            a[sortByColumn].toLowerCase() > b[sortByColumn].toLowerCase()) ? 1 :
-            ((b[sortByColumn].toLowerCase() > a[sortByColumn].toLowerCase()) ? -1 : 0)
+        return listToSort.sort((a,b) =>
+            (a[sortByColumn].toString().toString().toLowerCase() > b[sortByColumn].toString().toLowerCase()) ? 1 :
+            ((b[sortByColumn].toString().toLowerCase() > a[sortByColumn].toString().toLowerCase()) ? -1 : 0)
         );
     }
 
     function orderDescend(listToSort, sortByColumn) {
         return listToSort.sort((a,b) => (
-            a[sortByColumn].toLowerCase() < b[sortByColumn].toLowerCase()) ? 1 : 
-            ((b[sortByColumn].toLowerCase() < a[sortByColumn].toLowerCase()) ? -1 : 0)
+            a[sortByColumn].toString().toLowerCase() < b[sortByColumn].toString().toLowerCase()) ? 1 : 
+            ((b[sortByColumn].toString().toLowerCase() < a[sortByColumn].toString().toLowerCase()) ? -1 : 0)
         );
     }
      
     function loadUserList(needToChanegeOrderDirection = true) {
         axios.get('http://localhost:8080/getuserlist')
             .then ((data) => {
-                setUserList( handleSort(data.data, sortedColumn, needToChanegeOrderDirection) );
+
+                return setUserList( handleSort(data.data, sortedColumn, needToChanegeOrderDirection) );
           })
       };
     
@@ -64,11 +65,10 @@ export default function Users() {
 			setGroupList(data.data);
 		});
 	};
-
   
     useEffect(() => {
         if (userList.length === 0) loadUserList()
-    }, [userList.length]);
+    });
 
     useEffect(loadGroupList, []);
 
