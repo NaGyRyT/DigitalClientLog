@@ -8,7 +8,7 @@ export default function Tablepagination({ tableRows, setRowPerPage, rowsPerPage,
 
   const  paginationSelectOption = () => {
     const options = []
-    for (let i=5; i < tableRows.length; i += 5) options.push(i)
+    for (let i=10; i < tableRows.length && i <= 50; i += 10) options.push(i)
     options.push(tableRows.length)
     return options
   } 
@@ -34,9 +34,7 @@ export default function Tablepagination({ tableRows, setRowPerPage, rowsPerPage,
      <Form.Select 
       className='cursor-pointer'
       onChange={(e) => setRowPerPage(Number(e.target.value))}>
-        {paginationSelectOption().map((item) => (<option key={item} value={item}>{item}</option>)
-        )}
-
+      {paginationSelectOption().map((item) => (<option key={item} value={item} >{item}</option>))}
       </Form.Select>
       </div> :
       <p className='text-center fs-5 text-danger' >Nincs találat!</p>}
