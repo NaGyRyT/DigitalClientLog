@@ -43,7 +43,13 @@ export default function Userlist({
   const [rowsPerPage, setRowPerPage] = useState(10);
   
   useEffect ( () => {
-    if (userList.length > filteredList.length) setCurrentPage(1)}, [userList.length, filteredList.length]);
+    if (userList.length > filteredList.length) {
+      setCurrentPage(1);
+    if (rowsPerPage > filteredList.length && filteredList.length >=10) {
+        setRowPerPage(filteredList.length);
+      }
+      
+    }}, [userList.length, filteredList.length, rowsPerPage]);
 
   const paginatedList = filteredList.slice(currentPage * rowsPerPage - rowsPerPage, currentPage * rowsPerPage);
   
@@ -85,7 +91,7 @@ export default function Userlist({
             <th></th>
           </tr>
           <tr>
-            <th></th>
+            <th>{filteredList.length}</th>
             <th>
               <InputGroup>
                 <Form.Control
@@ -115,7 +121,7 @@ export default function Userlist({
                   onChange={(e) => setGroupSearch(e.target.value)}
                   placeholder = "Csoport keresés..."
                   value={groupSearch}/>
-                {groupSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setGroupSearch('')}/></InputGroupText> : ''}
+                  {groupSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setGroupSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
             <th>
@@ -127,7 +133,10 @@ export default function Userlist({
                   type='switch'
                   id='view-delete-switcher'
                   defaultChecked={viewHideInactivedUser}
-                  onChange={(e) => setViewHideInactivedUser(e.target.checked)}
+                  onChange={(e) => {
+                    setViewHideInactivedUser(e.target.checked)
+                    
+                  }}
                   />
               </OverlayTrigger>
             </th>
