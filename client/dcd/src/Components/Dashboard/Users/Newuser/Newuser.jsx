@@ -4,7 +4,7 @@ import { useState} from 'react';
 import bcrypt from "bcryptjs-react";
 import { Form, Alert, Button, Modal } from 'react-bootstrap';
 
-export default function Newuser( { loadUserList, groupList } ) {
+export default function Newuser( { loadUsersList, groupList } ) {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [name, setName] = useState('');
@@ -41,17 +41,8 @@ export default function Newuser( { loadUserList, groupList } ) {
 													name : name.trim(),
 													group : selectedGroup})
 		.then(() => {
-			setUsername('');
-			setName('');
-			setPassword('');
-			setErrorMessage({
-			name : '',
-			username : '',
-			password : '',
-			group : ''
-			})
-			loadUserList();
-			setShowNewUserForm(false);
+			handleCloseNewUserForm()
+			loadUsersList();
 		})
 		}
 	}
@@ -69,8 +60,8 @@ export default function Newuser( { loadUserList, groupList } ) {
 	async function validateNewUser() {
 		const newErrorMessage = structuredClone(errorMessage);
 		let error = false;
-		if (username.length < 4) {
-			newErrorMessage.username = 'A felhasználónév minimum 4 karakter lehet.';
+		if (username.length < 4 || username.length > 20) {
+			newErrorMessage.username = 'A felhasználónév minimum 4 maximum 20 karakter lehet.';
 			error = true;
 		} else if (await checkExistUsername()) {
 			newErrorMessage.username = 'Ez a felhasználónév foglalt.';
@@ -78,6 +69,9 @@ export default function Newuser( { loadUserList, groupList } ) {
 		} else newErrorMessage.username = ""; 
 		if (name.length === 0) {
 			newErrorMessage.name = 'A név mező nem lehet üres.';
+			error = true;
+		} else if (name.length > 100){
+			newErrorMessage.name = 'A név maximum hossza 100 karakter lehet.';
 			error = true;
 		} else newErrorMessage.name = '';
 		if (password.length < 8) {
