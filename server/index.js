@@ -140,7 +140,7 @@ app.post('/checkexistusername', (req,res) => {
     });
 });
 
-app.get('/getuserlist', (req,res) => {
+app.get('/getuserslist', (req,res) => {
     database.db.query("SELECT users.id, users.username, users.name, users.accessgroup, users.inactive, accessgroups.group_name FROM users INNER JOIN accessgroups ON users.accessgroup = accessgroups.id ORDER By users.id", (err, result) => {
         if (err) {
             console.log(err)
@@ -159,6 +159,36 @@ app.get('/getaccessgrouplist', (req,res) => {
         }
     });
 });
+
+
+app.post('/newclient', (req,res) => {
+    const name = req.body.name;
+    const gender = req.body.gender;
+    const address = req.body.address;
+    const birthdate = req.body.birthdate;
+    const email = req.body.email;
+    const phone = req.body.phone;
+    database.db.query("INSERT INTO clients (name, gender, address, birth_date, email, phone) VALUES (?, ?, ?, ?, ?, ?)", [name, gender, address, birthdate, email, phone], (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send({name : name})
+        }
+    });
+
+});
+
+app.get('/getclientslist', (req,res) => {
+    database.db.query("SELECT * FROM clients ORDER By id", (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send(result)
+        }
+    });
+});
+
+
 
 app.listen(8080, () => {
     console.log('Server listening on port 8080')
