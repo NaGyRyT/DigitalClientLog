@@ -1,7 +1,11 @@
 import React from 'react'
+import Newclient from './Newclient/Newclient'
 
 export default function Clients() {
   return (
-    <div>Clients</div>
+    <Newclient
+/*       loadClientList = {loadClientList}
+      */
+  />
   )
 }
