@@ -22,7 +22,4 @@ yarn-debug.log*
 yarn-error.log*
 
 node_modules
-
-db_connection.js
-
 database_connect.js
