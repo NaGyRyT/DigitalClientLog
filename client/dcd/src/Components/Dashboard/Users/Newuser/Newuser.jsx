@@ -4,7 +4,7 @@ import { useState} from 'react';
 import bcrypt from "bcryptjs-react";
 import { Form, Alert, Button, Modal } from 'react-bootstrap';
 
-export default function Newuser( { loadUsersList, groupList } ) {
+export default function Newuser( { loadUserList, groupList } ) {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [name, setName] = useState('');
@@ -42,7 +42,7 @@ export default function Newuser( { loadUsersList, groupList } ) {
 													group : selectedGroup})
 		.then(() => {
 			handleCloseNewUserForm()
-			loadUsersList();
+			loadUserList();
 		})
 		}
 	}

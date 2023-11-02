@@ -3,7 +3,7 @@ import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal } from 'react-bootstrap';
 import bcrypt from "bcryptjs-react";
 
-export default function Edituser( { listItem, loadUserList, groupList } ) {
+export default function Edituser( { listItem, loadUsersList, groupList } ) {
 	const [password, setPassword] = useState('');
 	const [name, setName] = useState(listItem.name);
 	const [errorMessage, setErrorMessage] = useState({
@@ -40,7 +40,7 @@ export default function Edituser( { listItem, loadUserList, groupList } ) {
 			password : '',
 			
 			})
-			loadUserList(false);
+			loadUsersList(false);
 			setShowEditUserForm(false);
 		})
 		}
