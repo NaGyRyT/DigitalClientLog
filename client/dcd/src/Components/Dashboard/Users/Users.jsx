@@ -1,61 +1,26 @@
-import React from 'react'
+import React from 'react';
 import axios from 'axios';
 import { useEffect, useState} from 'react';
 import Userlist from './Userlist/Userlist';
 import Newuser from './Newuser/Newuser';
+import { handleSort } from '../Tablesort/Tablesort';
 
 export default function Users() {
     const [userList, setUserList] = useState([]);
     const [groupList, setGroupList] = useState([]);
-    const [sortDirection, setSortDirection] = 
-        useState(
-            sessionStorage.getItem('usersTableSortDirection') ? 
-            sessionStorage.getItem('usersTableSortDirection') : 'asc');
-    const [sortedColumn, setSortedColumn] = 
-        useState(
-            sessionStorage.getItem('usersTableSortedColumnName') ? 
-            sessionStorage.getItem('usersTableSortedColumnName') : 'username');
+    const [sortDirection, setSortDirection] = useState(
+        sessionStorage.getItem('userTableSortDirection') ? 
+        sessionStorage.getItem('userTableSortDirection') : 'des');
+    const [sortedColumn, setSortedColumn] = useState(
+        sessionStorage.getItem('userTableSortedColumnName') ? 
+        sessionStorage.getItem('userTableSortedColumnName') : 'id');
     const [viewHideInactivedUser, setViewHideInactivedUser] = useState(true);
 
-   function handleSort (listToSort, sortByColumn, needToChangeOrderDirection = true) {
-        let sortedList
-        if (sortDirection === 'asc' && needToChangeOrderDirection) {
-            sortedList = orderAscend(listToSort, sortByColumn);
-            setSortDirection('des');
-        } else if (sortDirection === 'des' && needToChangeOrderDirection) {
-            sortedList = orderDescend(listToSort, sortByColumn);
-            setSortDirection('asc');
-        } else if (sortDirection === 'asc' && !needToChangeOrderDirection) {
-            sortedList = sortedList = orderDescend(listToSort, sortByColumn);
-        } else if (sortDirection === 'des' && !needToChangeOrderDirection) {
-            sortedList = sortedList = orderAscend(listToSort, sortByColumn);
-        }
-        sessionStorage.setItem('usersTableSortedColumnName', sortByColumn);
-        if (needToChangeOrderDirection) sessionStorage.setItem('usersTableSortDirection', sortDirection);
-        setSortedColumn(sortByColumn);
-        setUserList(sortedList);
-        return sortedList
-    }
-
-    function orderAscend(listToSort, sortByColumn) {
-        return listToSort.sort((a,b) =>
-            (a[sortByColumn].toString().toString().toLowerCase() > b[sortByColumn].toString().toLowerCase()) ? 1 :
-            ((b[sortByColumn].toString().toLowerCase() > a[sortByColumn].toString().toLowerCase()) ? -1 : 0)
-        );
-    }
-
-    function orderDescend(listToSort, sortByColumn) {
-        return listToSort.sort((a,b) => (
-            a[sortByColumn].toString().toLowerCase() < b[sortByColumn].toString().toLowerCase()) ? 1 : 
-            ((b[sortByColumn].toString().toLowerCase() < a[sortByColumn].toString().toLowerCase()) ? -1 : 0)
-        );
-    }
-     
-    function loadUserList(needToChanegeOrderDirection = true) {
+    function loadUserList(needToChangeOrderDirection = false) {
         axios.get('http://localhost:8080/getuserlist')
             .then ((data) => {
 
-                return setUserList( handleSort(data.data, sortedColumn, needToChanegeOrderDirection) );
+                return setUserList( handleSort(data.data, sortDirection, sortedColumn, 'user', needToChangeOrderDirection) );
           })
       };
     
@@ -84,6 +49,8 @@ export default function Users() {
             groupList = {groupList}
             sortDirection = {sortDirection}
             sortedColumn = {sortedColumn}
+            setSortDirection = {setSortDirection}
+            setSortedColumn = {setSortedColumn}
             handleSort = {handleSort}
             viewHideInactivedUser = {viewHideInactivedUser}
             setViewHideInactivedUser = {setViewHideInactivedUser}

@@ -5,7 +5,7 @@ import Deleteuser from '../Deleteuser/Deleteuser';
 import Activateuser from '../Activateuser/Activateuser';
 import Viewuser from '../Viewuser/Viewuser'
 import Tablepagination from '../../Tablepagination/Tablepagination';
-import '../Userlist/Userlist.css';
+import './Userlist.css';
 import InputGroupText from 'react-bootstrap/esm/InputGroupText';
 
 export default function Userlist({
@@ -15,6 +15,8 @@ export default function Userlist({
     handleSort,
     sortDirection,
     sortedColumn,
+    setSortedColumn,
+    setSortDirection,
     viewHideInactivedUser,
     setViewHideInactivedUser
 }) {
@@ -52,7 +54,6 @@ export default function Userlist({
     }}, [userList.length, filteredList.length, rowsPerPage]);
 
   const paginatedList = filteredList.slice(currentPage * rowsPerPage - rowsPerPage, currentPage * rowsPerPage);
-  
 
   return (
     <div className='user-list'>
@@ -63,28 +64,44 @@ export default function Userlist({
             <th>#
             <span 
                 className="cursor-pointer mx-2"
-                onClick={() => handleSort(userList, 'id')}>
+                onClick={() => {
+                  handleSort(userList, sortDirection, 'id', 'user');
+                  setSortedColumn('id');
+                  setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                }}>
                 {chooseOrderSign('id')}
               </span>
             </th>
             <th>Felhasználónév
               <span 
                 className="cursor-pointer mx-2"
-                onClick={() => handleSort(userList, 'username')}>
+                onClick={() => {
+                  handleSort(userList, sortDirection, 'username', 'user')
+                  setSortedColumn('username');
+                  setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                }}>
                 {chooseOrderSign('username')}
               </span>
             </th>
             <th>Név
               <span 
                 className="cursor-pointer mx-2"
-                onClick={() => handleSort(userList, 'name')}>
+                onClick={() => {
+                  handleSort(userList, sortDirection, 'name', 'user')
+                  setSortedColumn('name');
+                  setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                }}>
                  {chooseOrderSign('name')}
               </span>
             </th>
             <th className='display-none'>Csoport
               <span 
                 className="cursor-pointer mx-2"
-                onClick={() => handleSort(userList, 'group_name')}>
+                onClick={() => {
+                  handleSort(userList, sortDirection, 'group_name', 'user')
+                  setSortedColumn('group_name');
+                  setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                }}>
                 {chooseOrderSign('group_name')}
               </span>
             </th>
@@ -156,8 +173,6 @@ export default function Userlist({
                     <Activateuser
                       listItem = {listItem}
                       loadUserList = {loadUserList}
-                      handleSort = {handleSort}
-                      sortedColumn = {sortedColumn}
                     /> : 
                     <>
                       <Viewuser
