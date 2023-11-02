@@ -5,7 +5,6 @@ import Deleteuser from '../Deleteuser/Deleteuser';
 import Activateuser from '../Activateuser/Activateuser';
 import Viewuser from '../Viewuser/Viewuser'
 import Tablepagination from '../../Tablepagination/Tablepagination';
-import './Userlist.css';
 import InputGroupText from 'react-bootstrap/esm/InputGroupText';
 
 export default function Userlist({
@@ -56,7 +55,7 @@ export default function Userlist({
   const paginatedList = filteredList.slice(currentPage * rowsPerPage - rowsPerPage, currentPage * rowsPerPage);
 
   return (
-    <div className='user-list'>
+    <div className='m-3'>
       <Table striped bordered hover size="sm">
         <thead>
           <tr><th colSpan={5}>Felhasználók listája</th></tr>
@@ -145,15 +144,13 @@ export default function Userlist({
               <OverlayTrigger
               			placement="top"
                     delay={{ show: 50, hide: 100 }}
-                    overlay={renderTooltip}>
+                    overlay={renderTooltip}> 
                 <Form.Check
+                  role="button"
                   type='switch'
                   id='view-delete-switcher'
                   defaultChecked={viewHideInactivedUser}
-                  onChange={(e) => {
-                    setViewHideInactivedUser(e.target.checked)
-                    
-                  }}
+                  onChange={(e) => setViewHideInactivedUser(e.target.checked)}
                   />
               </OverlayTrigger>
             </th>
@@ -163,7 +160,7 @@ export default function Userlist({
           {paginatedList
             .map((listItem) => {
               return (
-              <tr className={listItem.inactive === 1 ? "line-through" : ""} key={listItem.id}>
+              <tr className={listItem.inactive === 1 ? "text-decoration-line-through" : ""} key={listItem.id}>
                 <td>{listItem.id}</td>
                 <td>{listItem.username}</td>
                 <td>{listItem.name}</td>
