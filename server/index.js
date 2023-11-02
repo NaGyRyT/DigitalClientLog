@@ -140,7 +140,7 @@ app.post('/checkexistusername', (req,res) => {
     });
 });
 
-app.get('/getuserslist', (req,res) => {
+app.get('/getuserlist', (req,res) => {
     database.db.query("SELECT users.id, users.username, users.name, users.accessgroup, users.inactive, accessgroups.group_name FROM users INNER JOIN accessgroups ON users.accessgroup = accessgroups.id ORDER By users.id", (err, result) => {
         if (err) {
             console.log(err)
