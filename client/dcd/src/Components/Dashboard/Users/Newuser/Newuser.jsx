@@ -130,7 +130,7 @@ export default function Newuser( { loadUserList, groupList } ) {
 							<Form.Label>Csoport</Form.Label>
 							{errorMessage.group === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.group}</Alert>}
 							<Form.Select onChange={(e) => setSelectedGroup(Number(e.target.value))}>
-							<option key={0} value={Number(0)}>Válassz egy lehetőséget!</option>
+							<option key={0} value={0}>Válassz egy lehetőséget!</option>
 							{groupList.map((groupListItem) => (
 								<option key={groupListItem.id} value={groupListItem.id}>{groupListItem.group_name}</option>
 							))}
