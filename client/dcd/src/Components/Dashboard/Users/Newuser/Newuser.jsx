@@ -88,7 +88,7 @@ export default function Newuser( { loadUserList, groupList } ) {
 
 	return (
 		<>
-			<Button variant="primary" onClick={handleShowNewUserForm}>
+			<Button className='mx-3' variant="primary" onClick={handleShowNewUserForm}>
 				+ Új felhasználó
 			</Button>
 			<Modal 
