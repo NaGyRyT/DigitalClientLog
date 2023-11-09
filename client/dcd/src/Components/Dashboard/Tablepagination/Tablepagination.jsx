@@ -21,7 +21,6 @@ export default function Tablepagination({
       {tableRows.length > 0 ?
         <div className='pagination-control'>
         <PaginationControl
-          debugger
           className='cursor-pointer'
           page={currentPage}
           between={3}
