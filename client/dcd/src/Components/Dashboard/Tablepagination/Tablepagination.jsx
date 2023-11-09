@@ -13,16 +13,12 @@ export default function Tablepagination({
   function paginationSelectOptions() {
     const opt = [];
     for (let i=10; i < tableRows.length && i <= 50; i += 10) opt.push(i); 
-    /* opt.push(tableRows.length); */
-    /* if (!opt.includes(rowsPerPage) && rowsPerPage < tableRows.length) {
-      opt.push(rowsPerPage);
-    }*/
     return opt
   }
 
   return (
     <>
-      {tableRows.length >= 10 ?
+      {tableRows.length > 0 ?
         <div className='pagination-control'>
         <PaginationControl
           debugger
@@ -46,7 +42,7 @@ export default function Tablepagination({
             {paginationSelectOptions().map((item) => (<option key={item} value={item} >{item}</option>))}
         </Form.Select>
         </div> :
-      <p className='text-center fs-5 text-danger' >Nincs találat!</p>}
+      <p className='text-center fs-5 text-danger'>Nincs találat!</p>}
     </>  
   )
 }
