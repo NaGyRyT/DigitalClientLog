@@ -141,7 +141,7 @@ app.post('/checkexistusername', (req,res) => {
 });
 
 app.get('/getuserlist', (req,res) => {
-    database.db.query("SELECT users.id, users.username, users.name, users.accessgroup, users.inactive, accessgroups.group_name FROM users INNER JOIN accessgroups ON users.accessgroup = accessgroups.id ORDER By users.id", (err, result) => {
+    database.db.query("SELECT users.id, users.username, users.name, users.inactive, accessgroups.group_name FROM users INNER JOIN accessgroups ON users.accessgroup = accessgroups.id ORDER By users.id", (err, result) => {
         if (err) {
             console.log(err)
         } else {
@@ -160,26 +160,8 @@ app.get('/getaccessgrouplist', (req,res) => {
     });
 });
 
-
-app.post('/newclient', (req,res) => {
-    const name = req.body.name;
-    const gender = req.body.gender;
-    const address = req.body.address;
-    const birthdate = req.body.birthdate;
-    const email = req.body.email;
-    const phone = req.body.phone;
-    database.db.query("INSERT INTO clients (name, gender, address, birth_date, email, phone) VALUES (?, ?, ?, ?, ?, ?)", [name, gender, address, birthdate, email, phone], (err, result) => {
-        if (err) {
-            console.log(err)
-        } else {
-            res.send({name : name})
-        }
-    });
-
-});
-
-app.get('/getclientslist', (req,res) => {
-    database.db.query("SELECT * FROM clients ORDER By id", (err, result) => {
+app.get('/getcities', (req,res) => {
+    database.db.query("SELECT * FROM cities" , (err, result) => {
         if (err) {
             console.log(err)
         } else {
@@ -188,7 +170,68 @@ app.get('/getclientslist', (req,res) => {
     });
 });
 
+app.post('/newclient', (req,res) => {
+    const name = req.body.name;
+    const clientid = req.body.id;
+    const gender = req.body.gender;
+    const cityid = req.body.cityid;
+    const street = req.body.street;
+    const housenumber = req.body.housenumber;
+    const floor = req.body.floor;
+    const door = req.body.door;
+    const birthdate = req.body.birthdate;
+    const email = req.body.email;
+    const phone = req.body.phone;
+    database.db.query("INSERT INTO clients (name, client_id, gender, city_id, street, house_number, floor, door, birth_date, email, phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [name, clientid, gender, cityid, street, housenumber, floor, door, birthdate, email, phone], (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send({name : name})
+            console.log(name, 'added to the database')
+        }
+    });
+});
 
+app.post('/checkexistclientid', (req,res) => {
+    const clientid = req.body.id;
+    database.db.query("SELECT * FROM clients WHERE client_id = ?", [clientid], (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send(result)
+            console.log('Check exist client id',result)
+        }
+    });
+});
+
+app.get('/getclientlist', (req,res) => {
+    const sqlSelect = `SELECT 
+                        clients.id,
+                        name,
+                        client_id,
+                        DATE_FORMAT(birth_date, "%Y.%m.%d.") AS birth_date,
+                        gender,
+                        email,
+                        phone,
+                        cities.zip,
+                        cities.city,
+                        street,
+                        house_number,
+                        floor,
+                        door,
+                        CONCAT(cities.city, ', ', street, ' ', house_number, '. ',  floor, '/', door ) AS address,
+                        TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) AS age
+                       FROM clients
+                       INNER JOIN cities ON clients.city_id = cities.id
+                       ORDER By clients.id`;
+    database.db.query(sqlSelect, (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send(result)
+        }
+    });
+});
 
 app.listen(8080, () => {
     console.log('Server listening on port 8080')
