@@ -219,7 +219,13 @@ app.get('/getclientlist', (req,res) => {
                         house_number,
                         floor,
                         door,
-                        CONCAT(cities.city, ', ', street, ' ', house_number, '. ',  floor, '/', door ) AS address,
+                        CONCAT(
+                            cities.city,
+                            CONCAT_WS(', ', '', NULLIF(street, '')),
+                            ' ',
+                            CONCAT_WS('. ', NULLIF(house_number, ''), ''),
+                            CONCAT_WS('/', NULLIF(floor, ''), NULLIF(door, '')))
+                            AS address,
                         TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) AS age
                        FROM clients
                        INNER JOIN cities ON clients.city_id = cities.id
