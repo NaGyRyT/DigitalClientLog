@@ -141,7 +141,7 @@ app.post('/checkexistusername', (req,res) => {
 });
 
 app.get('/getuserlist', (req,res) => {
-    database.db.query("SELECT users.id, users.username, users.name, users.inactive, accessgroups.group_name FROM users INNER JOIN accessgroups ON users.accessgroup = accessgroups.id ORDER By users.id", (err, result) => {
+    database.db.query("SELECT users.id, users.username, users.name, users.inactive, users.accessgroup, accessgroups.group_name FROM users INNER JOIN accessgroups ON users.accessgroup = accessgroups.id ORDER By users.id", (err, result) => {
         if (err) {
             console.log(err)
         } else {
@@ -209,7 +209,7 @@ app.get('/getclientlist', (req,res) => {
                         clients.id,
                         name,
                         client_id,
-                        DATE_FORMAT(birth_date, "%Y.%m.%d.") AS birth_date,
+                        DATE_FORMAT(birth_date, "%Y-%m-%d") AS birth_date,
                         gender,
                         email,
                         phone,
