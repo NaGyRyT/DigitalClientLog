@@ -243,6 +243,17 @@ app.post('/checkexistclientid', (req,res) => {
     });
 });
 
+app.post('/deleteclient', (req,res) => {
+    const id = req.body.id;
+    database.db.query("DELETE FROM clients WHERE id = ?", [id], (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {                
+            res.send({result})
+        }
+    });
+});
+
 app.get('/getclientlist', (req,res) => {
     const sqlSelect = `SELECT 
                         clients.id,
