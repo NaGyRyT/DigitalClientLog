@@ -172,7 +172,7 @@ app.get('/getcities', (req,res) => {
 
 app.post('/newclient', (req,res) => {
     const name = req.body.name;
-    const clientid = req.body.id;
+    const clientid = req.body.clientid;
     const gender = req.body.gender;
     const cityid = req.body.cityid;
     const street = req.body.street;
@@ -187,14 +187,53 @@ app.post('/newclient', (req,res) => {
             console.log(err)
         } else {
             res.send({name : name})
-            console.log(name, 'added to the database')
+            console.log(name, 'client added to the database')
+        }
+    });
+});
+
+app.post('/editclient', (req,res) => {
+    const name = req.body.name;
+    const id = req.body.id;
+    const clientid = req.body.clientid;
+    const gender = req.body.gender;
+    const cityid = req.body.cityid;
+    const street = req.body.street;
+    const housenumber = req.body.housenumber;
+    const floor = req.body.floor;
+    const door = req.body.door;
+    const birthdate = req.body.birthdate;
+    const email = req.body.email;
+    const phone = req.body.phone;
+    const sqlUpdate = `UPDATE
+                        clients
+                       SET
+                        name = ?,
+                        client_id = ?,
+                        gender = ?,
+                        city_id = ?,
+                        street = ?,
+                        house_number = ?,
+                        floor = ?,
+                        door = ?,
+                        birth_date = ?,
+                        email = ?,
+                        phone = ?
+                    WHERE id = ?`
+    database.db.query(sqlUpdate, [name, clientid, gender, cityid, street, housenumber, floor, door, birthdate, email, phone, id], (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send({name : name})
+            console.log(name, 'client modified in the database')
         }
     });
 });
 
 app.post('/checkexistclientid', (req,res) => {
-    const clientid = req.body.id;
-    database.db.query("SELECT * FROM clients WHERE client_id = ?", [clientid], (err, result) => {
+    const clientid = req.body.clientid;
+    const id = req.body.id
+    database.db.query("SELECT * FROM clients WHERE client_id = ? AND id != ?", [clientid, id], (err, result) => {
         if (err) {
             console.log(err)
         } else {
@@ -215,6 +254,7 @@ app.get('/getclientlist', (req,res) => {
                         phone,
                         cities.zip,
                         cities.city,
+                        city_id,
                         street,
                         house_number,
                         floor,
