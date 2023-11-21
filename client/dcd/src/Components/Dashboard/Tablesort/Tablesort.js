@@ -17,15 +17,17 @@ export function handleSort (listToSort, sortDirection, sortedColumn, tableName, 
 }
 
 export function orderAscend(listToSort, sortedColumn) {
-    return listToSort.sort((a,b) =>
-        (a[sortedColumn].toString().toString().toLowerCase() > b[sortedColumn].toString().toLowerCase()) ? 1 :
-        ((b[sortedColumn].toString().toLowerCase() > a[sortedColumn].toString().toLowerCase()) ? -1 : 0)
-    );
+    return listToSort.sort((a,b) => {
+        const aa = typeof(a[sortedColumn]) === 'string' ? a[sortedColumn].toLowerCase() : a[sortedColumn];
+        const bb = typeof(b[sortedColumn]) === 'string' ? b[sortedColumn].toLowerCase() : b[sortedColumn];
+        return (aa > bb ) ? 1 : ((bb > aa) ? -1 : 0)
+    });
 }
 
 export function orderDescend(listToSort, sortedColumn) {
-    return listToSort.sort((a,b) => (
-        a[sortedColumn].toString().toLowerCase() < b[sortedColumn].toString().toLowerCase()) ? 1 : 
-        ((b[sortedColumn].toString().toLowerCase() < a[sortedColumn].toString().toLowerCase()) ? -1 : 0)
-    );
+    return listToSort.sort((a,b) => {
+        const aa = typeof(a[sortedColumn]) === 'string' ? a[sortedColumn].toLowerCase() : a[sortedColumn];
+        const bb = typeof(b[sortedColumn]) === 'string' ? b[sortedColumn].toLowerCase() : b[sortedColumn];
+        return (aa < bb ) ? 1 : ((bb < aa) ? -1 : 0)
+    });
 }
