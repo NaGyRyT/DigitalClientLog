@@ -32,7 +32,14 @@
 
 
 ## Ügyfelek
+- a név mező nem lehet üres
+- ügyfél azonosító 9 karakter lehet
 - két azonos azonosítójú űgyfél nem lehet
+- jövőbeni születési dátum nem engedélyezett
+- nem választás kötelező
+- e-mail kötelező validálva van a @ és .
+- irányítószám, város kötelező, egymástól függő mezők
+- utca, házszám, emelet nem kötelező
 
 #### Források
 https://react.dev/
