@@ -1,12 +1,28 @@
 import React from 'react';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
-import validator from 'validator';
+import { validateClient } from '../Validateclient/Validateclient'
 
-export default function Newclient( { loadClientList } ) {
+export default function Newclient( { 
+	loadClientList,
+	cityList,
+	/* name, setName,
+	id, setId,
+	birthDate, setBirthDate,
+	gender, setGender,
+	phone, setPhone,
+	email, setEmail,
+	zip, setZip,
+	cityId, setCityId,
+	street, setStreet,
+	houseNumber, setHouseNumber,
+	floor, setFloor,
+	door, setDoor,
+	errorMessage, setErrorMessage, */
+	} ) {
 	const [name, setName] = useState('');
-	const [id, setId] = useState('');
+	const [clientId, setClientId] = useState('');
     const [birthDate, setBirthDate] = useState('');
     const [gender, setGender] = useState('');
     const [phone, setPhone] = useState('');
@@ -17,23 +33,23 @@ export default function Newclient( { loadClientList } ) {
 	const [houseNumber, setHouseNumber] = useState('');
 	const [floor, setFloor] = useState('');
 	const [door, setDoor] = useState('');
-	const [cityList, setCitylist] = useState([]);
-
 	const [errorMessage, setErrorMessage] = useState({
 		name : '',
-		id : '',
+		clientId : '',
         birthDate : '',
         gender : '',
         zip : '',
 		city : '',
         phone : '',
         email : '',
+		error : false,
   	});
+
 	const [showNewClientForm, setShowNewClientForm] = useState(false);
-	const handleCloseNewClientForm = () => {
+	const handleCloseNewClientForm = async () => {
 		setShowNewClientForm(false);
 		setName('');
-		setId('');
+		setClientId('');
         setBirthDate('');
         setGender('');
         setZip('');
@@ -44,23 +60,26 @@ export default function Newclient( { loadClientList } ) {
 		setDoor('');
         setPhone('');
 		setEmail('');
-		setErrorMessage({
+ 	 	setErrorMessage({
             name : '',
-			id : '',
+			clientId : '',
             birthDate : '',
             gender : '',
             zip : '',
 			city : '',
             phone : '',
             email : '',
+			error : false, 
 		})
 	}
 	const handleShowNewClientForm = () => setShowNewClientForm(true);
   	const handleNewClientSubmit = async (e) => {
 		e.preventDefault();
-		if (! await validateNewClient()) {
-		axios.post('http://localhost:8080/newclient', {name : name.trim(),
-													   id : id,
+		const tempErrorMessage = await validateClient(name, clientId, birthDate, gender, email, phone, zip, cityId);
+		setErrorMessage(tempErrorMessage);
+ 		if (! tempErrorMessage.error) {
+			axios.post('http://localhost:8080/newclient', {name : name.trim(),
+													   clientid : clientId,
 													   birthdate : birthDate,
                                                        gender : gender,
 													   cityid : cityId,
@@ -77,80 +96,6 @@ export default function Newclient( { loadClientList } ) {
 		}
 	}
     
-async function checkExistClientId() {
-		let existClientId;
-		await axios.post('http://localhost:8080/checkexistclientid', {id : id})
-		.then((data) => {
-			if (data.data.length === 0) existClientId = false;
-			else existClientId = true;
-		})
-		return existClientId
-		}
-
-	async function validateNewClient() {
-		const newErrorMessage = structuredClone(errorMessage);
-		let error = false;
-		if (name.length === 0) {
-			newErrorMessage.name = 'Név megadása kötelező.';
-			error = true;
-		} else if (name.length > 100){
-			newErrorMessage.name = 'Név maximális hossza 100 karakter lehet.';
-			error = true;
-		} else newErrorMessage.name = '';
-		if (id.length < 9) { 
-			newErrorMessage.id = 'Azonosító megadása kötelező 9 karakter lehet.';
-			error = true;
-		} else if (await checkExistClientId()) {
-			newErrorMessage.id = 'Ezzel az azonosítóval már van regisztrált ügyfél.';
-			error = true;
-		} else newErrorMessage.id = "";
-        if (!validator.isDate(birthDate)) {
-            newErrorMessage.birthDate = 'Születési dátum megadása kötelező.';
-			error = true;
-		} else if (birthDate > new Date().toJSON().slice(0,10)) {
-            newErrorMessage.birthDate = 'Jövőbeni dátum nem lehetséges.';
-            error = true;
-        } else newErrorMessage.birthDate = '';
-		if (zip.length !== 4) {
-			newErrorMessage.zip = 'Nem megfelelő irányítószám.';
-			error = true;
-		} else newErrorMessage.zip = '';
-		if (zip.length === 4 && cityId === 0) {
-			newErrorMessage.zip = 'Nincs ilyen irányítószám.';
-			error = true;
-		}
-		if (cityId === 0 ) {
-			newErrorMessage.city = 'Város választása kötelező.';
-			error = true;
-		} else newErrorMessage.city = '';
-        if (gender === '') {
-            newErrorMessage.gender = 'Nem megadása kötelező.';
-			error = true;
-		} else newErrorMessage.gender = '';       
-        if (!validator.isEmail(email)) {
-			newErrorMessage.email = 'Nem megfelelő e-mail. xxxxx@xxx.xx';
-			error = true;
- 		} else newErrorMessage.email = ''
-        if (!validator.isMobilePhone(phone, 'hu-HU')) {
-			newErrorMessage.phone = 'Elvárt formátum 06305555555 +36301111111';
-			error = true;
-		} else newErrorMessage.phone = '';
-
-
-		if (error) setErrorMessage(newErrorMessage);
-		return error
-	}
-
-	function loadCityList() {
-		axios.get('http://localhost:8080/getcities')
-		.then ((data) => {
-			setCitylist(data.data);
-		});
-	};
-  
-
-    useEffect(loadCityList, []);
-
 	function findCity(zip) {
 		const findedCity = cityList.find((cityListItem) => cityListItem.zip === zip)
 		if (findedCity !== undefined) return findedCity.id
@@ -162,10 +107,6 @@ async function checkExistClientId() {
 		return findedZip.zip
 	}
 
-/* 	useEffect(() => {
-		if (zip.length > 0) findCity()
-	}, [zip])
- */
 	return (
 		<>
 			<Button className='mx-3' variant="primary" onClick={handleShowNewClientForm}>
@@ -195,13 +136,13 @@ async function checkExistClientId() {
 						<Col xs={12} sm={4}>
 						<Form.Group className='mb-3' controlId="formId">
 							<Form.Label>Azonosító</Form.Label>
-							{errorMessage.id === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.id}</Alert>}
+							{errorMessage.clientId === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.clientId}</Alert>}
 							<Form.Control 
 								autoComplete="on"
 								maxLength={9}
 								type='text'
-								value={id}
-								onChange={(e) => setId(e.target.value)}/>
+								value={clientId}
+								onChange={(e) => setClientId(e.target.value)}/>
 						</Form.Group>
 						</Col>
 						</Row>
@@ -246,6 +187,7 @@ async function checkExistClientId() {
                                     {errorMessage.phone === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.phone}</Alert>}
                                     <Form.Control 
                                         autoComplete="tel"
+										maxLength={12}
                                         type='tel'
                                         placeholder='+36.........'
                                         value={phone}
