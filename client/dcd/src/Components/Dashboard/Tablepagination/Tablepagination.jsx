@@ -19,7 +19,7 @@ export default function Tablepagination({
   return (
     <>
       {tableRows.length > 0 ?
-        <div className='pagination-control'>
+        <div className='pagination-control mt-3'>
         <PaginationControl
           className='cursor-pointer'
           page={currentPage}
