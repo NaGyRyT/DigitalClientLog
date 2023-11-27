@@ -4,7 +4,7 @@ import Loginform from './Components/Loginform/Loginform';
 import Statements from './Components/Dashboard/Statements/Statements';
 import Users from './Components/Dashboard/Users/Users';
 import Clients from './Components/Dashboard/Clients/Clients';
-import Diary from './Components/Dashboard/Diary/Diary';
+import Log from './Components/Dashboard/Log/Log';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import { Nav, Navbar, Container, Offcanvas} from 'react-bootstrap';
 import * as Icon from 'react-bootstrap-icons';
@@ -80,7 +80,7 @@ function App() {
         <BrowserRouter>
             <Navbar key='md' expand='md' className="bg-body-tertiary mb-3">
                 <Container fluid>
-                    <Navbar.Brand>DCD</Navbar.Brand>
+                    <Navbar.Brand>DCL</Navbar.Brand>
                     <Navbar.Toggle 
                         onClick={()=> setShowOffcanvasMenu(true)}
                         aria-controls={`offcanvasNavbar-expand-md`} />
@@ -103,7 +103,7 @@ function App() {
                                 onClick={()=> setShowOffcanvasMenu(false)}>
                                 <Nav.Link eventKey='users'as={Link} to='/dashboard/users'>Felhasználók</Nav.Link>
                                 <Nav.Link eventKey='clients'as={Link} to='/dashboard/clients'>Ügyfelek</Nav.Link>
-                                <Nav.Link eventKey='diary'as={Link} to='/dashboard/diary'>Napló</Nav.Link>
+                                <Nav.Link eventKey='log'as={Link} to='/dashboard/log'>Napló</Nav.Link>
                                 <Nav.Link eventKey='statements'as={Link} to='/dashboard/statements'>Kimutatások</Nav.Link>
                             </Nav>
                             <Container className='menuAssets'>
@@ -128,7 +128,7 @@ function App() {
             <Route path='/' element={<Users darkMode={darkMode}/>}/>
             <Route path='/dashboard/users' element={<Users darkMode={darkMode}/>}/>
             <Route path='/dashboard/clients' element={<Clients/>}/>
-            <Route path='/dashboard/diary' element={<Diary/>}/>
+            <Route path='/dashboard/log' element={<Log/>}/>
             <Route path='/dashboard/statements' element={<Statements/>}/>
         </Routes>
       </BrowserRouter>
