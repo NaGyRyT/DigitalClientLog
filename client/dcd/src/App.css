@@ -34,6 +34,18 @@ html {
   cursor: pointer;
 }
 
+.width-150 {
+  width: 150px;
+}
+
+.max-width-115 {
+  max-width: 115px;
+}
+
+.max-width-65 {
+  max-width: 65px;
+}
+
 @media (max-width: 768px) {
   .display-none {
       display: none;
