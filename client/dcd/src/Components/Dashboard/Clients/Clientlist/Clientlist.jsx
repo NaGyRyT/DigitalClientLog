@@ -90,7 +90,7 @@ export default function Clientlist({
                 {chooseOrderSign('name')}
               </span>
             </th>
-            <th>Azonosító
+            <th className='max-width-115'>Azonosító
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
@@ -101,7 +101,7 @@ export default function Clientlist({
                  {chooseOrderSign('client_id')}
               </span>
             </th>
-            <th className='d-none d-sm-table-cell'>Születési dátum
+            <th className='d-none d-sm-table-cell'>Születés
                 <span 
                     className="cursor-pointer mx-2"
                     onClick={() => {
@@ -112,7 +112,7 @@ export default function Clientlist({
                     {chooseOrderSign('birth_date')}
                 </span>
             </th>
-            <th className='col-1 d-none d-md-table-cell'>Kor
+            <th className='max-width-65 d-none d-md-table-cell'>Kor
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
@@ -137,37 +137,37 @@ export default function Clientlist({
                 <Form.Control
                   id="clientNameSearch" 
                   onChange={(e) => setClientnameSearch(e.target.value)}
-                  placeholder = "Név keresés..."
+                  placeholder = "Név..."
                   value={clientnameSearch}/>
                 {clientnameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setClientnameSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
-            <th>
+            <th className='max-width-115'>
               <InputGroup>
                 <Form.Control
                   id="clientIdSearch"
                   onChange={(e) => setClientIdSearch(e.target.value)}
-                  placeholder = "Azonosító keresés..."
+                  placeholder = "Azonosító..."
                   value={clientIdSearch}/>
                 {clientIdSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setClientIdSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
-            <th className='d-none d-sm-table-cell'>
+            <th className='d-none d-sm-table-cell max-width-115'>
               <InputGroup>
                 <Form.Control
                   id="birthSearch"
                   onChange={(e) => setBirthDateSearch(e.target.value)}
-                  placeholder = "Születési dátum keresés..."
+                  placeholder = "Születés..."
                   value={birthDateSearch}/>
                   {birthDateSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setBirthDateSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
-            <th className='col-1 d-none d-md-table-cell'>
+            <th className='max-width-65 d-none d-md-table-cell'>
               <InputGroup>
                 <Form.Control
                   id="ageSearch"
                   onChange={(e) => setAgeSearch(e.target.value)}
-                  placeholder = "Kor keresés..."
+                  placeholder = "Kor..."
                   value={ageSearch}/>
                   {ageSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setAgeSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -178,17 +178,17 @@ export default function Clientlist({
                 <Form.Control
                   id="emailSearch"
                   onChange={(e) => setEmailSearch(e.target.value)}
-                  placeholder = "E-mail keresés..."
+                  placeholder = "E-mail..."
                   value={emailSearch}/>
                   {emailSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setEmailSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
-            <th className='d-none d-lg-table-cell'>
+            <th className='max-width-115 d-none d-lg-table-cell'>
                 <InputGroup>
                     <Form.Control
                     id="phoneSearch"
                     onChange={(e) => setPhoneSearch(e.target.value)}
-                    placeholder = "Telefon keresés..."
+                    placeholder = "Telefon..."
                     value={phoneSearch}/>
                     {phoneSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setPhoneSearch('')}/></InputGroupText> : ''}
                 </InputGroup>
@@ -198,7 +198,7 @@ export default function Clientlist({
                     <Form.Control
                     id="addressSearch"
                     onChange={(e) => setAddressSearch(e.target.value)}
-                    placeholder = "Cím keresés..."
+                    placeholder = "Cím..."
                     value={addressSearch}/>
                     {addressSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setAddressSearch('')}/></InputGroupText> : ''}
                 </InputGroup>
@@ -213,12 +213,12 @@ export default function Clientlist({
               <tr className={listItem.inactive === 1 ? "text-decoration-line-through" : ""} key={listItem.id}>
                 <td>{listItem.id}</td>
                 <td>{listItem.name}</td>
-                <td>{listItem.client_id}</td>
-                <td className='d-none d-sm-table-cell'>{listItem.birth_date}</td>
-                <td className='col-1 d-none d-md-table-cell'>{listItem.age}</td>
+                <td className='max-width-115'>{listItem.client_id}</td>
+                <td className='max-width-115 d-none d-sm-table-cell'>{listItem.birth_date}</td>
+                <td className='max-width-65 d-none d-md-table-cell'>{listItem.age}</td>
                 <td className='d-none d-md-table-cell'>{listItem.gender}</td>
                 <td className='d-none d-lg-table-cell'>{listItem.email}</td>
-                <td className='d-none d-lg-table-cell'>{listItem.phone}</td>
+                <td className='max-width-115 d-none d-lg-table-cell'>{listItem.phone}</td>
                 <td className='d-none d-xl-table-cell'>{listItem.address}</td>
                 <td className='width-150'>
                     <>
@@ -247,12 +247,12 @@ export default function Clientlist({
         <tr>
             <th>#</th>
             <th>Név</th>
-            <th>Azonosító</th>
-            <th className='d-none d-sm-table-cell'>Születési dátum</th>
-            <th className='col-1 d-none d-md-table-cell'>Kor</th>
+            <th className='max-width-115'>Azonosító</th>
+            <th className='max-width-115 d-none d-sm-table-cell'>Születés</th>
+            <th className='max-width-65 d-none d-md-table-cell'>Kor</th>
             <th className='d-none d-md-table-cell'>Nem</th>
             <th className='d-none d-lg-table-cell'>E-mail</th>
-            <th className='d-none d-lg-table-cell'>Telefon</th>
+            <th className='max-width-115 d-none d-lg-table-cell'>Telefon</th>
             <th className='d-none d-xl-table-cell'>Cím</th>
             <th></th>
           </tr>
