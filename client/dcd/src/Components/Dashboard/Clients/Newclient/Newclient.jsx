@@ -7,19 +7,6 @@ import { validateClient } from '../Validateclient/Validateclient'
 export default function Newclient( { 
 	loadClientList,
 	cityList,
-	/* name, setName,
-	id, setId,
-	birthDate, setBirthDate,
-	gender, setGender,
-	phone, setPhone,
-	email, setEmail,
-	zip, setZip,
-	cityId, setCityId,
-	street, setStreet,
-	houseNumber, setHouseNumber,
-	floor, setFloor,
-	door, setDoor,
-	errorMessage, setErrorMessage, */
 	} ) {
 	const [name, setName] = useState('');
 	const [clientId, setClientId] = useState('');
@@ -114,7 +101,8 @@ export default function Newclient( {
 			</Button>
 			<Modal 
 				show={showNewClientForm} 
-				onHide={handleCloseNewClientForm}>
+				onHide={handleCloseNewClientForm}
+				backdrop='static'>
 				<Modal.Header closeButton>
 					<Modal.Title>Új ügyfél felvitele</Modal.Title>
 				</Modal.Header>

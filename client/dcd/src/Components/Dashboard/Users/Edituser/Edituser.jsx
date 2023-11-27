@@ -81,7 +81,7 @@ export default function Edituser( { listItem, loadUserList, groupList } ) {
 				&#x270D;
     		</Button>
 		</OverlayTrigger>
-    	<Modal show={showEditUserForm} onHide={handleCloseEditUserForm}>
+    	<Modal show={showEditUserForm} onHide={handleCloseEditUserForm} backdrop='static'>
 				<Modal.Header closeButton>
 					<Modal.Title>Felhasználó szerkesztése</Modal.Title>
 				</Modal.Header>

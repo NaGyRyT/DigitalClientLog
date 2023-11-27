@@ -46,7 +46,7 @@ export default function Deleteclient( {listItem, loadClientList} ) {
                     &#128465;
                 </Button>
             </OverlayTrigger>
-            <Modal show={showDeleteClientForm} onHide={handleCloseDeleteClientForm}>
+            <Modal show={showDeleteClientForm} onHide={handleCloseDeleteClientForm} backdrop='static'>
                 <Modal.Header closeButton>
                         <Modal.Title>Ügyfél törlése</Modal.Title>
                 </Modal.Header>

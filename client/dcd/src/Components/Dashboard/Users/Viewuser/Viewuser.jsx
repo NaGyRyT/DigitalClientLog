@@ -27,7 +27,7 @@ export default function Viewuser( { listItem } ) {
                     👁
                 </Button>
             </OverlayTrigger>
-            <Modal show={showViewUserForm} onHide={handleCloseViewUserForm}>
+            <Modal show={showViewUserForm} onHide={handleCloseViewUserForm} backdrop='static'>
                 <Modal.Header closeButton>
                         <Modal.Title>Részletek</Modal.Title>
                 </Modal.Header>

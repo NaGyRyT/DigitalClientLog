@@ -93,7 +93,8 @@ export default function Newuser( { loadUserList, groupList } ) {
 			</Button>
 			<Modal 
 				show={showNewUserForm} 
-				onHide={handleCloseNewUserForm}>
+				onHide={handleCloseNewUserForm}
+				backdrop='static'>
 				<Modal.Header closeButton>
 					<Modal.Title>Új felhasználó felvitele</Modal.Title>
 				</Modal.Header>

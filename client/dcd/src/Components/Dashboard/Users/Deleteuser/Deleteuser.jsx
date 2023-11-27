@@ -54,7 +54,7 @@ export default function Deleteuser( {listItem, loadUserList} ) {
                     &#128465;
                 </Button>
             </OverlayTrigger>
-            <Modal show={showDeleteUserForm} onHide={handleCloseDeleteUserForm}>
+            <Modal show={showDeleteUserForm} onHide={handleCloseDeleteUserForm} backdrop='static'>
                 <Modal.Header closeButton>
                         <Modal.Title>Felhasználó törlése</Modal.Title>
                 </Modal.Header>

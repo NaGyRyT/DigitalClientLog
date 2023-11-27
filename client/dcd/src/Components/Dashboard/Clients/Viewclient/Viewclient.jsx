@@ -27,7 +27,7 @@ export default function Viewclient( { listItem } ) {
                     👁
                 </Button>
             </OverlayTrigger>
-            <Modal show={showViewClientForm} onHide={handleCloseViewClientForm}>
+            <Modal show={showViewClientForm} onHide={handleCloseViewClientForm} backdrop='static'>
                 <Modal.Header closeButton>
                         <Modal.Title>Részletek</Modal.Title>
                 </Modal.Header>

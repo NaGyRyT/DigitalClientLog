@@ -99,7 +99,8 @@ return (
 	    </OverlayTrigger>
     <Modal 
         show={showEditClientForm} 
-        onHide={handleCloseEditClientForm}>
+        onHide={handleCloseEditClientForm}
+        backdrop='static'>
         <Modal.Header closeButton>
             <Modal.Title>Ügyfél módosítása</Modal.Title>
         </Modal.Header>
