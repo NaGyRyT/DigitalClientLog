@@ -12,7 +12,7 @@ app.use(cors());
 app.use('/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-     database.db.query("SELECT username, password, inactive FROM users WHERE users.username = ?", [username], (err, result) => {
+     database.db.query('SELECT username, password, inactive FROM users WHERE users.username = ?', [username], (err, result) => {
         if (err) {
             console.log(err)
         } else {
@@ -22,15 +22,15 @@ app.use('/login', (req, res) => {
                         console.log(err)
                     } else if (!isMatch) {
                         res.send([]);
-                        console.log("Username matches passwords do not match");
+                        console.log('Username matches passwords do not match');
                     } else {
-                        console.log("Username and passwords match");
+                        console.log('Username and passwords match');
                         res.send(result);
                     }
                 }) 
             } else {
                 res.send([]);   
-                console.log("Username does not match or inactived user");
+                console.log("Username doesn't match or inactived user");
             }
         }
     });
@@ -39,7 +39,7 @@ app.use('/login', (req, res) => {
 app.use('/checkloggedinuser', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-    database.db.query("SELECT username, password FROM users WHERE users.username = ? AND users.password = ?", [username, password], (err, result) => {
+    database.db.query('SELECT username, password FROM users WHERE users.username = ? AND users.password = ?', [username, password], (err, result) => {
         if (err) {
             console.log(err)
         } else {
@@ -59,7 +59,7 @@ app.post('/newuser', (req,res) => {
     const password = req.body.password;
     const name = req.body.name;
     const group = req.body.group;
-    database.db.query("INSERT INTO users (username, password, name, accessgroup, inactive) VALUES (?, ?, ?, ?, 0)", [username, password, name, group], (err, result) => {
+    database.db.query('INSERT INTO users (username, password, name, accessgroup, inactive) VALUES (?, ?, ?, ?, 0)', [username, password, name, group], (err, result) => {
         if (err) {
             console.log(err)
         } else {
@@ -71,7 +71,7 @@ app.post('/newuser', (req,res) => {
 
 app.post('/deleteuser', (req,res) => {
     const id = req.body.id;
-    database.db.query("DELETE FROM users WHERE id = ?", [id], (err, result) => {
+    database.db.query('DELETE FROM users WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.log(err)
         } else {                
@@ -82,7 +82,7 @@ app.post('/deleteuser', (req,res) => {
 
 app.post('/inactiveuser', (req,res) => {
     const id = req.body.id;
-    database.db.query("UPDATE users SET inactive = 1 WHERE id = ?", [id], (err, result) => {
+    database.db.query('UPDATE users SET inactive = 1 WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.log(err)
         } else {                
@@ -93,7 +93,7 @@ app.post('/inactiveuser', (req,res) => {
 
 app.post('/activeuser', (req,res) => {
     const id = req.body.id;
-    database.db.query("UPDATE users SET inactive = 0 WHERE id = ?", [id], (err, result) => {
+    database.db.query('UPDATE users SET inactive = 0 WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.log(err)
         } else {                
@@ -108,7 +108,7 @@ app.post('/edituser', (req,res) => {
     const name = req.body.name;
     const group = req.body.group;
     if (password === '') {
-        database.db.query("UPDATE users SET name = ?, accessgroup = ? WHERE id = ?", [name, group, id], (err, result) => {
+        database.db.query('UPDATE users SET name = ?, accessgroup = ? WHERE id = ?', [name, group, id], (err, result) => {
             if (err) {
                 console.log(err)
             } else {                
@@ -117,7 +117,7 @@ app.post('/edituser', (req,res) => {
         });
 
     } else {
-        database.db.query("UPDATE users SET name = ?, accessgroup = ?, password = ? WHERE id = ?", [name, group, password, id], (err, result) => {
+        database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ? WHERE id = ?', [name, group, password, id], (err, result) => {
             if (err) {
                 console.log(err)
             } else {
@@ -131,7 +131,7 @@ app.post('/edituser', (req,res) => {
 
 app.post('/checkexistusername', (req,res) => {
     const username = req.body.username;
-    database.db.query("SELECT * FROM users WHERE username = ?", [username], (err, result) => {
+    database.db.query('SELECT * FROM users WHERE username = ?', [username], (err, result) => {
         if (err) {
             console.log(err)
         } else {
@@ -141,7 +141,7 @@ app.post('/checkexistusername', (req,res) => {
 });
 
 app.get('/getuserlist', (req,res) => {
-    database.db.query("SELECT users.id, users.username, users.name, users.inactive, users.accessgroup, accessgroups.group_name FROM users INNER JOIN accessgroups ON users.accessgroup = accessgroups.id ORDER By users.id", (err, result) => {
+    database.db.query('SELECT users.id, users.username, users.name, users.inactive, users.accessgroup, accessgroups.group_name FROM users INNER JOIN accessgroups ON users.accessgroup = accessgroups.id ORDER By users.id', (err, result) => {
         if (err) {
             console.log(err)
         } else {
@@ -151,7 +151,7 @@ app.get('/getuserlist', (req,res) => {
 });
 
 app.get('/getaccessgrouplist', (req,res) => {
-    database.db.query("SELECT * FROM accessgroups" , (err, result) => {
+    database.db.query('SELECT * FROM accessgroups' , (err, result) => {
         if (err) {
             console.log(err)
         } else {
@@ -161,7 +161,7 @@ app.get('/getaccessgrouplist', (req,res) => {
 });
 
 app.get('/getcities', (req,res) => {
-    database.db.query("SELECT * FROM cities" , (err, result) => {
+    database.db.query('SELECT * FROM cities' , (err, result) => {
         if (err) {
             console.log(err)
         } else {
@@ -182,7 +182,7 @@ app.post('/newclient', (req,res) => {
     const birthdate = req.body.birthdate;
     const email = req.body.email;
     const phone = req.body.phone;
-    database.db.query("INSERT INTO clients (name, client_id, gender, city_id, street, house_number, floor, door, birth_date, email, phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [name, clientid, gender, cityid, street, housenumber, floor, door, birthdate, email, phone], (err, result) => {
+    database.db.query('INSERT INTO clients (name, client_id, gender, city_id, street, house_number, floor, door, birth_date, email, phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [name, clientid, gender, cityid, street, housenumber, floor, door, birthdate, email, phone], (err, result) => {
         if (err) {
             console.log(err)
         } else {
@@ -233,19 +233,18 @@ app.post('/editclient', (req,res) => {
 app.post('/checkexistclientid', (req,res) => {
     const clientid = req.body.clientid;
     const id = req.body.id
-    database.db.query("SELECT * FROM clients WHERE client_id = ? AND id != ?", [clientid, id], (err, result) => {
+    database.db.query('SELECT * FROM clients WHERE client_id = ? AND id != ?', [clientid, id], (err, result) => {
         if (err) {
             console.log(err)
         } else {
             res.send(result)
-            console.log('Check exist client id',result)
         }
     });
 });
 
 app.post('/deleteclient', (req,res) => {
     const id = req.body.id;
-    database.db.query("DELETE FROM clients WHERE id = ?", [id], (err, result) => {
+    database.db.query('DELETE FROM clients WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.log(err)
         } else {                
@@ -259,7 +258,7 @@ app.get('/getclientlist', (req,res) => {
                         clients.id,
                         name,
                         client_id,
-                        DATE_FORMAT(birth_date, "%Y-%m-%d") AS birth_date,
+                        DATE_FORMAT(birth_date, '%Y-%m-%d') AS birth_date,
                         gender,
                         email,
                         phone,
@@ -289,6 +288,63 @@ app.get('/getclientlist', (req,res) => {
         }
     });
 });
+
+app.get('/getlog', (req,res) => {
+    const sqlSelect = `SELECT 
+                        log.id,
+                        users.name AS user_name,
+                        clients.name As client_name,
+                        DATE_FORMAT(date_time, '%Y-%m-%d %H:%i') AS date_time,
+                        duration,
+                        description
+                       FROM log
+                       INNER JOIN users ON users.id = log.user_id
+                       INNER JOIN clients ON clients.id = log.client_id
+                       ORDER By log.id`;
+    database.db.query(sqlSelect, (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send(result)
+        }
+    });
+});
+
+app.get('/getlog/:clientid', (req,res) => {
+    const clientId = req.params.clientid
+    const sqlSelect = `SELECT 
+                        log.id,
+                        users.name AS user_name,
+                        clients.name As client_name,
+                        DATE_FORMAT(date_time, '%Y-%m-%d %H:%i') AS date_time,
+                        duration,
+                        description
+                       FROM log
+                       INNER JOIN users ON users.id = log.user_id
+                       INNER JOIN clients ON clients.id = log.client_id
+                       WHERE ? = log.client_id
+                       ORDER By log.id`;
+    database.db.query(sqlSelect, [clientId], (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send(result)
+        }
+    });
+});
+
+app.post('/checkexistclientidinlog', (req,res) => {
+    const clientid = req.body.clientid;
+    database.db.query('SELECT * FROM log WHERE client_id = ?', [clientid], (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send(result)
+        }
+    });
+});
+
+
 
 app.listen(8080, () => {
     console.log('Server listening on port 8080')
