@@ -4,25 +4,29 @@ import axios from 'axios';
 
 export default function Deleteclient( {listItem, loadClientList} ) {
     const [showDeleteClientForm, setShowDeleteClientForm] = useState(false);
+    const [existClientIdInLog, setExistClientIdInLog] = useState(true)
     const handleCloseDeleteClientForm = () => setShowDeleteClientForm(false);
-    const handleShowDeleteClientForm = () => setShowDeleteClientForm(true);
+    const handleShowDeleteClientForm = async () => {
+        setExistClientIdInLog(await checkExistClientIdInLog());
+        setShowDeleteClientForm(true)};
     const handleDeleteClientSubmit = (e) => {
         e.preventDefault();
         axios.post('http://localhost:8080/deleteclient', {id : listItem.id})
             .then(() => {
                 loadClientList(false);
                 setShowDeleteClientForm(false);
-            })
-        
-        
+            })        
     }
-    
-    function checkExistDiary() {
-            
-            // TODO itt kell ellenőrizni, hogy tartozik-e naplóbejegyzés az ügyfélhez
-            // ha kész lesz a napló...
-            // ha true a visszadott érték akkor nem törölhető az ügyfél
-        return true
+
+    async function checkExistClientIdInLog() {
+        let existClientIdInLog;
+        await axios.post('http://localhost:8080/checkexistclientidinlog', {clientid : listItem.id})
+        .then((data) => {
+            if (data.data.length === 0) existClientIdInLog = false;
+            else existClientIdInLog = true;
+        })
+        return existClientIdInLog
+        
     }
     
     const renderTooltip = (props) => (
@@ -50,10 +54,17 @@ export default function Deleteclient( {listItem, loadClientList} ) {
                 <Modal.Header closeButton>
                         <Modal.Title>Ügyfél törlése</Modal.Title>
                 </Modal.Header>
-                {checkExistDiary() ? 
+                {existClientIdInLog ?
+                <>
                 <Modal.Body>
                     Az ügyfélhez tartozik naplóbejegyzés ezért nem törölhető.
-                </Modal.Body> :
+                </Modal.Body>
+                <Modal.Footer>
+                <Button variant="primary" onClick={handleCloseDeleteClientForm}>
+                    Ok
+                </Button>
+                </Modal.Footer>
+                </> :
                 <>
                 <Modal.Body>
                     Valóban törölni szeretnéd {listItem.name} ügyfelet?
