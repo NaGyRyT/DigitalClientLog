@@ -46,7 +46,7 @@ export default function Viewclient( { listItem } ) {
                         <Modal.Title>Ügyfél részletek</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Row>
+                    <Row className='my-2'>
                         <Col xs={12} sm={7}>
                             Név: {listItem.name}
                         </Col>
@@ -54,23 +54,23 @@ export default function Viewclient( { listItem } ) {
                             Azonosító: {listItem.client_id}
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className='my-2'>
                         <Col xs={12} sm={7}>Születési dátum: {listItem.birth_date}</Col>
                         <Col xs={12} sm={2}>Kor: {listItem.age}</Col>
                         <Col xs={12} sm={3}>Nem: {listItem.gender}</Col>                        
                     </Row>
-                    <Row>
+                    <Row className='my-2'>
                         <Col xs={12} sm={7}>E-mail: {listItem.email}</Col>
                         <Col xs={12} sm={5}>Mobil: {listItem.phone}</Col>
                     </Row>
-                    <Row>
+                    <Row className='my-2'>
                         <Col xs={12} sm={7}>Ir. szám: {listItem.zip}</Col>
                         <Col xs={12} sm={5}>Város: {listItem.city}</Col>  
                     </Row>
-                    <Row>
+                    <Row className='my-2'>
                         <Col xs={12} sm={12}>Utca: {listItem.street}</Col>
                     </Row>
-                    <Row>    
+                    <Row className='my-2'>    
                         <Col xs={12} sm={4}>Házszám: {listItem.house_number}</Col>
                         <Col xs={12} sm={4}>Emelet: {listItem.floor}</Col>
                         <Col xs={12} sm={4}>Ajtó: {listItem.door}</Col>
@@ -84,7 +84,7 @@ export default function Viewclient( { listItem } ) {
                                     <th>Felhasználó</th>
                                     <th>Dátum, Idő</th>
                                     <th>Perc</th>
-                                    <th>Esemény</th>
+                                    <th className='d-none d-sm-table-cell'>Leírás</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -95,7 +95,7 @@ export default function Viewclient( { listItem } ) {
                                         <td>{item.user_name}</td>
                                         <td>{item.date_time}</td>
                                         <td>{item.duration}</td>
-                                        <td>{item.description.slice(0,10)}</td>
+                                        <td className='d-none d-sm-table-cell'>{item.description.slice(0,10)}</td>
                                         <td>
                                             <Viewlog logEntry={item}></Viewlog>
                                         </td>
