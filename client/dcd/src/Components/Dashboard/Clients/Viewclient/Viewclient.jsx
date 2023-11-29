@@ -1,11 +1,25 @@
-import React, { useState } from 'react'
-import { OverlayTrigger, Tooltip, Button, Modal, Row, Col } from 'react-bootstrap';
+import React, { useState  } from 'react'
+import axios from 'axios';
+import { OverlayTrigger, Tooltip, Button, Modal, Row, Col, Table } from 'react-bootstrap';
+import Viewlog from '../../Log/Viewlog/Viewlog'
 
 export default function Viewclient( { listItem } ) {
     const [showViewClientForm, setShowViewClientForm] = useState(false);
+    const [logEntries, setLogEntries] = useState([]); 
     const handleCloseViewClientForm = () => setShowViewClientForm(false);  
-    const handleShowViewClientForm = () => setShowViewClientForm(true);
-   
+    const handleShowViewClientForm = async() => {
+        await getLog();
+        setShowViewClientForm(true);
+    }
+    
+
+    async function getLog() {
+        await axios.get(`http://localhost:8080/getlog/${listItem.id}`)
+            .then ((data) => {
+                setLogEntries(data.data);
+          })
+      };
+    
     const renderTooltip = (props) => (
         <Tooltip id="View-button-tooltip" >
             {props}
@@ -29,7 +43,7 @@ export default function Viewclient( { listItem } ) {
             </OverlayTrigger>
             <Modal show={showViewClientForm} onHide={handleCloseViewClientForm} backdrop='static'>
                 <Modal.Header closeButton>
-                        <Modal.Title>Részletek</Modal.Title>
+                        <Modal.Title>Ügyfél részletek</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Row>
@@ -61,6 +75,36 @@ export default function Viewclient( { listItem } ) {
                         <Col xs={12} sm={4}>Emelet: {listItem.floor}</Col>
                         <Col xs={12} sm={4}>Ajtó: {listItem.door}</Col>
                     </Row>
+                    {logEntries.length > 0 ?
+                          <Table striped bordered hover size="sm" >
+                            <thead>
+                                <tr><th colSpan={12}>Naplóbejegyzések</th></tr>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Felhasználó</th>
+                                    <th>Dátum, Idő</th>
+                                    <th>Perc</th>
+                                    <th>Esemény</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {logEntries.map((item) => 
+                                    <tr key={item.id}>
+                                        <td>{item.id}</td>
+                                        <td>{item.user_name}</td>
+                                        <td>{item.date_time}</td>
+                                        <td>{item.duration}</td>
+                                        <td>{item.description.slice(0,10)}</td>
+                                        <td>
+                                            <Viewlog logEntry={item}></Viewlog>
+                                        </td>
+                                    </tr>)}
+                            </tbody>
+                            </Table>
+                        : 
+                        ''
+                    }
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={handleCloseViewClientForm}>
