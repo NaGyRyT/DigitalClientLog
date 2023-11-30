@@ -12,9 +12,10 @@ import * as Icon from 'react-bootstrap-icons';
 import './App.css';
 
 function App() {
-    const [ token, setToken ] = useState(false);
-    const [ loggedInUser, setLoggedInUser ] = useState(getLoggedInUser);
-    const [ darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') ? localStorage.getItem('darkMode') : false);
+    const [token, setToken] = useState(false);
+    const [loggedInUser, setLoggedInUser] = useState(getLoggedInUser);
+    const [loggedInUserId, setLoggedInUserId] = useState(getLoggedInUser);
+    const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') ? localStorage.getItem('darkMode') : false);
     const [activeMenuItem, setActiveMenuItem] = useState('users');
     const [showOffcanvasMenu, setShowOffcanvasMenu] = useState(false);
 
@@ -27,7 +28,10 @@ function App() {
                 password : password
             })
             .then ((data) => {
-                setToken(data.data);
+                if (data.data.length > 0) {
+                    setToken(true)
+                    setLoggedInUserId(data.data[0].id)
+                } else setToken(false)
             }
             )
         } else {
@@ -72,7 +76,7 @@ function App() {
     useEffect(getToken, []);
     
     if (!token) {         
-        return <Loginform setToken={setToken} setLoggedInUser={setLoggedInUser}/>
+        return <Loginform setToken={setToken} setLoggedInUser={setLoggedInUser} setLoggedInUserId={setLoggedInUserId}/>
     }
 
     return (
@@ -128,7 +132,7 @@ function App() {
             <Route path='/' element={<Users darkMode={darkMode}/>}/>
             <Route path='/dashboard/users' element={<Users darkMode={darkMode}/>}/>
             <Route path='/dashboard/clients' element={<Clients/>}/>
-            <Route path='/dashboard/log' element={<Log/>}/>
+            <Route path='/dashboard/log' element={<Log loggedInUserId={loggedInUserId}/>}/>
             <Route path='/dashboard/statements' element={<Statements/>}/>
         </Routes>
       </BrowserRouter>
