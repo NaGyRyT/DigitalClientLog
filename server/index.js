@@ -12,7 +12,7 @@ app.use(cors());
 app.use('/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-     database.db.query('SELECT username, password, inactive FROM users WHERE users.username = ?', [username], (err, result) => {
+     database.db.query('SELECT username, password, inactive, id FROM users WHERE users.username = ?', [username], (err, result) => {
         if (err) {
             console.log(err)
         } else {
@@ -39,12 +39,12 @@ app.use('/login', (req, res) => {
 app.use('/checkloggedinuser', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-    database.db.query('SELECT username, password FROM users WHERE users.username = ? AND users.password = ?', [username, password], (err, result) => {
+    database.db.query('SELECT username, password, id FROM users WHERE users.username = ? AND users.password = ?', [username, password], (err, result) => {
         if (err) {
             console.log(err)
         } else {
             if (result.length > 0){
-                res.send(true)
+                res.send(result)
                 console.log('Username & password match')
             } else {
                 res.send(false);
