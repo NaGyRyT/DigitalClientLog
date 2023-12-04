@@ -87,10 +87,10 @@ export default function Edituser( { listItem, loadUserList, groupList } ) {
 				</Modal.Header>
 				<Modal.Body>
 					<Form onSubmit={handleEditUserSubmit}>
-            <Form.Group controlId="formUsername">
-							<Form.Label>Felhasználónév</Form.Label>
-							<Form.Control
-                disabled
+            	<Form.Group controlId="formUsername">
+						<Form.Label>Felhasználónév</Form.Label>
+							<Form.Control 
+								disabled
 								value={listItem.username}/>
 						</Form.Group>
 						<Form.Group controlId="formName">
@@ -106,7 +106,7 @@ export default function Edituser( { listItem, loadUserList, groupList } ) {
 							<Form.Label>Jelszó</Form.Label>
 							{errorMessage.password === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.password}</Alert>}
 							<Form.Control 
-								autoComplete="password"
+								autoComplete="new-password"
 								type='password'
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}/>

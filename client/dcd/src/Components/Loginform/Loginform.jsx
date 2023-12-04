@@ -58,7 +58,7 @@ return (
 						required
 						type="password" 
 						placeholder="Írd be a jelszavadat!"
-						autoComplete="password"
+						autoComplete="new-password"
 						onChange={e => setPassword(e.target.value)}/>
 				</Form.Group>
 				<Button variant="primary" type="submit">

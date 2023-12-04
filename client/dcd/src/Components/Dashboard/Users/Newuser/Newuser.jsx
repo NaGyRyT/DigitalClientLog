@@ -122,7 +122,7 @@ export default function Newuser( { loadUserList, groupList } ) {
 							<Form.Label>Jelszó</Form.Label>
 							{errorMessage.password === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.password}</Alert>}
 							<Form.Control 
-								autoComplete="password"
+								autoComplete="new-password"
 								type='password'
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}/>
