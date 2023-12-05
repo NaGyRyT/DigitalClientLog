@@ -19,7 +19,7 @@ app.use('/login', (req, res) => {
             if (result.length > 0 && result[0].inactive === 0) {
                 bcrypt.compare(password, result[0].password, function(err, isMatch) {
                     if (err) {
-                        console.log(err)
+                        console.log(err);
                     } else if (!isMatch) {
                         res.send([]);
                         console.log('Username matches passwords do not match');
@@ -41,14 +41,14 @@ app.use('/checkloggedinuser', (req, res) => {
     const password = req.body.password;
     database.db.query('SELECT username, password, id FROM users WHERE users.username = ? AND users.password = ?', [username, password], (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
             if (result.length > 0){
-                res.send(result)
-                console.log('Username & password match')
+                res.send(result);
+                console.log('Username & password match');
             } else {
                 res.send(false);
-                console.log("Username & password don't match")
+                console.log("Username & password don't match");
             }
         }
     });
@@ -61,9 +61,9 @@ app.post('/newuser', (req,res) => {
     const group = req.body.group;
     database.db.query('INSERT INTO users (username, password, name, accessgroup, inactive) VALUES (?, ?, ?, ?, 0)', [username, password, name, group], (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
-            res.send({username : username})
+            res.send({username : username});
         }
     });
 
@@ -73,9 +73,9 @@ app.post('/deleteuser', (req,res) => {
     const id = req.body.id;
     database.db.query('DELETE FROM users WHERE id = ?', [id], (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {                
-            res.send({result})
+            res.send({result});
         }
     });
 });
@@ -84,9 +84,9 @@ app.post('/inactiveuser', (req,res) => {
     const id = req.body.id;
     database.db.query('UPDATE users SET inactive = 1 WHERE id = ?', [id], (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {                
-            res.send({result})
+            res.send({result});
         }
     });
 });
@@ -95,9 +95,9 @@ app.post('/activeuser', (req,res) => {
     const id = req.body.id;
     database.db.query('UPDATE users SET inactive = 0 WHERE id = ?', [id], (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {                
-            res.send({result})
+            res.send({result});
         }
     });
 });
@@ -110,32 +110,29 @@ app.post('/edituser', (req,res) => {
     if (password === '') {
         database.db.query('UPDATE users SET name = ?, accessgroup = ? WHERE id = ?', [name, group, id], (err, result) => {
             if (err) {
-                console.log(err)
+                console.log(err);
             } else {                
-                res.send({result})
+                res.send({result});
             }
         });
-
     } else {
         database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ? WHERE id = ?', [name, group, password, id], (err, result) => {
             if (err) {
-                console.log(err)
+                console.log(err);
             } else {
-                res.send({result})
+                res.send({result});
             }
         });
-
-
-    }
+    };
 });
 
 app.post('/checkexistusername', (req,res) => {
     const username = req.body.username;
     database.db.query('SELECT * FROM users WHERE username = ?', [username], (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
-            res.send(result)
+            res.send(result);
         }
     });
 });
@@ -143,9 +140,9 @@ app.post('/checkexistusername', (req,res) => {
 app.get('/getuserlist', (req,res) => {
     database.db.query('SELECT users.id, users.username, users.name, users.inactive, users.accessgroup, accessgroups.group_name FROM users INNER JOIN accessgroups ON users.accessgroup = accessgroups.id ORDER By users.id', (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
-            res.send(result)
+            res.send(result);
         }
     });
 });
@@ -153,9 +150,9 @@ app.get('/getuserlist', (req,res) => {
 app.get('/getaccessgrouplist', (req,res) => {
     database.db.query('SELECT * FROM accessgroups' , (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
-            res.send(result)
+            res.send(result);
         }
     });
 });
@@ -163,9 +160,9 @@ app.get('/getaccessgrouplist', (req,res) => {
 app.get('/getcities', (req,res) => {
     database.db.query('SELECT * FROM cities' , (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
-            res.send(result)
+            res.send(result);
         }
     });
 });
@@ -184,10 +181,10 @@ app.post('/newclient', (req,res) => {
     const phone = req.body.phone;
     database.db.query('INSERT INTO clients (name, client_id, gender, city_id, street, house_number, floor, door, birth_date, email, phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [name, clientid, gender, cityid, street, housenumber, floor, door, birthdate, email, phone], (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
-            res.send({name : name})
-            console.log(name, 'client added to the database')
+            res.send({name : name});
+            console.log(name, 'client added to the database');
         }
     });
 });
@@ -222,22 +219,22 @@ app.post('/editclient', (req,res) => {
                     WHERE id = ?`
     database.db.query(sqlUpdate, [name, clientid, gender, cityid, street, housenumber, floor, door, birthdate, email, phone, id], (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
-            res.send({name : name})
-            console.log(name, 'client modified in the database')
+            res.send({name : name});
+            console.log(name, 'client modified in the database');
         }
     });
 });
 
 app.post('/checkexistclientid', (req,res) => {
     const clientid = req.body.clientid;
-    const id = req.body.id
+    const id = req.body.id;
     database.db.query('SELECT * FROM clients WHERE client_id = ? AND id != ?', [clientid, id], (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
-            res.send(result)
+            res.send(result);
         }
     });
 });
@@ -246,9 +243,9 @@ app.post('/deleteclient', (req,res) => {
     const id = req.body.id;
     database.db.query('DELETE FROM clients WHERE id = ?', [id], (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {                
-            res.send({result})
+            res.send({result});
         }
     });
 });
@@ -282,9 +279,9 @@ app.get('/getclientlist', (req,res) => {
                        ORDER By clients.id`;
     database.db.query(sqlSelect, (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
-            res.send(result)
+            res.send(result);
         }
     });
 });
@@ -303,15 +300,15 @@ app.get('/getlog', (req,res) => {
                        ORDER By log.id`;
     database.db.query(sqlSelect, (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
-            res.send(result)
+            res.send(result);
         }
     });
 });
 
 app.get('/getlog/:clientid', (req,res) => {
-    const clientId = req.params.clientid
+    const clientId = req.params.clientid;
     const sqlSelect = `SELECT 
                         log.id,
                         users.name AS user_name,
@@ -326,9 +323,9 @@ app.get('/getlog/:clientid', (req,res) => {
                        ORDER By log.id`;
     database.db.query(sqlSelect, [clientId], (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
-            res.send(result)
+            res.send(result);
         }
     });
 });
@@ -337,13 +334,49 @@ app.post('/checkexistclientidinlog', (req,res) => {
     const clientid = req.body.clientid;
     database.db.query('SELECT * FROM log WHERE client_id = ?', [clientid], (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
-            res.send(result)
+            res.send(result);
         }
     });
 });
 
+app.post('/newlog', (req,res) => {
+    const user_id = req.body.userid;
+    const client_id = req.body.clientid;
+    const date_time = req.body.datetime;
+    const duration = req.body.duration; 
+    const description = req.body.description;
+    database.db.query('INSERT INTO log (user_id, client_id, date_time, duration, description) VALUES (?, ?, ?, ?, ?)', [user_id, client_id, date_time, duration, description], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.post('/editlog', (req,res) => {
+    const id = req.body.id;
+    const date_time = req.body.datetime;
+    const duration = req.body.duration;
+    const description = req.body.description;
+    const sqlUpdate = `UPDATE
+                        log
+                       SET
+                       date_time = ?,
+                       duration = ? ,
+                       description = ?
+                    WHERE id = ?`
+    database.db.query(sqlUpdate, [date_time, duration, description, id], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send({id : id});
+            console.log(id, 'log modified in the database');
+        }
+    });
+});
 
 
 app.listen(8080, () => {
