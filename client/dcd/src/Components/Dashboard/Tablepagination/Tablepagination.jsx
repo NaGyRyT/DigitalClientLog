@@ -33,6 +33,7 @@ export default function Tablepagination({
           last = {true}
         />
           <Form.Select
+            name='paginationSelector'
             value={rowsPerPage}
             className='cursor-pointer'
             onChange={(e) => {
