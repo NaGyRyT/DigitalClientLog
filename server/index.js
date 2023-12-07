@@ -378,6 +378,17 @@ app.post('/editlog', (req,res) => {
     });
 });
 
+app.post('/deletelog', (req,res) => {
+    const id = req.body.id;
+    database.db.query('DELETE FROM log WHERE id = ?', [id], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {                
+            res.send({result});
+        }
+    });
+});
+
 
 app.listen(8080, () => {
     console.log('Server listening on port 8080')
