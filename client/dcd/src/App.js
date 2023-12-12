@@ -6,19 +6,18 @@ import Users from './Components/Dashboard/Users/Users';
 import Clients from './Components/Dashboard/Clients/Clients';
 import Log from './Components/Dashboard/Log/Log';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
-import { Nav, Navbar, Container, Offcanvas} from 'react-bootstrap';
+import { Nav, Navbar, Container, Offcanvas } from 'react-bootstrap';
 import * as Icon from 'react-bootstrap-icons';
-
 import './App.css';
+import Edituser from './Components/Dashboard/Users/Edituser/Edituser';
 
 function App() {
     const [token, setToken] = useState(false);
-    const [loggedInUser, setLoggedInUser] = useState(getLoggedInUser);
-    const [loggedInUserId, setLoggedInUserId] = useState(getLoggedInUser);
+    const [loggedInUserData, setLoggedInUserData] = useState(getLoggedInUser); 
     const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') ? localStorage.getItem('darkMode') : false);
     const [activeMenuItem, setActiveMenuItem] = useState('users');
     const [showOffcanvasMenu, setShowOffcanvasMenu] = useState(false);
-
+ 
     function getToken() {
         let username = getLoggedInUser();
         let password = getLoggedInPassword();
@@ -30,10 +29,9 @@ function App() {
             .then ((data) => {
                 if (data.data.length > 0) {
                     setToken(true)
-                    setLoggedInUserId(data.data[0].id)
+                    setLoggedInUserData(data.data[0])
                 } else setToken(false)
-            }
-            )
+            });
         } else {
             setToken(false);
             }
@@ -65,7 +63,7 @@ function App() {
     function handleLogOut() {
         sessionStorage.removeItem('token');
         setToken(false);
-        return <Loginform setToken={setToken} setLoggedInUser={setLoggedInUser}/>
+        return <Loginform setToken={setToken} setLoggedInUserData={setLoggedInUserData}/>
     };
 
     useEffect(() => {
@@ -76,9 +74,9 @@ function App() {
     useEffect(getToken, []);
     
     if (!token) {         
-        return <Loginform setToken={setToken} setLoggedInUser={setLoggedInUser} setLoggedInUserId={setLoggedInUserId}/>
+        return <Loginform setToken={setToken} setLoggedInUserData={setLoggedInUserData} />
     }
-
+    
     return (
         <>
         <BrowserRouter>
@@ -95,7 +93,7 @@ function App() {
                         className='w-auto'>
                         <Offcanvas.Header>
                             <Offcanvas.Title id={`offcanvasNavbarLabel-expand-md`}>
-                                {loggedInUser}
+                                {loggedInUserData.username}
                             </Offcanvas.Title>
                             <button type="button" className="btn-close" onClick={()=> setShowOffcanvasMenu(false)}></button>
                         </Offcanvas.Header>
@@ -105,7 +103,10 @@ function App() {
                                 activeKey={activeMenuItem}
                                 onSelect={(selectedKey) => setActiveMenuItem(selectedKey)}
                                 onClick={()=> setShowOffcanvasMenu(false)}>
-                                <Nav.Link eventKey='users'as={Link} to='/dashboard/users'>Felhasználók</Nav.Link>
+                                    {loggedInUserData.group_name === 'Admin' ? 
+                                        <Nav.Link eventKey='users'as={Link} to='/dashboard/users'>Felhasználók</Nav.Link> :
+                                        ''
+                                    }
                                 <Nav.Link eventKey='clients'as={Link} to='/dashboard/clients'>Ügyfelek</Nav.Link>
                                 <Nav.Link eventKey='log'as={Link} to='/dashboard/log'>Napló</Nav.Link>
                                 <Nav.Link eventKey='statements'as={Link} to='/dashboard/statements'>Kimutatások</Nav.Link>
@@ -117,8 +118,12 @@ function App() {
                                     title={darkMode ? 'Világos mód' : 'Sötét mód'}>
                                     {darkMode ? <Icon.BrightnessHighFill/> : <Icon.MoonStars/>}    
                                 </span>
-                                <span title='Bejelentkezett felhasználó' className='display-none'>{loggedInUser}</span>
-                                 <Icon.BoxArrowInRight 
+                                <Edituser
+                                    listItem={loggedInUserData}
+                                    setLoggedInUserData={setLoggedInUserData}
+                                    loggedInUser={loggedInUserData.username}>
+                                </Edituser>
+                                <Icon.BoxArrowInRight 
                                     onClick={handleLogOut} 
                                     title='Kilépés'
                                     className='cursor-pointer'
@@ -129,10 +134,15 @@ function App() {
                 </Container>
         </Navbar>
         <Routes className='mx-3'>
-            <Route path='/' element={<Users darkMode={darkMode}/>}/>
-            <Route path='/dashboard/users' element={<Users darkMode={darkMode}/>}/>
-            <Route path='/dashboard/clients' element={<Clients/>}/>
-            <Route path='/dashboard/log' element={<Log loggedInUserId={loggedInUserId}/>}/>
+            <Route path='/' element={<Clients loggedInUserId={loggedInUserData.id}/>}/>
+            {loggedInUserData.group_name === 'Admin' ? 
+                <Route path='/dashboard/users' element={<Users 
+                    darkMode={darkMode}                                     
+                    loggedInUserData={loggedInUserData}/>}/> :
+                ''
+            }
+            <Route path='/dashboard/clients' element={<Clients loggedInUserId={loggedInUserData.id}/>}/>
+            <Route path='/dashboard/log' element={<Log loggedInUserId={loggedInUserData.id}/>}/>
             <Route path='/dashboard/statements' element={<Statements/>}/>
         </Routes>
       </BrowserRouter>
