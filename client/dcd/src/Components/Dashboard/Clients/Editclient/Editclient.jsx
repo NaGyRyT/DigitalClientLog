@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
-import { validateClient } from '../Validateclient/Validateclient'
+import { validateClient } from '../Validateclient/Validateclient';
 
 export default function Editclient( {
         listItem,
@@ -62,15 +62,15 @@ export default function Editclient( {
                 phone : phone.trim(),
                 email : email.trim()})
 		    .then(() => {
-                handleCloseEditClientForm()
+                handleCloseEditClientForm();
                 loadClientList();
 		    })
 		}
 	}
 
-    const renderTooltip = (props) => (
-        <Tooltip id="edit-button-tooltip" {...props}>
-          Szerkesztés
+    const renderTooltip = (tooltip) => (
+        <Tooltip id="edit-button-tooltip">
+          {tooltip}
         </Tooltip>)
 
     function findCity(zip) {
@@ -88,7 +88,7 @@ return (
         <OverlayTrigger
 			placement="top"
 			delay={{ show: 50, hide: 100 }}
-			overlay={renderTooltip}>
+			overlay={renderTooltip('Szerkesztés')}>
 			<Button 
 				size = "sm"
 				className = "m-1"
