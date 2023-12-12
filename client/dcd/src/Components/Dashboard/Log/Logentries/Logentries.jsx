@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Form, CloseButton, InputGroup } from 'react-bootstrap';
+import { Tooltip, Table, Form, CloseButton, InputGroup, OverlayTrigger } from 'react-bootstrap';
 import InputGroupText from 'react-bootstrap/esm/InputGroupText';
 import Tablepagination from '../../Tablepagination/Tablepagination';
 import Viewlog from '../Viewlog/Viewlog';
@@ -14,16 +14,24 @@ export default function Logentries( {
   sortedColumn,
   setSortedColumn,
   setSortDirection,
+  loggedInUserId
   } ) {
   const [usernameSearch, setUsernameSearch] = useState('');
   const [clientnameSearch, setClientnameSearch] = useState('');
   const [dateTimeSearch, setDateTimeSearch] = useState('');
   const [durationSearch, setDurationSearch] = useState('');
   const [descriptionSearch, setDescriptionSearch] = useState('');
+  const [hideForeignlog, setHideForeignLog] = useState(
+    sessionStorage.getItem('logTableHideForeignLog') === null ? 
+    true : 
+    sessionStorage.getItem('logTableHideForeignLog') === "false" ? 
+    false : 
+    true);
 
-  const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>
+    const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>
   
   const filteredList = logEntries
+                        .filter((listItem) => hideForeignlog ? listItem.user_id === loggedInUserId : listItem)
                         .filter((listItem) => usernameSearch.toLowerCase() === '' ? listItem 
                           : listItem.user_name.toLowerCase().includes(usernameSearch.toLowerCase()))
                         .filter((listItem) => clientnameSearch.toLowerCase() === '' 
@@ -67,6 +75,12 @@ export default function Logentries( {
       dateTimeSearch.slice(0,-2) :
       dateTimeSearch.slice(0,-1));
   }
+
+  const renderTooltip = (tooltip) => (
+    <Tooltip id="hide-foreign-log-tooltip">
+      {tooltip}
+    </Tooltip>)
+
   
   return (
     <div className='m-3'>
@@ -187,7 +201,23 @@ export default function Logentries( {
                   {descriptionSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setDescriptionSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
-              <th></th>
+              <th>            
+                <OverlayTrigger
+              			placement="top"
+                    delay={{ show: 50, hide: 100 }}
+                    overlay={renderTooltip('Összes/csak saját naplóbejegyzés')}> 
+                  <Form.Check
+                    role="button"
+                    type='switch'
+                    id='view-hide-delete-switcher'
+                    defaultChecked={hideForeignlog}
+                    onChange={(e) => {
+                      sessionStorage.setItem('logTableHideForeignLog', e.target.checked)
+                      setHideForeignLog(e.target.checked)
+                    }}
+                    />
+                </OverlayTrigger>
+              </th>
             </tr>
         </thead>
         <tbody>
@@ -207,12 +237,16 @@ export default function Logentries( {
                   <>
                     <Viewlog
                       logEntry = {listItem}/>
+                    { loggedInUserId === listItem.user_id ?
+                    <> 
                     <Editlog
                       logEntry = {listItem}
                       loadLogEntries = {loadLogEntries}/>
                     <Deletelog
                       listItem = {listItem}
-                      loadLogEntries = {loadLogEntries}/>
+                      loadLogEntries = {loadLogEntries}/></> : 
+                      ''
+                    }
                   </>    
                 </td>
               </tr>
