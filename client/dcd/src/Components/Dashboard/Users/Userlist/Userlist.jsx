@@ -3,7 +3,7 @@ import { Table, Form, OverlayTrigger, Tooltip, CloseButton, InputGroup } from 'r
 import Edituser from '../Edituser/Edituser';
 import Deleteuser from '../Deleteuser/Deleteuser';
 import Activateuser from '../Activateuser/Activateuser';
-import Viewuser from '../Viewuser/Viewuser'
+import Viewuser from '../Viewuser/Viewuser';
 import Tablepagination from '../../Tablepagination/Tablepagination';
 import InputGroupText from 'react-bootstrap/esm/InputGroupText';
 
@@ -148,7 +148,7 @@ export default function Userlist({
                 <Form.Check
                   role="button"
                   type='switch'
-                  id='view-delete-switcher'
+                  id='view-hide-deleted-switcher'
                   defaultChecked={viewHideInactivedUser}
                   onChange={(e) => setViewHideInactivedUser(e.target.checked)}
                   />
