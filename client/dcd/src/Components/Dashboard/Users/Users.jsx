@@ -5,9 +5,9 @@ import Userlist from './Userlist/Userlist';
 import Newuser from './Newuser/Newuser';
 import { handleSort } from '../Tablesort/Tablesort';
 
-export default function Users() {
-    const [userList, setUserList] = useState([]);
+export default function Users( {loggedInUserData}) {   
     const [groupList, setGroupList] = useState([]);
+    const [userList, setUserList] = useState([]);
     const [sortDirection, setSortDirection] = useState(
         sessionStorage.getItem('userTableSortDirection') ? 
         sessionStorage.getItem('userTableSortDirection') : 'des');
@@ -19,11 +19,10 @@ export default function Users() {
     function loadUserList(needToChangeOrderDirection = false) {
         axios.get('http://localhost:8080/getuserlist')
             .then ((data) => {
-
-                return setUserList( handleSort(data.data, sortDirection, sortedColumn, 'user', needToChangeOrderDirection) );
+                return setUserList( handleSort(data.data.filter((item) => item.id !== loggedInUserData.id), sortDirection, sortedColumn, 'user', needToChangeOrderDirection) );
           })
       };
-    
+
     function loadGroupList() {
 		axios.get('http://localhost:8080/getaccessgrouplist')
 		.then ((data) => {
