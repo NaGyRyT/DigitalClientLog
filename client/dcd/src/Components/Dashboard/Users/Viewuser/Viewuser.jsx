@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 
 export default function Viewuser( { listItem } ) {
@@ -12,37 +12,37 @@ export default function Viewuser( { listItem } ) {
         </Tooltip>
         );
     
-      return (
-        <>
-            <OverlayTrigger
-                placement="top"
-                delay={{ show: 50, hide: 100 }}
-                overlay={renderTooltip('Megnéz')}
-            >
-                <Button 
-                    size="sm"
-                    className="m-1"
-                    variant="success"
-                    onClick={handleShowViewUserForm}>
-                    👁
-                </Button>
-            </OverlayTrigger>
-            <Modal show={showViewUserForm} onHide={handleCloseViewUserForm} backdrop='static'>
-                <Modal.Header closeButton>
-                        <Modal.Title>Részletek</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p>Felhasználónév: {listItem.username}</p>
-                    <p>Név: {listItem.name}</p>
-                    <p>Csoport: {listItem.group_name}</p>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={handleCloseViewUserForm}>
-                        Bezár
+        return (
+            <>
+                <OverlayTrigger
+                    placement="top"
+                    delay={{ show: 50, hide: 100 }}
+                    overlay={renderTooltip('Részletek')}
+                >
+                    <Button 
+                        size="sm"
+                        className="m-1"
+                        variant="success"
+                        onClick={handleShowViewUserForm}>
+                        👁
                     </Button>
+                </OverlayTrigger>
+                <Modal show={showViewUserForm} onHide={handleCloseViewUserForm} backdrop='static'>
+                    <Modal.Header closeButton>
+                            <Modal.Title>Felhasználó részletek</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p className='border-bottom'>Felhasználónév: {listItem.username}</p>
+                        <p className='border-bottom'>Név: {listItem.name}</p>
+                        <p className='border-bottom'>Csoport: {listItem.group_name}</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={handleCloseViewUserForm}>
+                            Bezár
+                        </Button>
 
-                </Modal.Footer>
-            </Modal>
-        </>
-      )
+                    </Modal.Footer>
+                </Modal>
+            </>
+        )
     }
