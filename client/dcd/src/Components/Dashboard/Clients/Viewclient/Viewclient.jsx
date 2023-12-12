@@ -54,7 +54,6 @@ export default function Viewclient( { listItem, loggedInUserId } ) {
                         <Modal.Title>Ügyfél részletek</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div className='border'>
                     <Row className='my-2 border-bottom'>
                         <Col xs={12} sm={7}>Név: {listItem.name}</Col>
                         <Col xs={12} sm={5}>Azonosító: {listItem.client_id}</Col>
@@ -80,7 +79,6 @@ export default function Viewclient( { listItem, loggedInUserId } ) {
                         <Col xs={12} sm={4}>Emelet: {listItem.floor}</Col>
                         <Col xs={12} sm={4}>Ajtó: {listItem.door}</Col>
                     </Row>
-                    </div>
                     {logEntries.length > 0 ?
                         <Table className='mt-4' striped bordered hover size="sm" >
                             <thead>
