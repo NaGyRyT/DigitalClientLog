@@ -12,9 +12,21 @@ app.use(cors());
 app.use('/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-     database.db.query('SELECT username, password, inactive, id FROM users WHERE users.username = ?', [username], (err, result) => {
+    const sqlSelect = `SELECT 
+                        users.username,
+                        users.name,
+                        users.accessgroup,
+                        users.password,
+                        users.inactive,
+                        users.id,
+                        accessgroups.group_name 
+                       FROM users 
+                       INNER JOIN accessgroups 
+                       ON users.accessgroup = accessgroups.id
+                       WHERE users.username = ?`
+    database.db.query(sqlSelect, [username], (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
             if (result.length > 0 && result[0].inactive === 0) {
                 bcrypt.compare(password, result[0].password, function(err, isMatch) {
@@ -30,7 +42,7 @@ app.use('/login', (req, res) => {
                 }) 
             } else {
                 res.send([]);   
-                console.log("Username doesn't match or inactived user");
+                console.log("Username doesn't match or inactivated user");
             }
         }
     });
@@ -39,7 +51,18 @@ app.use('/login', (req, res) => {
 app.use('/checkloggedinuser', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-    database.db.query('SELECT username, password, id FROM users WHERE users.username = ? AND users.password = ?', [username, password], (err, result) => {
+    const sqlSelect = `SELECT 
+                        users.username,
+                        users.name,
+                        users.accessgroup,
+                        users.password,
+                        users.id,
+                        accessgroups.group_name 
+                       FROM users 
+                       INNER JOIN accessgroups 
+                       ON users.accessgroup = accessgroups.id
+                       WHERE users.username = ? AND users.password = ?`
+    database.db.query(sqlSelect, [username, password], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -138,7 +161,18 @@ app.post('/checkexistusername', (req,res) => {
 });
 
 app.get('/getuserlist', (req,res) => {
-    database.db.query('SELECT users.id, users.username, users.name, users.inactive, users.accessgroup, accessgroups.group_name FROM users INNER JOIN accessgroups ON users.accessgroup = accessgroups.id ORDER By users.id', (err, result) => {
+    const sqlSelect = `SELECT 
+                        users.id, 
+                        users.username, 
+                        users.name, 
+                        users.inactive, 
+                        users.accessgroup, 
+                        accessgroups.group_name 
+                       FROM users 
+                       INNER JOIN accessgroups 
+                       ON users.accessgroup = accessgroups.id 
+                       ORDER By users.id`
+    database.db.query(sqlSelect, (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -179,7 +213,33 @@ app.post('/newclient', (req,res) => {
     const birthdate = req.body.birthdate;
     const email = req.body.email;
     const phone = req.body.phone;
-    database.db.query('INSERT INTO clients (name, client_id, gender, city_id, street, house_number, floor, door, birth_date, email, phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [name, clientid, gender, cityid, street, housenumber, floor, door, birthdate, email, phone], (err, result) => {
+    const sqlInsert = `INSERT INTO 
+                        clients (
+                            name, 
+                            client_id, 
+                            gender, 
+                            city_id, 
+                            street, 
+                            house_number, 
+                            floor, 
+                            door, 
+                            birth_date, 
+                            email, 
+                            phone) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    database.db.query(sqlInsert, [
+        name, 
+        clientid, 
+        gender, 
+        cityid, 
+        street, 
+        housenumber, 
+        floor, 
+        door, 
+        birthdate, 
+        email, 
+        phone
+    ], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -216,8 +276,21 @@ app.post('/editclient', (req,res) => {
                         birth_date = ?,
                         email = ?,
                         phone = ?
-                    WHERE id = ?`
-    database.db.query(sqlUpdate, [name, clientid, gender, cityid, street, housenumber, floor, door, birthdate, email, phone, id], (err, result) => {
+                       WHERE id = ?`
+    database.db.query(sqlUpdate, [
+        name, 
+        clientid,
+        gender, 
+        cityid, 
+        street, 
+        housenumber, 
+        floor, 
+        door, 
+        birthdate, 
+        email, 
+        phone, 
+        id
+    ], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -290,6 +363,7 @@ app.get('/getlog', (req,res) => {
     const sqlSelect = `SELECT 
                         log.id,
                         users.name AS user_name,
+                        users.id AS user_id,
                         clients.name As client_name,
                         DATE_FORMAT(date_time, '%Y-%m-%d %H:%i') AS date_time,
                         duration,
@@ -312,6 +386,7 @@ app.get('/getlog/:clientid', (req,res) => {
     const sqlSelect = `SELECT 
                         log.id,
                         users.name AS user_name,
+                        users.id AS user_id,
                         clients.name As client_name,
                         DATE_FORMAT(date_time, '%Y-%m-%d %H:%i') AS date_time,
                         duration,
@@ -392,4 +467,4 @@ app.post('/deletelog', (req,res) => {
 
 app.listen(8080, () => {
     console.log('Server listening on port 8080')
-})
+});
