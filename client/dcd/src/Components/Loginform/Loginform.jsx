@@ -4,7 +4,7 @@ import { Button, Form, Container, Alert } from 'react-bootstrap';
 import './Loginform.css';
 
 
-export default function Loginform( { setToken, setLoggedInUser, setLoggedInUserId }) {
+export default function Loginform( { setToken, setLoggedInUserData }) {
 	const [username, setUserName] = useState('');
 	const [password, setPassword] = useState('');
 	const [message, setMessage] = useState('')
@@ -16,8 +16,7 @@ export default function Loginform( { setToken, setLoggedInUser, setLoggedInUserI
 			if (data.data.length !== 0) {
 				setMessage('');
 				setToken(true);
-				setLoggedInUser(data.data[0].username);
-				setLoggedInUserId(data.data[0].id)
+				setLoggedInUserData(data.data[0])
 				sessionStorage.setItem("token", data.data[0].username + data.data[0].password);
 			} else {
 				setMessage('Rossz felhasználónév vagy jelszó');
