@@ -26,7 +26,6 @@ html {
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1rem;
-
 }
 
 .cursor-pointer {
@@ -38,12 +37,28 @@ html {
   width: 150px;
 }
 
+.width-200 {
+  width: 200px;
+}
+
 .max-width-115 {
   max-width: 115px;
 }
 
 .max-width-65 {
   max-width: 65px;
+}
+
+.modal-80w {
+  min-width: 80%;
+}
+
+.modal-60w {
+  min-width: 60%;
+}
+
+.modal-content {
+  min-width: 360px;
 }
 
 @media (max-width: 768px) {
