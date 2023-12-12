@@ -1,13 +1,14 @@
 import React from 'react';
 import axios from 'axios';
 import { useState } from 'react';
-import { Form, Alert, Button, Modal, Row, Col, ListGroup } from 'react-bootstrap';
+import { Form, Alert, Button, Modal, Row, Col, ListGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { validateLog } from '../Validatelog/Validatelog';
 
 export default function Newlog( { 
     loggedInUserId,
     selectedClient,
-    getLog
+    getLog,
+    fromClientList
 	}) {
     const [time, setTime] = useState(new Date().toString().slice(16,21));
     const [date, setDate] = useState(new Date().toJSON().slice(0,10));
@@ -51,15 +52,37 @@ export default function Newlog( {
             })
 		.then(() => {
             handleCloseNewLogForm();
-			getLog();
+			if (!fromClientList) getLog();
 		});
 		};
 	};
+
+    const renderTooltip = (tooltip) => (
+        <Tooltip id="View-button-tooltip" >
+            {tooltip}
+        </Tooltip>
+        );
+
 	return (
-		<>
-			<Button className='mx-3' variant="primary" onClick={handleShowNewLogForm}>
-				+ Új naplóbejegyzés
-			</Button>
+		<>{fromClientList ? 
+            <>
+            <OverlayTrigger
+                placement="top"
+                delay={{ show: 50, hide: 100 }}
+                overlay={renderTooltip('Új naplóbejegyzés')}>
+                <Button 
+                    size="sm"
+                    className="m-1"
+                    variant="warning"
+                    onClick={handleShowNewLogForm}>
+                  &#x1F4F0;
+                </Button>
+            </OverlayTrigger>
+            </> : 		
+            <Button className='mx-3' variant="primary" onClick={handleShowNewLogForm}>
+                + Új naplóbejegyzés
+            </Button>}
+
 			<Modal 
 				show={showNewLogForm} 
 				onHide={handleCloseNewLogForm}
