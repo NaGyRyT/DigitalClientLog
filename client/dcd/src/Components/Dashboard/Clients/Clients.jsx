@@ -5,7 +5,7 @@ import Clientlist from './Clientlist/Clientlist';
 import Newclient from './Newclient/Newclient'
 import { handleSort } from '../Tablesort/Tablesort';
 
-export default function Clients() {
+export default function Clients( { loggedInUserId }) {
   const [clientList, setClientList] = useState([]);
   const [cityList, setCityList] = useState([]);
   const [sortDirection, setSortDirection] = useState(
@@ -15,11 +15,9 @@ export default function Clients() {
       sessionStorage.getItem('clientTableSortedColumnName') ? 
       sessionStorage.getItem('clientTableSortedColumnName') : 'id');
   
-  function loadClientList(needToChangeOrderDirection = false) {
+ function loadClientList(needToChangeOrderDirection = false) {
       axios.get('http://localhost:8080/getclientlist')
-          .then ((data) => {
-              return setClientList( handleSort(data.data, sortDirection, sortedColumn, 'client', needToChangeOrderDirection) );
-        })
+          .then ((data) => setClientList(handleSort(data.data, sortDirection, sortedColumn, 'client', needToChangeOrderDirection)));
     };
   
   useEffect(() => {
@@ -42,14 +40,15 @@ export default function Clients() {
         cityList = {cityList}
       />
       <Clientlist
-        clientList={clientList}
+        clientList = {clientList}
         cityList = {cityList}
         sortDirection = {sortDirection}
         sortedColumn = {sortedColumn}
         setSortDirection = {setSortDirection}
         setSortedColumn = {setSortedColumn}
         handleSort = {handleSort}
-        loadClientList={loadClientList}
+        loadClientList = {loadClientList}
+        loggedInUserId = {loggedInUserId}
       />
     </>
   )
