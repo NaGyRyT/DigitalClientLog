@@ -3,7 +3,7 @@ import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal } from 'react-bootstrap';
 import bcrypt from "bcryptjs-react";
 
-export default function Edituser( { listItem, loadUserList, groupList } ) {
+export default function Edituser( { listItem, loadUserList, groupList, loggedInUser, setLoggedInUserData } ) {
 	const [password, setPassword] = useState('');
 	const [name, setName] = useState(listItem.name);
 	const [errorMessage, setErrorMessage] = useState({
@@ -17,12 +17,17 @@ export default function Edituser( { listItem, loadUserList, groupList } ) {
 
 	const handleCloseEditUserForm = () => {
 			setShowEditUserForm(false);
+			setName(listItem.name);
+			setPassword('');
+			setErrorMessage({
+				name : '',
+				password : ''
+				})
   }
 
 	const handleShowEditUserForm = () => {
 		setShowEditUserForm(true);
   }
-
 	const handleEditUserSubmit = async (e) => {
 		e.preventDefault();
 		if (! await validateEditUser()) {
@@ -36,11 +41,14 @@ export default function Edituser( { listItem, loadUserList, groupList } ) {
 		.then(() => {
 			setErrorMessage({
 			name : '',
-			
-			password : '',
-			
+			password : ''
 			})
-			loadUserList(false);
+			if (loggedInUser === undefined) loadUserList(false) 
+		else {
+				let newListItem = listItem;
+				newListItem.name = name;				
+				setLoggedInUserData(newListItem);
+			}
 			setShowEditUserForm(false);
 		})
 		}
@@ -66,21 +74,29 @@ export default function Edituser( { listItem, loadUserList, groupList } ) {
       Szerkesztés
     </Tooltip>
   );
-
+  
   return (
-    <>
-		<OverlayTrigger
-			placement="top"
-			delay={{ show: 50, hide: 100 }}
-			overlay={renderTooltip}>
-			<Button 
-				size = "sm"
-				className = "m-1"
-				variant = "info"
-				onClick = {handleShowEditUserForm}>
-				&#x270D;
-    		</Button>
-		</OverlayTrigger>
+    <> 
+ 		{loggedInUser === undefined ? 
+			<OverlayTrigger
+				placement="top"
+				delay={{ show: 50, hide: 100 }}
+				overlay={renderTooltip}>
+				<Button 
+					size = "sm"
+					className = "m-1"
+					variant = "info"
+					onClick = {handleShowEditUserForm}>
+					&#x270D;
+				</Button>
+			</OverlayTrigger> :
+			<span 
+				title='Bejelentkezett felhasználó' 
+				onClick={handleShowEditUserForm}
+				className='display-none cursor-pointer'>
+				{listItem.name}
+			</span>
+		}
     	<Modal show={showEditUserForm} onHide={handleCloseEditUserForm} backdrop='static'>
 				<Modal.Header closeButton>
 					<Modal.Title>Felhasználó szerkesztése</Modal.Title>
@@ -111,27 +127,23 @@ export default function Edituser( { listItem, loadUserList, groupList } ) {
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}/>
 						</Form.Group>
-						<Form.Group  className={listItem.username === "admin" ? "d-none" : ""} controlId="formSelectFromGroup">
+						<Form.Group className={listItem.username === "admin" ? "d-none" : ""} controlId="formSelectFromGroup">
 							<Form.Label>Csoport</Form.Label>
-							<Form.Select onChange={(e) => setSelectedGroup(Number(e.target.value))}>
-								{groupList
-										.filter((groupListItem) => listItem.group_name === groupListItem.group_name)
-										.map((groupListItem) => 
-											<option 
-											key = { groupListItem.id }
-											value = { groupListItem.id }>
-											{groupListItem.group_name}
+							<Form.Select 
+								onChange={(e) => setSelectedGroup(Number(e.target.value))}
+								disabled={loggedInUser !== undefined ? true : false}
+								defaultValue={listItem.accessgroup}>
+								{loggedInUser === undefined ? 
+									groupList
+									.map((groupListItem) =>
+										<option
+											key={ groupListItem.id }
+											value={ groupListItem.id }>
+										{groupListItem.group_name}
 										</option>
-										)}
-								{groupList
-										.filter((groupListItem) => listItem.group_name !== groupListItem.group_name)
-										.map((groupListItem) => (
-											<option 
-												key={groupListItem.id}
-												value={groupListItem.id}
-												>{groupListItem.group_name}
-											</option>
-							))}
+									) :
+									<option>{listItem.group_name}</option>
+								}
 							</Form.Select>
 						</Form.Group>
 					</Form>
