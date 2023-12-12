@@ -5,6 +5,7 @@ import Deleteclient from '../Deleteclient/Deleteclient';
 import Viewclient from '../Viewclient/Viewclient';
 import Tablepagination from '../../Tablepagination/Tablepagination';
 import InputGroupText from 'react-bootstrap/esm/InputGroupText';
+import Newlog from '../../Log/Newlog/Newlog';
 
 export default function Clientlist({
     clientList,
@@ -15,6 +16,7 @@ export default function Clientlist({
     sortedColumn,
     setSortedColumn,
     setSortDirection,
+    loggedInUserId
 }) {
   const [clientnameSearch, setClientnameSearch] = useState('');
   const [clientIdSearch, setClientIdSearch] = useState('');
@@ -61,6 +63,17 @@ export default function Clientlist({
     }}, [clientList.length, filteredList.length, rowsPerPage]);
 
   const paginatedList = filteredList.slice(currentPage * rowsPerPage - rowsPerPage, currentPage * rowsPerPage);
+
+  function birthDateSearchValue(e) {
+    if (!isNaN(Number(e.key)) && birthDateSearch.length < 10) {
+      setBirthDateSearch(birthDateSearch + e.key);
+      if (birthDateSearch.length ===  3) setBirthDateSearch(birthDateSearch + e.key + '-');
+      if (birthDateSearch.length ===  6) setBirthDateSearch(birthDateSearch + e.key + '-');
+    } else if (e.key === 'Backspace') setBirthDateSearch(
+        birthDateSearch.slice(-1) === '-' ? 
+        birthDateSearch.slice(0,-2) : 
+        birthDateSearch.slice(0,-1));
+  }
 
   return (
     <div className='m-3'>
@@ -146,6 +159,7 @@ export default function Clientlist({
               <InputGroup>
                 <Form.Control
                   id="clientIdSearch"
+                  maxLength={9}
                   onChange={(e) => setClientIdSearch(e.target.value)}
                   placeholder = "Azonosító..."
                   value={clientIdSearch}/>
@@ -156,7 +170,8 @@ export default function Clientlist({
               <InputGroup>
                 <Form.Control
                   id="birthSearch"
-                  onChange={(e) => setBirthDateSearch(e.target.value)}
+                  onKeyDown={(e) => birthDateSearchValue(e)}
+                  onChange={(e) => setBirthDateSearch(birthDateSearch)}
                   placeholder = "Születés..."
                   value={birthDateSearch}/>
                   {birthDateSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setBirthDateSearch('')}/></InputGroupText> : ''}
@@ -166,6 +181,7 @@ export default function Clientlist({
               <InputGroup>
                 <Form.Control
                   id="ageSearch"
+                  maxLength={3}
                   onChange={(e) => setAgeSearch(e.target.value)}
                   placeholder = "Kor..."
                   value={ageSearch}/>
@@ -210,9 +226,11 @@ export default function Clientlist({
           {paginatedList
             .map((listItem) => {
               return (
-              <tr className={listItem.inactive === 1 ? "text-decoration-line-through" : ""} key={listItem.id}>
-                <td>{listItem.id}</td>
-                <td>{listItem.name}</td>
+              <tr 
+                className={listItem.inactive === 1 ? "text-decoration-line-through" : ""}
+                key={listItem.id}>
+                <td className=''>{listItem.id}</td>
+                <td className=''>{listItem.name}</td>
                 <td className='max-width-115'>{listItem.client_id}</td>
                 <td className='max-width-115 d-none d-sm-table-cell'>{listItem.birth_date}</td>
                 <td className='max-width-65 d-none d-md-table-cell'>{listItem.age}</td>
@@ -220,12 +238,17 @@ export default function Clientlist({
                 <td className='d-none d-lg-table-cell'>{listItem.email}</td>
                 <td className='max-width-115 d-none d-lg-table-cell'>{listItem.phone}</td>
                 <td className='d-none d-xl-table-cell'>{listItem.address}</td>
-                <td className='width-150'>
+                <td className='width-200'>
                     <>
                       <Viewclient
                         className = 'm-1'
                         listItem = {listItem}
-                      />
+                        selectedClient={listItem}
+                        loggedInUserId={loggedInUserId}/>
+                      <Newlog
+                        selectedClient={listItem}
+                        loggedInUserId={loggedInUserId}
+                        fromClientList={true}/>
                       <Editclient
                         listItem = {listItem}
                         loadClientList = {loadClientList}
