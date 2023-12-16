@@ -363,14 +363,16 @@ app.get('/getlog', (req,res) => {
     const sqlSelect = `SELECT 
                         log.id,
                         users.name AS user_name,
+                        accessgroups.id AS accessgroup_id,
                         users.id AS user_id,
                         clients.name As client_name,
                         DATE_FORMAT(date_time, '%Y-%m-%d %H:%i') AS date_time,
-                        duration,
-                        description
+                        log.duration,
+                        log.description
                        FROM log
                        INNER JOIN users ON users.id = log.user_id
                        INNER JOIN clients ON clients.id = log.client_id
+                       INNER JOIN accessgroups ON users.accessgroup = accessgroups.id
                        ORDER By log.id`;
     database.db.query(sqlSelect, (err, result) => {
         if (err) {
@@ -460,6 +462,51 @@ app.post('/deletelog', (req,res) => {
             console.log(err);
         } else {                
             res.send({result});
+        }
+    });
+});
+
+app.get('/getgendernumber', (req,res) => {
+    const sqlSelectCount = `SELECT 
+                                gender,
+                            COUNT(id) AS piece FROM clients GROUP BY gender; `;
+    database.db.query(sqlSelectCount, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.get('/getagesnumber', (req,res) => {
+    const sqlSelectCount = `
+        SELECT '< 18' as ages, 
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) < 18 
+            THEN 1 ELSE 0 END) as piece
+        FROM clients
+        UNION ALL
+        SELECT '18 - 40',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 18 AND 40 
+            THEN 1 ELSE 0 END)
+        FROM clients
+        UNION ALL
+        SELECT '41 - 65',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 41 AND 65 
+            THEN 1 ELSE 0 END)
+        FROM clients
+        UNION ALL
+        SELECT '65 <',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) > 65 
+            THEN 1 ELSE 0 END)
+        FROM clients `;
+    database.db.query(sqlSelectCount, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
         }
     });
 });
