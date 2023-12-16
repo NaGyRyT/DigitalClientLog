@@ -14,10 +14,10 @@ import Edituser from './Components/Dashboard/Users/Edituser/Edituser';
 function App() {
     const [token, setToken] = useState(false);
     const [loggedInUserData, setLoggedInUserData] = useState(getLoggedInUser); 
-    const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') ? localStorage.getItem('darkMode') : false);
+    const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true'? true : false);
     const [activeMenuItem, setActiveMenuItem] = useState('users');
     const [showOffcanvasMenu, setShowOffcanvasMenu] = useState(false);
- 
+    
     function getToken() {
         let username = getLoggedInUser();
         let password = getLoggedInPassword();
@@ -113,7 +113,7 @@ function App() {
                             </Nav>
                             <Container className='menuAssets'>
                                 <span
-                                    className='dark-mode-switcher cursor-pointer'
+                                    className='dark-mode-switcher cursor-pointer d-flex align-items-center'
                                     onClick={() => setDarkMode(darkMode ? false : true)}
                                     title={darkMode ? 'Világos mód' : 'Sötét mód'}>
                                     {darkMode ? <Icon.BrightnessHighFill/> : <Icon.MoonStars/>}    
@@ -142,7 +142,7 @@ function App() {
                 ''
             }
             <Route path='/dashboard/clients' element={<Clients loggedInUserId={loggedInUserData.id}/>}/>
-            <Route path='/dashboard/log' element={<Log loggedInUserId={loggedInUserData.id}/>}/>
+            <Route path='/dashboard/log' element={<Log loggedInUserData={loggedInUserData}/>}/>
             <Route path='/dashboard/statements' element={<Statements/>}/>
         </Routes>
       </BrowserRouter>
