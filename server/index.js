@@ -511,6 +511,53 @@ app.get('/getagesnumber', (req,res) => {
     });
 });
 
+app.get('/getlognumber', (req,res) => {
+    const sqlSelectCount = `
+        SELECT DATE_FORMAT(date_time, '%Y-%m') as log_date, 
+        COUNT(id) as log_count FROM log 
+        GROUP BY MONTH(date_time) 
+        ORDER BY log_date ASC`;
+    database.db.query(sqlSelectCount, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.get('/getdurationnumber', (req,res) => {
+    const sqlSelectCount = `
+        SELECT 
+            duration,
+        COUNT(id) AS piece FROM log GROUP BY duration; `;
+    database.db.query(sqlSelectCount, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.get('/getlogperusernumber', (req,res) => {
+    const sqlSelectCount = `
+        SELECT 
+            users.name as name,
+            count(log.id) as piece
+        FROM log 
+        INNER JOIN users
+            ON users.id = log.user_id
+        GROUP BY users.name`;
+    database.db.query(sqlSelectCount, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
 
 app.listen(8080, () => {
     console.log('Server listening on port 8080')
