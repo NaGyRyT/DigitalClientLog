@@ -73,9 +73,9 @@
 ## Kimutatások
 - korosztály (0-18, 18-40, 41-65, 65 felett )
 - nem (férfi/nő)
-- felhasználóhoz tartozó naplóbejegyzések száma (havi lebontásban)
+- felhasználókhoz tartozó naplóbejegyzések száma (havi lebontásban)
 - ügyféltalálkozások időtartama 
-- felhasználók naplóbejegyzéseinek száma
+- felhasználók naplóbejegyzéseinek száma 
 
 
 #### Források
