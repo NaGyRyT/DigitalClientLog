@@ -8,7 +8,7 @@
 - a bejelentkezett felhasználó neve megjelenik a menüben rákattintva módosítható a bejelentkezett felhasználó neve és jelszava
 
 ## Felhasználók 
-- ez a menüpontotot csak az admin csoport tagja láthatják
+- ezt a menüpontotot csak az admin csoport tagjai láthatják
 
 ### Új felhasználó felvétele
 - két azonos felhasználó név nem engedélyezett
@@ -70,6 +70,13 @@
 - szerkesztés
 - törlés
 
+## Kimutatások
+- korosztály (0-18, 18-40, 41-65, 65 felett )
+- nem (férfi/nő)
+- felhasználóhoz tartozó naplóbejegyzések száma (havi lebontásban)
+- ügyféltalálkozások időtartama 
+- felhasználók naplóbejegyzéseinek száma
+
 
 #### Források
 https://react.dev/
@@ -78,3 +85,4 @@ https://www.npmjs.com/package/react-bootstrap-pagination-control
 https://www.npmjs.com/package/validator
 https://www.npmjs.com/package/bcrypt
 https://www.npmjs.com/package/bcryptjs-react
+https://www.chartjs.org/docs/latest/
