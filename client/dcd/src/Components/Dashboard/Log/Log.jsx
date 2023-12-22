@@ -3,7 +3,7 @@ import Logentries from './Logentries/Logentries';
 import axios from 'axios';
 import { handleSort } from '../Tablesort/Tablesort';
 
-export default function Log( { loggedInUserId } ) {
+export default function Log( { loggedInUserData } ) {
   const [logEntries, setLogEntries] = useState([]);
   const [sortDirection, setSortDirection] = useState(
       sessionStorage.getItem('logTableSortDirection') ? 
@@ -25,7 +25,7 @@ export default function Log( { loggedInUserId } ) {
   return (
     <>
       <Logentries
-        loggedInUserId = {loggedInUserId}
+        loggedInUserData = {loggedInUserData}
         logEntries = {logEntries}
         loadLogEntries = {loadLogEntries}
         sortDirection = {sortDirection}

@@ -14,7 +14,7 @@ export default function Logentries( {
   sortedColumn,
   setSortedColumn,
   setSortDirection,
-  loggedInUserId
+  loggedInUserData
   } ) {
   const [usernameSearch, setUsernameSearch] = useState('');
   const [clientnameSearch, setClientnameSearch] = useState('');
@@ -31,7 +31,8 @@ export default function Logentries( {
     const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>
   
   const filteredList = logEntries
-                        .filter((listItem) => hideForeignlog ? listItem.user_id === loggedInUserId : listItem)
+                        .filter((listItem) => loggedInUserData.accessgroup === 1 ? listItem : loggedInUserData.accessgroup === listItem.accessgroup_id)
+                        .filter((listItem) => hideForeignlog ? listItem.user_id === loggedInUserData.id : listItem)
                         .filter((listItem) => usernameSearch.toLowerCase() === '' ? listItem 
                           : listItem.user_name.toLowerCase().includes(usernameSearch.toLowerCase()))
                         .filter((listItem) => clientnameSearch.toLowerCase() === '' 
@@ -237,7 +238,7 @@ export default function Logentries( {
                   <>
                     <Viewlog
                       logEntry = {listItem}/>
-                    { loggedInUserId === listItem.user_id ?
+                    { loggedInUserData.id === listItem.user_id ?
                     <> 
                     <Editlog
                       logEntry = {listItem}
