@@ -3,6 +3,7 @@ import axios from 'axios';
 import Loginform from './Components/Loginform/Loginform';
 import Statements from './Components/Dashboard/Statements/Statements';
 import Users from './Components/Dashboard/Users/Users';
+import Groups from './Components/Dashboard/Groups/Groups';
 import Clients from './Components/Dashboard/Clients/Clients';
 import Log from './Components/Dashboard/Log/Log';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
@@ -103,8 +104,11 @@ function App() {
                                 activeKey={activeMenuItem}
                                 onSelect={(selectedKey) => setActiveMenuItem(selectedKey)}
                                 onClick={()=> setShowOffcanvasMenu(false)}>
-                                    {loggedInUserData.group_name === 'Admin' ? 
-                                        <Nav.Link eventKey='users'as={Link} to='/dashboard/users'>Felhasználók</Nav.Link> :
+                                    {loggedInUserData.group_name === 'Admin' ?
+                                        <>
+                                            <Nav.Link eventKey='users'as={Link} to='/dashboard/users'>Felhasználók</Nav.Link>
+                                            <Nav.Link eventKey='groups'as={Link} to='/dashboard/groups'>Csoportok</Nav.Link>
+                                        </>  :
                                         ''
                                     }
                                 <Nav.Link eventKey='clients'as={Link} to='/dashboard/clients'>Ügyfelek</Nav.Link>
@@ -135,15 +139,16 @@ function App() {
         </Navbar>
         <Routes className='mx-3'>
             <Route path='/' element={<Clients loggedInUserId={loggedInUserData.id}/>}/>
-            {loggedInUserData.group_name === 'Admin' ? 
-                <Route path='/dashboard/users' element={<Users 
-                    darkMode={darkMode}                                     
-                    loggedInUserData={loggedInUserData}/>}/> :
+            {loggedInUserData.group_name === 'Admin' ?
+                <>
+                    <Route path='/dashboard/users' element={<Users darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
+                    <Route path='/dashboard/groups' element={<Groups loggedInUserId={loggedInUserData.id}/>}/>
+                </> :
                 ''
             }
             <Route path='/dashboard/clients' element={<Clients loggedInUserId={loggedInUserData.id}/>}/>
             <Route path='/dashboard/log' element={<Log loggedInUserData={loggedInUserData}/>}/>
-            <Route path='/dashboard/statements' element={<Statements/>}/>
+            <Route path='/dashboard/statements' element={<Statements darkMode={darkMode}/>}/>
         </Routes>
       </BrowserRouter>
     </>

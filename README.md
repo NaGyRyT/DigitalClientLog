@@ -33,6 +33,8 @@
 - ha nincs naplóbejegyzése a felhasználónak akkor törölhető egyébként csak inaktiválható
 - admin felhasználót nem lehet törölni
 
+## Csoportok
+
 ## Ügyfelek
 
 ### Új ügyfél felvétele

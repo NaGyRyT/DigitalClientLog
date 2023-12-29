@@ -559,6 +559,89 @@ app.get('/getlogperusernumber', (req,res) => {
 });
 
 
+app.get('/getgrouplist', (req,res) => {
+    const sqlSelect = `SELECT 
+                        *
+                       FROM accessgroups
+                       ORDER By id`;
+    database.db.query(sqlSelect, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.post('/newgroup', (req,res) => {
+    const groupname = req.body.groupname;
+    const description = req.body.description;
+    database.db.query('INSERT INTO accessgroups (group_name, description) VALUES (?, ?)', [groupname, description,], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+
+});
+
+app.post('/checkexistgroupname', (req,res) => {
+    const groupname = req.body.groupname;
+    database.db.query('SELECT * FROM accessgroups WHERE group_name = ?', [groupname], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.post('/editgroup', (req,res) => {
+    const id = req.body.id;
+    const groupname = req.body.groupname;
+    const description = req.body.description;
+    const sqlUpdate = `
+        UPDATE
+            accessgroups
+        SET
+            group_name = ?,
+            description = ?
+        WHERE id = ?`
+    database.db.query(sqlUpdate, [groupname, description, id], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send({id : id});
+            console.log(id+'.', 'group modified in the database');
+        }
+    });
+});
+
+app.post('/checkexistgroupidinusers', (req,res) => {
+    const groupid = req.body.groupid;
+    database.db.query('SELECT accessgroup FROM users WHERE accessgroup = ?', [groupid], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.post('/deletegroup', (req,res) => {
+    const id = req.body.id;
+    database.db.query('DELETE FROM accessgroups WHERE id = ?', [id], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {                
+            res.send({result});
+            console.log(id+'.', 'group deleted in the database');
+        }
+    });
+});
+
+
 app.listen(8080, () => {
     console.log('Server listening on port 8080')
 });
