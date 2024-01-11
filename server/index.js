@@ -418,6 +418,17 @@ app.post('/checkexistclientidinlog', (req,res) => {
     });
 });
 
+app.post('/checkexistuseridinlog', (req,res) => {
+    const userid = req.body.userid;
+    database.db.query('SELECT * FROM log WHERE user_id = ?', [userid], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
 app.post('/newlog', (req,res) => {
     const user_id = req.body.userid;
     const client_id = req.body.clientid;
