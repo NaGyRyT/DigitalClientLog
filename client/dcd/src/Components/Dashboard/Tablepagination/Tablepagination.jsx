@@ -19,29 +19,30 @@ export default function Tablepagination({
   return (
     <>
       {tableRows.length > 0 ?
-        <div className='pagination-control mt-3'>
-        <PaginationControl
-          className='cursor-pointer'
-          page={currentPage}
-          between={3}
-          total={tableRows.length}
-          limit={rowsPerPage}
-          changePage={(page) => {
-            setCurrentPage(page);
-          }}
-          ellipsis={1}
-          last = {true}
-        />
-          <Form.Select
-            name='paginationSelector'
-            value={rowsPerPage}
-            className='cursor-pointer'
-            onChange={(e) => {
-              setCurrentPage(1)
-              setRowPerPage(Number(e.target.value))}}>
-            {paginationSelectOptions().map((item) => (<option key={item} value={item} >{item}</option>))}
-        </Form.Select>
-        </div> :
+        tableRows.length > 10 ? 
+          <div className='pagination-control mt-3'>
+            <PaginationControl
+              className='cursor-pointer'
+              page={currentPage}
+              between={3}
+              total={tableRows.length}
+              limit={rowsPerPage}
+              changePage={(page) => {
+                setCurrentPage(page);
+              }}
+              ellipsis={1}
+              last = {true}
+            />
+            <Form.Select
+              name='paginationSelector'
+              value={rowsPerPage}
+              className='cursor-pointer'
+              onChange={(e) => {
+                setCurrentPage(1)
+                setRowPerPage(Number(e.target.value))}}>
+              {paginationSelectOptions().map((item) => (<option key={item} value={item} >{item}</option>))}
+            </Form.Select>
+          </div> : '' :
       <p className='text-center fs-5 text-danger'>Nincs találat!</p>}
     </>  
   )
