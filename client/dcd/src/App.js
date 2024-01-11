@@ -83,7 +83,7 @@ function App() {
         <BrowserRouter>
             <Navbar key='md' expand='md' className="bg-body-tertiary mb-3">
                 <Container fluid>
-                    <Navbar.Brand>DCL</Navbar.Brand>
+                    <Navbar.Brand className='fs-4 p-0'>D<span className="fs-6">igital</span>C<span className="fs-6">lient</span>L<span className="fs-6">og</span></Navbar.Brand>
                     <Navbar.Toggle 
                         onClick={()=> setShowOffcanvasMenu(true)}
                         aria-controls={`offcanvasNavbar-expand-md`} />
