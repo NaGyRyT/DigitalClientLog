@@ -1,15 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
 
 export default function Deleteuser( {listItem, loadUserList} ) {
     const [showDeleteUserForm, setShowDeleteUserForm] = useState(false);
+    const [existUserIdInLog, setExistUserIdInLog] = useState(false)
+
+    useEffect(()=> {
+        const callApi = async () => {
+            setExistUserIdInLog(await checkExistUserIdInLog());
+        }
+        callApi()
+    }, []);
 
     const handleCloseDeleteUserForm = () => setShowDeleteUserForm(false);
     const handleShowDeleteUserForm = () => setShowDeleteUserForm(true);
-    const handleDeleteUserSubmit = (e) => {
+
+    const handleDeleteUserSubmit = async (e) => {
         e.preventDefault();
-        if (checkExistDiary()) {
+        if (existUserIdInLog) {
             axios.post('http://localhost:8080/inactiveuser', {id : listItem.id})
             .then(() => {
                 loadUserList(false);
@@ -22,15 +31,16 @@ export default function Deleteuser( {listItem, loadUserList} ) {
                 setShowDeleteUserForm(false);
             })
         }
-        
     }
-    
-    function checkExistDiary() {
-            
-            // TODO itt kell ellenőrizni, hogy van-e naplóbejegyzése a felhasználónak
-            // ha kész lesz a napló...
-            // ha true a visszadott érték akkor inkativált lesz a felhasználó
-        return true
+
+    async function checkExistUserIdInLog() {
+        let existUserIdInLog;
+        await axios.post('http://localhost:8080/checkExistUserIdInLog', {userid : listItem.id})
+        .then((data) => {
+            if (data.data.length === 0) existUserIdInLog = false;
+            else existUserIdInLog = true;
+        })
+        return existUserIdInLog;
     }
     
     const renderTooltip = (props) => (
@@ -59,7 +69,7 @@ export default function Deleteuser( {listItem, loadUserList} ) {
                         <Modal.Title>Felhasználó törlése</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Valóban törölni szeretnéd {listItem.username} felhasználót?
+                    Valóban <span className='fw-bold text-danger'>{existUserIdInLog ? 'inaktiválni' : 'törölni'}</span> szeretnéd {listItem.username} felhasználót?
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseDeleteUserForm}>
