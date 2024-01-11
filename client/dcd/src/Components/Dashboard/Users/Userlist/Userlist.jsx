@@ -19,10 +19,10 @@ export default function Userlist({
     viewHideInactivedUser,
     setViewHideInactivedUser
 }) {
-  const [usernameSearch, setUsernameSearch] = useState('')
-  const [nameSearch, setNameSearch] = useState('')
-  const [groupSearch, setGroupSearch] = useState('')
-  const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>
+  const [usernameSearch, setUsernameSearch] = useState('');
+  const [nameSearch, setNameSearch] = useState('');
+  const [groupSearch, setGroupSearch] = useState('');
+  const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>;
   const renderTooltip = (props) => (
     <Tooltip id="view-hide-inactive-user-tooltip" {...props}>
       Inaktivált felhasználók elrejtése/megjelenítése
@@ -38,7 +38,7 @@ export default function Userlist({
                           : listItem.name.toLowerCase().includes(nameSearch.toLowerCase()))
                         .filter((listItem) => groupSearch.toLowerCase() === '' 
                           ? listItem 
-                          : listItem.group_name.toLowerCase().includes(groupSearch.toLowerCase()))
+                          : listItem.group_name.toLowerCase().includes(groupSearch.toLowerCase()));
   
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowPerPage] = useState(10);
@@ -66,7 +66,7 @@ export default function Userlist({
                 onClick={() => {
                   handleSort(userList, sortDirection, 'id', 'user');
                   setSortedColumn('id');
-                  setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                  setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
                 {chooseOrderSign('id')}
               </span>
@@ -75,9 +75,9 @@ export default function Userlist({
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-                  handleSort(userList, sortDirection, 'username', 'user')
+                  handleSort(userList, sortDirection, 'username', 'user');
                   setSortedColumn('username');
-                  setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                  setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
                 {chooseOrderSign('username')}
               </span>
@@ -86,9 +86,9 @@ export default function Userlist({
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-                  handleSort(userList, sortDirection, 'name', 'user')
+                  handleSort(userList, sortDirection, 'name', 'user');
                   setSortedColumn('name');
-                  setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                  setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
                  {chooseOrderSign('name')}
               </span>
@@ -97,9 +97,9 @@ export default function Userlist({
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-                  handleSort(userList, sortDirection, 'group_name', 'user')
+                  handleSort(userList, sortDirection, 'group_name', 'user');
                   setSortedColumn('group_name');
-                  setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                  setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
                 {chooseOrderSign('group_name')}
               </span>
@@ -112,10 +112,8 @@ export default function Userlist({
               <InputGroup>
                 <Form.Control
                   id="userNameSearch" 
-                  onChange={(e) => {
-                    setUsernameSearch(e.target.value)
-                  }}
-                  placeholder = "Felhasználónév keresés..."
+                  onChange={(e) => setUsernameSearch(e.target.value)}
+                  placeholder="Felhasználónév keresés..."
                   value={usernameSearch}/>
                 {usernameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setUsernameSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -125,7 +123,7 @@ export default function Userlist({
                 <Form.Control
                   id="nameSearch"
                   onChange={(e) => setNameSearch(e.target.value)}
-                  placeholder = "Név keresés..."
+                  placeholder="Név keresés..."
                   value={nameSearch}/>
                 {nameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setNameSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -135,7 +133,7 @@ export default function Userlist({
                 <Form.Control
                   id="groupSearch"
                   onChange={(e) => setGroupSearch(e.target.value)}
-                  placeholder = "Csoport keresés..."
+                  placeholder="Csoport keresés..."
                   value={groupSearch}/>
                   {groupSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setGroupSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -168,23 +166,23 @@ export default function Userlist({
                 <td className='width-150'>
                   {listItem.inactive === 1 ? 
                     <Activateuser
-                      listItem = {listItem}
-                      loadUserList = {loadUserList}
+                      listItem={listItem}
+                      loadUserList={loadUserList}
                     /> : 
                     <>
                       <Viewuser
                         className='m-1'
-                        listItem = {listItem}
+                        listItem={listItem}
                       />
                       <Edituser
-                        listItem = {listItem}
-                        loadUserList = {loadUserList}
-                        groupList = {groupList}
+                        listItem={listItem}
+                        loadUserList={loadUserList}
+                        groupList={groupList}
                       />
                       {listItem.username === "admin" ? "" : 
                       <Deleteuser
-                        listItem = {listItem}
-                        loadUserList = {loadUserList}
+                        listItem={listItem}
+                        loadUserList={loadUserList}
                       />
                       }
                     </>
@@ -212,11 +210,12 @@ export default function Userlist({
         </tfoot>
       </Table>
       <Tablepagination 
-        tableRows = {filteredList}
+        tableRows={filteredList}
         rowsPerPage={rowsPerPage}
         setRowPerPage={setRowPerPage}
-        setCurrentPage = {setCurrentPage}
+        setCurrentPage={setCurrentPage}
         currentPage={currentPage}
+        filtered={filteredList.length !== userList.length}
       />
     </div>
   )

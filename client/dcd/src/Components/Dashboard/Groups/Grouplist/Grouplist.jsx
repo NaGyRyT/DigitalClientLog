@@ -50,9 +50,9 @@ export default function Grouplist( {
                 <span 
                     className="cursor-pointer mx-2"
                     onClick={() => {
-                    handleSort(groupList, sortDirection, 'id', 'group');
-                    setSortedColumn('id');
-                    setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                        handleSort(groupList, sortDirection, 'id', 'group');
+                        setSortedColumn('id');
+                        setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
                     }}>
                     {chooseOrderSign('id')}
                 </span>
@@ -61,9 +61,9 @@ export default function Grouplist( {
                 <span 
                     className="cursor-pointer mx-2"
                     onClick={() => {
-                    handleSort(groupList, sortDirection, 'group_name', 'group')
-                    setSortedColumn('group_name');
-                    setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                        handleSort(groupList, sortDirection, 'group_name', 'group')
+                        setSortedColumn('group_name');
+                        setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
                     }}>
                     {chooseOrderSign('group_name')}
                 </span>
@@ -78,7 +78,7 @@ export default function Grouplist( {
                     <Form.Control
                     id="userNameSearch" 
                     onChange={(e) => setGroupnameSearch(e.target.value)}
-                    placeholder = "Csoportnév..."
+                    placeholder="Csoportnév..."
                     value={groupnameSearch}/>
                     {groupnameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setGroupnameSearch('')}/></InputGroupText> : ''}
                 </InputGroup>
@@ -88,7 +88,7 @@ export default function Grouplist( {
                     <Form.Control
                     id="descriptionSearch"
                     onChange={(e) => setDescriptionSearch(e.target.value)}
-                    placeholder = "Leírás..."
+                    placeholder="Leírás..."
                     value={descriptionSearch}/>
                     {descriptionSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setDescriptionSearch('')}/></InputGroupText> : ''}
                 </InputGroup>
@@ -106,15 +106,15 @@ export default function Grouplist( {
                                                                 listItem.description}</td>
                     <td className='width-150'>
                         <Viewgroup
-                        listItem = {listItem}/>
+                        listItem={listItem}/>
                         {listItem.group_name === 'Admin' ? '' :
                             <>
                             <Editgroup
-                            listItem = {listItem}
-                            loadGroupList = {loadGroupList}/>
+                            listItem={listItem}
+                            loadGroupList={loadGroupList}/>
                             <Deletegroup
-                            listItem = {listItem}
-                            loadGroupList = {loadGroupList}/>                  
+                            listItem={listItem}
+                            loadGroupList={loadGroupList}/>                  
                         </>
                         }
                     </td>
@@ -136,6 +136,7 @@ export default function Grouplist( {
             setRowPerPage={setRowPerPage}
             setCurrentPage={setCurrentPage}
             currentPage={currentPage}
+            filtered={filteredList.length !== groupList.length}
         />
         </div>
     )

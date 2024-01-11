@@ -8,11 +8,12 @@ export default function Tablepagination({
   setRowPerPage, 
   rowsPerPage, 
   currentPage, 
-  setCurrentPage }) {
+  setCurrentPage,
+  filtered }) {
 
   function paginationSelectOptions() {
     const opt = [];
-    for (let i=10; i < tableRows.length && i <= 50; i += 10) opt.push(i); 
+    for (let i = 10; i < tableRows.length && i <= 50; i += 10) opt.push(i); 
     return opt
   }
 
@@ -31,7 +32,7 @@ export default function Tablepagination({
                 setCurrentPage(page);
               }}
               ellipsis={1}
-              last = {true}
+              last={true}
             />
             <Form.Select
               name='paginationSelector'
@@ -43,7 +44,7 @@ export default function Tablepagination({
               {paginationSelectOptions().map((item) => (<option key={item} value={item} >{item}</option>))}
             </Form.Select>
           </div> : '' :
-      <p className='text-center fs-5 text-danger'>Nincs találat!</p>}
+      filtered ? <p className='text-center fs-5 text-danger'>Nincs találat!</p>: ''}
     </>  
   )
 }

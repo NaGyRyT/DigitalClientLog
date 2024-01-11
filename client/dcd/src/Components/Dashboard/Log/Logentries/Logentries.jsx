@@ -28,7 +28,7 @@ export default function Logentries( {
     false : 
     true);
 
-    const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>
+    const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>;
   
   const filteredList = logEntries
                         .filter((listItem) => loggedInUserData.accessgroup === 1 ? listItem : loggedInUserData.accessgroup === listItem.accessgroup_id)
@@ -46,7 +46,7 @@ export default function Logentries( {
                           : listItem.duration === durationSearch)
                         .filter((listItem) => descriptionSearch.toLowerCase() === '' 
                         ? listItem 
-                        : listItem.description.toLowerCase().includes(descriptionSearch.toLowerCase()))
+                        : listItem.description.toLowerCase().includes(descriptionSearch.toLowerCase()));
   
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowPerPage] = useState(10);
@@ -95,7 +95,7 @@ export default function Logentries( {
                 onClick={() => {
                   handleSort(logEntries, sortDirection, 'id', 'log');
                   setSortedColumn('id');
-                  setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                  setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
                 {chooseOrderSign('id')}
               </span>
@@ -106,7 +106,7 @@ export default function Logentries( {
                 onClick={() => {
                   handleSort(logEntries, sortDirection, 'user_name', 'log')
                   setSortedColumn('user_name');
-                  setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                  setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
                 {chooseOrderSign('user_name')}
               </span>
@@ -117,7 +117,7 @@ export default function Logentries( {
                 onClick={() => {
                   handleSort(logEntries, sortDirection, 'client_name', 'log')
                   setSortedColumn('client_name');
-                  setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                  setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
                   {chooseOrderSign('client_name')}
               </span>
@@ -128,7 +128,7 @@ export default function Logentries( {
                     onClick={() => {
                     handleSort(logEntries, sortDirection, 'date_time', 'log')
                     setSortedColumn('date_time');
-                    setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                    setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                     }}>
                     {chooseOrderSign('date_time')}
                 </span>
@@ -139,7 +139,7 @@ export default function Logentries( {
                 onClick={() => {
                   handleSort(logEntries, sortDirection, 'duration', 'log')
                   setSortedColumn('duration');
-                  setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
+                  setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
                 {chooseOrderSign('duration')}
               </span>
@@ -154,7 +154,7 @@ export default function Logentries( {
                 <Form.Control
                   id="userNameSearch" 
                   onChange={(e) => setUsernameSearch(e.target.value)}
-                  placeholder = "Felhasználónév..."
+                  placeholder="Felhasználónév..."
                   value={usernameSearch}/>
                 {usernameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setUsernameSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -164,7 +164,7 @@ export default function Logentries( {
                 <Form.Control
                   id="usernameSearch"
                   onChange={(e) => setClientnameSearch(e.target.value)}
-                  placeholder = "Ügyfélnév..."
+                  placeholder="Ügyfélnév..."
                   value={clientnameSearch}/>
                 {clientnameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setClientnameSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -176,7 +176,7 @@ export default function Logentries( {
                   onKeyDown={(e) => dateTimeSearchValue(e)}
                   onChange={() => setDateTimeSearch(dateTimeSearch)}
                   maxLength={16}
-                  placeholder = "Időpont..."
+                  placeholder="Időpont..."
                   value={dateTimeSearch} />
                   {dateTimeSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setDateTimeSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -187,7 +187,7 @@ export default function Logentries( {
                   id="durationSearch"
                   onChange={(e) => setDurationSearch(e.target.value)}
                   maxLength={2}
-                  placeholder = "Perc..."
+                  placeholder="Perc..."
                   value={durationSearch}/>
                   {durationSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setDurationSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -197,7 +197,7 @@ export default function Logentries( {
                 <Form.Control
                   id="descriptionSearch"
                   onChange={(e) => setDescriptionSearch(e.target.value)}
-                  placeholder = "Leírás..."
+                  placeholder="Leírás..."
                   value={descriptionSearch}/>
                   {descriptionSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setDescriptionSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -237,15 +237,15 @@ export default function Logentries( {
                   <td className='width-150'>
                   <>
                     <Viewlog
-                      logEntry = {listItem}/>
+                      logEntry={listItem}/>
                     { loggedInUserData.id === listItem.user_id ?
                     <> 
                     <Editlog
-                      logEntry = {listItem}
-                      loadLogEntries = {loadLogEntries}/>
+                      logEntry={listItem}
+                      loadLogEntries={loadLogEntries}/>
                     <Deletelog
-                      listItem = {listItem}
-                      loadLogEntries = {loadLogEntries}/></> : 
+                      listItem={listItem}
+                      loadLogEntries={loadLogEntries}/></> : 
                       ''
                     }
                   </>    
@@ -271,6 +271,7 @@ export default function Logentries( {
         setRowPerPage={setRowPerPage}
         setCurrentPage={setCurrentPage}
         currentPage={currentPage}
+        filtered={filteredList.length !== logEntries.length}
       />
     </div>
   )

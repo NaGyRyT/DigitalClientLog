@@ -150,7 +150,7 @@ export default function Clientlist({
                 <Form.Control
                   id="clientNameSearch" 
                   onChange={(e) => setClientnameSearch(e.target.value)}
-                  placeholder = "Név..."
+                  placeholder="Név..."
                   value={clientnameSearch}/>
                 {clientnameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setClientnameSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -161,7 +161,7 @@ export default function Clientlist({
                   id="clientIdSearch"
                   maxLength={9}
                   onChange={(e) => setClientIdSearch(e.target.value)}
-                  placeholder = "Azonosító..."
+                  placeholder="Azonosító..."
                   value={clientIdSearch}/>
                 {clientIdSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setClientIdSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -172,7 +172,7 @@ export default function Clientlist({
                   id="birthSearch"
                   onKeyDown={(e) => birthDateSearchValue(e)}
                   onChange={(e) => setBirthDateSearch(birthDateSearch)}
-                  placeholder = "Születés..."
+                  placeholder="Születés..."
                   value={birthDateSearch}/>
                   {birthDateSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setBirthDateSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -183,7 +183,7 @@ export default function Clientlist({
                   id="ageSearch"
                   maxLength={3}
                   onChange={(e) => setAgeSearch(e.target.value)}
-                  placeholder = "Kor..."
+                  placeholder="Kor..."
                   value={ageSearch}/>
                   {ageSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setAgeSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -194,7 +194,7 @@ export default function Clientlist({
                 <Form.Control
                   id="emailSearch"
                   onChange={(e) => setEmailSearch(e.target.value)}
-                  placeholder = "E-mail..."
+                  placeholder="E-mail..."
                   value={emailSearch}/>
                   {emailSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setEmailSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -204,7 +204,7 @@ export default function Clientlist({
                     <Form.Control
                     id="phoneSearch"
                     onChange={(e) => setPhoneSearch(e.target.value)}
-                    placeholder = "Telefon..."
+                    placeholder="Telefon..."
                     value={phoneSearch}/>
                     {phoneSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setPhoneSearch('')}/></InputGroupText> : ''}
                 </InputGroup>
@@ -214,7 +214,7 @@ export default function Clientlist({
                     <Form.Control
                     id="addressSearch"
                     onChange={(e) => setAddressSearch(e.target.value)}
-                    placeholder = "Cím..."
+                    placeholder="Cím..."
                     value={addressSearch}/>
                     {addressSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setAddressSearch('')}/></InputGroupText> : ''}
                 </InputGroup>
@@ -241,8 +241,8 @@ export default function Clientlist({
                 <td className='width-200'>
                     <>
                       <Viewclient
-                        className = 'm-1'
-                        listItem = {listItem}
+                        className='m-1'
+                        listItem={listItem}
                         selectedClient={listItem}
                         loggedInUserId={loggedInUserId}/>
                       <Newlog
@@ -250,14 +250,14 @@ export default function Clientlist({
                         loggedInUserId={loggedInUserId}
                         fromClientList={true}/>
                       <Editclient
-                        listItem = {listItem}
-                        loadClientList = {loadClientList}
-                        cityList = {cityList}
+                        listItem={listItem}
+                        loadClientList={loadClientList}
+                        cityList={cityList}
                       />
                       {listItem.username === "admin" ? "" : 
                       <Deleteclient
-                        listItem = {listItem}
-                        loadClientList = {loadClientList}
+                        listItem={listItem}
+                        loadClientList={loadClientList}
                       />
                       }
                     </>
@@ -282,12 +282,13 @@ export default function Clientlist({
         </tfoot>
       </Table>
       <Tablepagination 
-        tableRows = {filteredList}
-        rowsPerPage = {rowsPerPage}
-        setRowPerPage = {setRowPerPage}
-        setCurrentPage = {setCurrentPage}
-        currentPage = {currentPage}
-      />
+        tableRows={filteredList}
+        rowsPerPage={rowsPerPage}
+        setRowPerPage={setRowPerPage}
+        setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
+        filtered={filteredList.length !== clientList.length}
+      /> 
     </div>
   )
 }
