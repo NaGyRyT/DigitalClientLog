@@ -11,8 +11,8 @@
 - ezt a menüpontotot csak az admin csoport tagjai láthatják
 
 ### Új felhasználó felvétele
-- két azonos felhasználó név nem engedélyezett
-- a felhasználó név minimum 4 maximum 20 karakter lehet
+- két azonos felhasználónév nem engedélyezett
+- a felhasználónév minimum 4 maximum 20 karakter lehet
 - a név mező nem lehet üres, maximum 100 karakter lehet
 - a jelszó minimum 8 karakter lehet 
 - csoportot választani kötelező a legördülő listából
@@ -34,13 +34,24 @@
 - admin felhasználót nem lehet törölni
 
 ## Csoportok
+A felhasználók csak a saját csoportjukban lévő ügyfeleket és felhasználókat láthatják.
+Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, naplóbejegyzéseit nem látja.
+
+### Új csoport felvitele
+- név minimum 5 karakter, két ugyanolyan nevű csoport nem lehet
+- leírás kötelező
+
+### Csoportok listája
+- részletek
+- szerkesztés
+- törlés
 
 ## Ügyfelek
 
 ### Új ügyfél felvétele
 - a név mező nem lehet üres
-- ügyfél azonosító 9 karakter lehet
-- két azonos azonosítójú űgyfél nem lehet
+- ügyfél azonosító 9 karakter lehet (pl.: TAJ)
+- két azonos azonosítójú űgyfél egy csoporton belül nem lehet
 - jövőbeni születési dátum nem engedélyezett
 - nem választás kötelező
 - e-mail kötelező validálva van a @ és a .
@@ -49,17 +60,18 @@
 
 ### Ügyfelek listája
 - részletek
+- új naplóbejegyzés felvitele
 - szerkesztés
 - törlés
 
-####  Ügyfél adatainak megnézése
+####  Ügyfél adatainak megnézése (részletek)
 - ha tartozik az ügyfélhez naplóbejegyzés akkor az itt is megjelenik
 - itt is felvihetőek új naplóbejegyzések
 - a naplóbejegyzéseket itt is lehet nézni, szerkeszteni és törölni
 
 #### Ügyfél adatainak szerkesztése
 - minden mező módosítható
-- ugyanaza a validáció, mint az új ügyfél felvitelénél
+- ugyanaz a validáció, mint az új ügyfél felvitelénél
 
 #### Ügyfél törlése
 - csak az az ügyfél törölhető amelyiknek nincs naplóbejegyzése

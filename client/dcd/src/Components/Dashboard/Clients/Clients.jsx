@@ -2,10 +2,10 @@ import React from 'react';
 import axios from 'axios';
 import { useEffect, useState} from 'react';
 import Clientlist from './Clientlist/Clientlist';
-import Newclient from './Newclient/Newclient'
+import Newclient from './Newclient/Newclient';
 import { handleSort } from '../Tablesort/Tablesort';
 
-export default function Clients( { loggedInUserId }) {
+export default function Clients( { loggedInUserData }) {
   const [clientList, setClientList] = useState([]);
   const [cityList, setCityList] = useState([]);
   const [sortDirection, setSortDirection] = useState(
@@ -36,19 +36,20 @@ export default function Clients( { loggedInUserId }) {
   return (
     <>
       <Newclient
-        loadClientList = {loadClientList}
-        cityList = {cityList}
+        loadClientList={loadClientList}
+        cityList={cityList}
+        loggedInUserData={loggedInUserData}
       />
       <Clientlist
-        clientList = {clientList}
-        cityList = {cityList}
-        sortDirection = {sortDirection}
-        sortedColumn = {sortedColumn}
-        setSortDirection = {setSortDirection}
-        setSortedColumn = {setSortedColumn}
-        handleSort = {handleSort}
-        loadClientList = {loadClientList}
-        loggedInUserId = {loggedInUserId}
+        clientList={clientList}
+        cityList={cityList}
+        sortDirection={sortDirection}
+        sortedColumn={sortedColumn}
+        setSortDirection={setSortDirection}
+        setSortedColumn={setSortedColumn}
+        handleSort={handleSort}
+        loadClientList={loadClientList}
+        loggedInUserData={loggedInUserData}
       />
     </>
   )

@@ -204,6 +204,7 @@ app.get('/getcities', (req,res) => {
 app.post('/newclient', (req,res) => {
     const name = req.body.name;
     const clientid = req.body.clientid;
+    const accessgroup = req.body.accessgroup;
     const gender = req.body.gender;
     const cityid = req.body.cityid;
     const street = req.body.street;
@@ -216,7 +217,8 @@ app.post('/newclient', (req,res) => {
     const sqlInsert = `INSERT INTO 
                         clients (
                             name, 
-                            client_id, 
+                            client_id,
+                            accessgroup,
                             gender, 
                             city_id, 
                             street, 
@@ -226,10 +228,11 @@ app.post('/newclient', (req,res) => {
                             birth_date, 
                             email, 
                             phone) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     database.db.query(sqlInsert, [
         name, 
-        clientid, 
+        clientid,
+        accessgroup,
         gender, 
         cityid, 
         street, 
@@ -302,8 +305,8 @@ app.post('/editclient', (req,res) => {
 
 app.post('/checkexistclientid', (req,res) => {
     const clientid = req.body.clientid;
-    const id = req.body.id;
-    database.db.query('SELECT * FROM clients WHERE client_id = ? AND id != ?', [clientid, id], (err, result) => {
+    const accessgroup = req.body.accessgroup;
+    database.db.query('SELECT * FROM clients WHERE client_id = ? AND accessgroup = ?', [clientid, accessgroup], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -326,6 +329,7 @@ app.post('/deleteclient', (req,res) => {
 app.get('/getclientlist', (req,res) => {
     const sqlSelect = `SELECT 
                         clients.id,
+                        accessgroup,
                         name,
                         client_id,
                         DATE_FORMAT(birth_date, '%Y-%m-%d') AS birth_date,
@@ -372,7 +376,7 @@ app.get('/getlog', (req,res) => {
                        FROM log
                        INNER JOIN users ON users.id = log.user_id
                        INNER JOIN clients ON clients.id = log.client_id
-                       INNER JOIN accessgroups ON users.accessgroup = accessgroups.id
+                       INNER JOIN accessgroups ON clients.accessgroup = accessgroups.id
                        ORDER By log.id`;
     database.db.query(sqlSelect, (err, result) => {
         if (err) {

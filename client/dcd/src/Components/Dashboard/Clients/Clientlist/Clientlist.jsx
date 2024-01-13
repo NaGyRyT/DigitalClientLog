@@ -16,7 +16,7 @@ export default function Clientlist({
     sortedColumn,
     setSortedColumn,
     setSortDirection,
-    loggedInUserId
+    loggedInUserData
 }) {
   const [clientnameSearch, setClientnameSearch] = useState('');
   const [clientIdSearch, setClientIdSearch] = useState('');
@@ -29,6 +29,7 @@ export default function Clientlist({
   const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>
   
   const filteredList = clientList
+                        .filter((listItem) => loggedInUserData.accessgroup === 1 ? listItem : loggedInUserData.accessgroup === listItem.accessgroup)
                         .filter((listItem) => clientnameSearch.toLowerCase() === '' ? listItem 
                           : listItem.name.toLowerCase().includes(clientnameSearch.toLowerCase()))
                         .filter((listItem) => clientIdSearch === '' 
@@ -244,10 +245,10 @@ export default function Clientlist({
                         className='m-1'
                         listItem={listItem}
                         selectedClient={listItem}
-                        loggedInUserId={loggedInUserId}/>
+                        loggedInUserId={loggedInUserData.id}/>
                       <Newlog
                         selectedClient={listItem}
-                        loggedInUserId={loggedInUserId}
+                        loggedInUserId={loggedInUserData.id}
                         fromClientList={true}/>
                       <Editclient
                         listItem={listItem}

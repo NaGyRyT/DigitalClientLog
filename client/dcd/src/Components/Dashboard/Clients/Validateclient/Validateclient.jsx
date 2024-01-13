@@ -11,7 +11,7 @@ export async function validateClient(
     phone = '',
     zip = '',
     cityId = 0,
-    id = '',
+    accessgroup
     ) {
     const errorMessage = {
         name : '',
@@ -34,7 +34,7 @@ export async function validateClient(
     if (clientId.length < 9) { 
         errorMessage.clientId = 'Azonosító megadása kötelező 9 karakter lehet.';
         errorMessage.error = true;
-    } else if (await checkExistClientId(id, clientId)) {
+    } else if (await checkExistClientId(clientId, accessgroup)) {
         errorMessage.clientId = 'Ezzel az azonosítóval már van regisztrált ügyfél.';
         errorMessage.error = true;
     } else errorMessage.id = "";
@@ -72,9 +72,10 @@ export async function validateClient(
     return errorMessage
 }
 
-async function checkExistClientId(id, clientId) {
+async function checkExistClientId(clientId, accessgroup) {
     let existClientId;
-    await axios.post('http://localhost:8080/checkexistclientid', {id : id, clientid : clientId})
+    console.log(accessgroup)
+    await axios.post('http://localhost:8080/checkexistclientid', {clientid : clientId, accessgroup : accessgroup})
     .then((data) => {
         if (data.data.length === 0) existClientId = false;
         else existClientId = true;

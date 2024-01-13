@@ -2,11 +2,12 @@ import React from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 import { Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
-import { validateClient } from '../Validateclient/Validateclient'
+import { validateClient } from '../Validateclient/Validateclient';
 
 export default function Newclient( { 
 	loadClientList,
 	cityList,
+	loggedInUserData
 	} ) {
 	const [name, setName] = useState('');
 	const [clientId, setClientId] = useState('');
@@ -60,13 +61,15 @@ export default function Newclient( {
 		})
 	}
 	const handleShowNewClientForm = () => setShowNewClientForm(true);
+
   	const handleNewClientSubmit = async (e) => {
 		e.preventDefault();
-		const tempErrorMessage = await validateClient(name, clientId, birthDate, gender, email, phone, zip, cityId);
+		const tempErrorMessage = await validateClient(name, clientId, birthDate, gender, email, phone, zip, cityId, loggedInUserData.accessgroup);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
 			axios.post('http://localhost:8080/newclient', {name : name.trim(),
 													   clientid : clientId,
+													   accessgroup : loggedInUserData.accessgroup,
 													   birthdate : birthDate,
                                                        gender : gender,
 													   cityid : cityId,
@@ -208,7 +211,7 @@ export default function Newclient( {
 										setCityId(e.target.value)
 										e.target.value !== '0' ? setZip(findZip(e.target.value)) : setZip('')
 									}}
-  									value = {zip.length === 4 ? cityList.filter((cityListItem) => cityListItem.id === Number(cityId)).map((item) => item.id) : 0}
+  									value={zip.length === 4 ? cityList.filter((cityListItem) => cityListItem.id === Number(cityId)).map((item) => item.id) : 0}
 								>				
 									<option key={0} value={0}>Válassz várost!</option>
 									{cityList.map((cityListItem) => 
