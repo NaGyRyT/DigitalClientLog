@@ -481,11 +481,25 @@ app.post('/deletelog', (req,res) => {
     });
 });
 
-app.get('/getgendernumber', (req,res) => {
-    const sqlSelectCount = `SELECT 
-                                gender,
-                            COUNT(id) AS piece FROM clients GROUP BY gender; `;
-    database.db.query(sqlSelectCount, (err, result) => {
+app.get('/getgendernumber/:accessgroup', (req,res) => {
+    const accessgroup = req.params.accessgroup;
+    const sqlSelectCount = accessgroup === '1' ?
+    `
+    SELECT 
+        gender,
+    COUNT(id) AS piece 
+    FROM clients
+    GROUP BY gender
+    ` :
+    `
+    SELECT 
+        gender,
+    COUNT(id) AS piece 
+    FROM clients
+    WHERE accessgroup = ?
+    GROUP BY gender
+    `
+    database.db.query(sqlSelectCount, [accessgroup],(err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -494,8 +508,10 @@ app.get('/getgendernumber', (req,res) => {
     });
 });
 
-app.get('/getagesnumber', (req,res) => {
-    const sqlSelectCount = `
+app.get('/getagesnumber/:accessgroup', (req,res) => {
+    const accessgroup = req.params.accessgroup;
+    const sqlSelectCount = accessgroup === '1' ?
+        `
         SELECT '< 18' as ages, 
             SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) < 18 
             THEN 1 ELSE 0 END) as piece
@@ -516,8 +532,36 @@ app.get('/getagesnumber', (req,res) => {
         SELECT '65 <',
             SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) > 65 
             THEN 1 ELSE 0 END)
-        FROM clients `;
-    database.db.query(sqlSelectCount, (err, result) => {
+        FROM clients
+        ` :
+        `
+        SELECT '< 18' as ages, 
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) < 18 
+            THEN 1 ELSE 0 END) as piece
+        FROM clients
+        WHERE accessgroup = ? 
+        UNION ALL
+        SELECT '18 - 40',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 18 AND 40 
+            THEN 1 ELSE 0 END)
+        FROM clients
+        WHERE accessgroup = ?
+        UNION ALL
+        SELECT '41 - 65',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 41 AND 65 
+            THEN 1 ELSE 0 END)
+        FROM clients
+        WHERE accessgroup = ?
+        UNION ALL
+        SELECT '65 <',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) > 65 
+            THEN 1 ELSE 0 END)
+        FROM clients
+        WHERE accessgroup = ?
+        `;
+    database.db.query(sqlSelectCount, [accessgroup, accessgroup, accessgroup, accessgroup],(err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -526,13 +570,25 @@ app.get('/getagesnumber', (req,res) => {
     });
 });
 
-app.get('/getlognumber', (req,res) => {
-    const sqlSelectCount = `
+app.get('/getlognumber/:accessgroup', (req,res) => {
+    const accessgroup = req.params.accessgroup;
+    const sqlSelectCount = accessgroup === '1' ?
+        `
         SELECT DATE_FORMAT(date_time, '%Y-%m') as log_date, 
         COUNT(id) as log_count FROM log 
         GROUP BY MONTH(date_time) 
-        ORDER BY log_date ASC`;
-    database.db.query(sqlSelectCount, (err, result) => {
+        ORDER BY log_date ASC
+        ` :
+        `
+        SELECT DATE_FORMAT(date_time, '%Y-%m') as log_date, 
+        COUNT(log.id) as log_count 
+        FROM log
+        INNER JOIN clients ON clients.id = log.client_id
+        WHERE clients.accessgroup = ? 
+        GROUP BY MONTH(date_time) 
+        ORDER BY log_date ASC
+        `;
+    database.db.query(sqlSelectCount, [accessgroup], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -541,12 +597,24 @@ app.get('/getlognumber', (req,res) => {
     });
 });
 
-app.get('/getdurationnumber', (req,res) => {
-    const sqlSelectCount = `
+app.get('/getdurationnumber/:accessgroup', (req,res) => {
+    const accessgroup = req.params.accessgroup;
+    const sqlSelectCount = accessgroup === '1' ?
+        `
         SELECT 
             duration,
-        COUNT(id) AS piece FROM log GROUP BY duration; `;
-    database.db.query(sqlSelectCount, (err, result) => {
+        COUNT(id) AS piece FROM log GROUP BY duration
+        `:
+        `
+        SELECT 
+            duration,
+        COUNT(log.id) AS piece 
+        FROM log
+        INNER JOIN clients ON clients.id = log.client_id
+        WHERE clients.accessgroup = ? 
+        GROUP BY duration
+        `;
+    database.db.query(sqlSelectCount, [accessgroup], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -555,16 +623,28 @@ app.get('/getdurationnumber', (req,res) => {
     });
 });
 
-app.get('/getlogperusernumber', (req,res) => {
-    const sqlSelectCount = `
+app.get('/getlogperusernumber/:accessgroup', (req,res) => {
+    const accessgroup = req.params.accessgroup;
+    const sqlSelectCount = accessgroup === '1' ?
+        `
         SELECT 
             users.name as name,
             count(log.id) as piece
-        FROM log 
-        INNER JOIN users
-            ON users.id = log.user_id
-        GROUP BY users.name`;
-    database.db.query(sqlSelectCount, (err, result) => {
+        FROM log
+        INNER JOIN users ON users.id = log.user_id
+        GROUP BY users.name
+        ` :
+        `
+        SELECT 
+            users.name as name,
+            count(log.id) as piece
+        FROM log
+        INNER JOIN users ON users.id = log.user_id
+        INNER JOIN clients ON clients.id = log.client_id
+        WHERE clients.accessgroup = ? 
+        GROUP BY users.name
+        `;
+    database.db.query(sqlSelectCount, [accessgroup], (err, result) => {
         if (err) {
             console.log(err);
         } else {

@@ -7,7 +7,7 @@ import Logperuserchart from './Logperuserchart/Logperuserchart'
 import { Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 
-export default function Statements( {darkMode}) {
+export default function Statements( { darkMode, loggedInUserData}) {
   const [genderData, setGenderData] = useState([]);
   const [agesData, setAgesData] = useState([]);
   const [logData, setLogData] = useState([]);
@@ -49,69 +49,66 @@ export default function Statements( {darkMode}) {
     }, [darkMode]);
 
   const loadGenderNumber = () => {
-    axios.get('http://localhost:8080/getgendernumber')
+    axios.get(`http://localhost:8080/getgendernumber/${loggedInUserData.accessgroup}`)
         .then ((data) => 
           setGenderData(data.data)
         );
     };
 
   const loadAgesNumber = () => {
-    axios.get('http://localhost:8080/getagesnumber')
+    axios.get(`http://localhost:8080/getagesnumber/${loggedInUserData.accessgroup}`)
         .then ((data) => 
           setAgesData(data.data)
         );
     };
 
   const loadLogNumber = () => {
-    axios.get('http://localhost:8080/getlognumber')
+    axios.get(`http://localhost:8080/getlognumber/${loggedInUserData.accessgroup}`)
         .then ((data) => 
           setLogData(data.data)
         );
     };
 
   const loadDurationNumber = () => {
-    axios.get('http://localhost:8080/getdurationnumber')
+    axios.get(`http://localhost:8080/getdurationnumber/${loggedInUserData.accessgroup}`)
         .then ((data) => 
           setDurationData(data.data)
         );
     };
-
   const loadLogPerUserNumber = () => {
-      axios.get('http://localhost:8080/getlogperusernumber')
+      axios.get(`http://localhost:8080/getlogperusernumber/${loggedInUserData.accessgroup}`)
           .then ((data) => 
             setLogPerUserData(data.data)
           );
       };
-      
-  
+
   useEffect(() => {
       if (genderData.length === 0) loadGenderNumber();
       if (agesData.length === 0) loadAgesNumber();
       if (logData.length === 0) loadLogNumber();
       if (durationData.length === 0) loadDurationNumber();
-      if (logPerUserData.length === 0) loadLogPerUserNumber();
-      
-  });
+      if (logPerUserData.length === 0) loadLogPerUserNumber();   
+  },[]);
 
   return (
     <>
       <Row className='justify-content-center my-5 mx-1 p-1'>
         <Col className='m-1' xs={12} md={3}>
-          <Genderchart genderData={genderData} options={options}/>
+          {genderData.length > 0 ? <Genderchart genderData={genderData} options={options}/> : ''}
         </Col>
         <Col className='m-1' xs={12} md={3}>
-          <Ageschart agesData={agesData} options={options}/>
+          {agesData.filter((data)=> data.piece !== null).length > 0 ? <Ageschart agesData={agesData} options={options}/> : ''}
         </Col>
         <Col className='m-1' xs={12} md={3}>
-          <Logchart logData={logData} options={options}/>
+          {logData.length > 0 ?<Logchart logData={logData} options={options}/> : ''}
         </Col>
       </Row>
       <Row className='justify-content-center my-5 mx-1 p-1'>
         <Col className='m-1' xs={12} md={5}>
-          <Durationchart durationData={durationData} options={options}/>
+          {durationData.length > 0 ? <Durationchart durationData={durationData} options={options}/> : ''}
         </Col>
         <Col className='m-1' xs={12} md={5}>
-          <Logperuserchart logPerUserData={logPerUserData} options={options}/>
+          {logPerUserData.length > 0 ? <Logperuserchart logPerUserData={logPerUserData} options={options}/> : ''}
         </Col>
       </Row>
     </>
