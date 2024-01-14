@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
 
@@ -17,14 +17,18 @@ export default function Deletegroup( {listItem, loadGroupList} ) {
       .then(() => {
         loadGroupList(false);
         setShowDeleteGroupForm(false);
-      })        
+      });        
   };
 
   async function checkExistGroupIdInUsers() {
     let existGroupIdInUsers;
     await axios.post('http://localhost:8080/checkexistgroupidinusers', {groupid : listItem.id})
-      .then((data) => {
-        if (data.data.length === 0) existGroupIdInUsers = false;
+      .then(async (data) => {
+        if (data.data.length === 0) {
+          existGroupIdInUsers = false;
+          await axios.post('http://localhost:8080/checkexistgroupidinclients', {groupid : listItem.id})
+            .then((data)=> data.data.length === 0 ? existGroupIdInUsers = false : existGroupIdInUsers = true);
+        }
         else existGroupIdInUsers = true;
       });
     return existGroupIdInUsers;
@@ -57,7 +61,7 @@ export default function Deletegroup( {listItem, loadGroupList} ) {
         {existGroupIdInUsers ?
           <>
             <Modal.Body>
-                A csoportban van felhasználó ezért nem törölhető.
+                A csoportban van felhasználó vagy ügyfél ezért nem törölhető.
             </Modal.Body>
             <Modal.Footer>
               <Button variant="primary" onClick={handleCloseDeleteGroupForm}>

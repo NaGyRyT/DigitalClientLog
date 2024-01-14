@@ -715,7 +715,18 @@ app.post('/editgroup', (req,res) => {
 
 app.post('/checkexistgroupidinusers', (req,res) => {
     const groupid = req.body.groupid;
-    database.db.query('SELECT accessgroup FROM users WHERE accessgroup = ?', [groupid], (err, result) => {
+    database.db.query('SELECT accessgroup FROM users WHERE users.accessgroup = ?', [groupid], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.post('/checkexistgroupidinclients', (req,res) => {
+    const groupid = req.body.groupid;
+    database.db.query('SELECT accessgroup FROM clients WHERE accessgroup = ?', [groupid], (err, result) => {
         if (err) {
             console.log(err);
         } else {
