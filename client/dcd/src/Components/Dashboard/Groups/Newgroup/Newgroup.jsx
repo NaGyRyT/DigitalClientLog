@@ -12,7 +12,7 @@ export default function Newgroup( {loadGroupList} ) {
 		description : '',
 		error : false,
   	});
-
+	const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 	const [showNewGroupForm, setShowNewGroupForm] = useState(false);
 	const handleCloseNewGroupForm = async () => {
 		setShowNewGroupForm(false);
@@ -26,6 +26,7 @@ export default function Newgroup( {loadGroupList} ) {
 	}
 	const handleShowNewGroupForm = () => setShowNewGroupForm(true);
   	const handleNewGroupSubmit = async (e) => {
+		setDisableSubmitButton(true);
 		e.preventDefault();
 		const tempErrorMessage = await validateGroup(groupName, description);
 		setErrorMessage(tempErrorMessage);
@@ -37,8 +38,9 @@ export default function Newgroup( {loadGroupList} ) {
 		.then(() => {
             handleCloseNewGroupForm();
 			loadGroupList();
-		})
-		}
+			setDisableSubmitButton(false);
+		});
+		} else setDisableSubmitButton(false);
 	}
 
 	return (
@@ -90,7 +92,7 @@ export default function Newgroup( {loadGroupList} ) {
                     <Button variant="secondary" onClick={handleCloseNewGroupForm}>
                         Mégse
                     </Button>
-                    <Button variant="primary" onClick={handleNewGroupSubmit}>
+                    <Button variant="primary" onClick={handleNewGroupSubmit} disabled={disableSubmitButton}>
                         Rögzít
                     </Button>
 				</Modal.Footer>

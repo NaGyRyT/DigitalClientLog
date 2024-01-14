@@ -32,7 +32,7 @@ export default function Newclient( {
         email : '',
 		error : false,
   	});
-
+	const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 	const [showNewClientForm, setShowNewClientForm] = useState(false);
 	const handleCloseNewClientForm = async () => {
 		setShowNewClientForm(false);
@@ -63,6 +63,7 @@ export default function Newclient( {
 	const handleShowNewClientForm = () => setShowNewClientForm(true);
 
   	const handleNewClientSubmit = async (e) => {
+		setDisableSubmitButton(true);
 		e.preventDefault();
 		const tempErrorMessage = await validateClient(name, clientId, birthDate, gender, email, phone, zip, cityId, loggedInUserData.accessgroup);
 		setErrorMessage(tempErrorMessage);
@@ -79,11 +80,13 @@ export default function Newclient( {
 													   door : door.trim(),
                                                        phone : phone.trim(),
 													   email : email.trim()})
-		.then(() => {
-            handleCloseNewClientForm()
-			loadClientList();
-		})
-		}
+			.then(() => {
+				handleCloseNewClientForm()
+				loadClientList();
+				setDisableSubmitButton(false);
+			});
+		} else setDisableSubmitButton(false);
+		
 	}
     
 	function findCity(zip) {
@@ -276,7 +279,7 @@ export default function Newclient( {
 				<Button variant="secondary" onClick={handleCloseNewClientForm}>
 					Mégse
 				</Button>
-				<Button variant="primary" onClick={handleNewClientSubmit}>
+				<Button variant="primary" onClick={handleNewClientSubmit} disabled={disableSubmitButton}>
 					Rögzít
 				</Button>
 				</Modal.Footer>

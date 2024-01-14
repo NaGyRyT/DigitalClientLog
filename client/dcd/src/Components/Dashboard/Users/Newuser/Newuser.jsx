@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import axios from 'axios';
 import { useState} from 'react';
 import bcrypt from "bcryptjs-react";
@@ -16,6 +16,7 @@ export default function Newuser( { loadUserList, groupList } ) {
   	});
   	const [selectedGroup, setSelectedGroup] = useState(0);
 	const [showNewUserForm, setShowNewUserForm] = useState(false);
+	const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 
 	const handleCloseNewUserForm = () => {
 		setShowNewUserForm(false);
@@ -34,17 +35,20 @@ export default function Newuser( { loadUserList, groupList } ) {
 
   	const handleNewUserSubmit = async (e) => {
 		e.preventDefault();
+		setDisableSubmitButton(true);
 		if (! await validateNewUser()) {
 			const trimmedHashedPassword = bcrypt.hashSync(password.trim(), 10);
-		axios.post('http://localhost:8080/newuser', {username : username.trim(), 
-													password : trimmedHashedPassword,
-													name : name.trim(),
-													group : selectedGroup})
-		.then(() => {
-			handleCloseNewUserForm()
-			loadUserList();
-		})
-		}
+			axios.post('http://localhost:8080/newuser', {username : username.trim(), 
+														password : trimmedHashedPassword,
+														name : name.trim(),
+														group : selectedGroup})
+			.then(() => {
+				handleCloseNewUserForm();
+				loadUserList();
+				setDisableSubmitButton(false);
+			})
+			
+		} else setDisableSubmitButton(false);
 	}
     
 	async function checkExistUsername() {
@@ -143,7 +147,7 @@ export default function Newuser( { loadUserList, groupList } ) {
 				<Button variant="secondary" onClick={handleCloseNewUserForm}>
 					Mégse
 				</Button>
-				<Button variant="primary" onClick={handleNewUserSubmit}>
+				<Button variant="primary" onClick={handleNewUserSubmit} disabled={disableSubmitButton}>
 					Rögzít
 				</Button>
 				</Modal.Footer>

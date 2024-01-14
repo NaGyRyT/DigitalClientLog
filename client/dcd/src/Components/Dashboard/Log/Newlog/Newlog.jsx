@@ -21,7 +21,7 @@ export default function Newlog( {
         description : '',
         error : false
   	});
-
+      const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 	const [showNewLogForm, setShowNewLogForm] = useState(false);
 	const handleCloseNewLogForm = async () => {
         setShowNewLogForm(false)
@@ -39,6 +39,7 @@ export default function Newlog( {
 	}
 	const handleShowNewLogForm = () => setShowNewLogForm(true);
   	const handleNewClientSubmit = async (e) => {
+        setDisableSubmitButton(true);
 		e.preventDefault();
 		const tempErrorMessage = await validateLog(date, time, duration, description);
 		setErrorMessage(tempErrorMessage);
@@ -53,8 +54,9 @@ export default function Newlog( {
 		.then(() => {
             handleCloseNewLogForm();
 			if (!fromClientList) getLog();
+            setDisableSubmitButton(false);
 		});
-		};
+		} else setDisableSubmitButton(false);
 	};
 
     const renderTooltip = (tooltip) => (
@@ -152,7 +154,7 @@ export default function Newlog( {
 				<Button variant="secondary" onClick={handleCloseNewLogForm}>
 					Mégse
 				</Button>
-				<Button variant="primary" onClick={handleNewClientSubmit}>
+				<Button variant="primary" onClick={handleNewClientSubmit} disabled={disableSubmitButton}>
 					Rögzít
 				</Button>
 				</Modal.Footer>
