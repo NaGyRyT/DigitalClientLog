@@ -138,7 +138,7 @@ function App() {
                 </Container>
         </Navbar>
         <Routes className='mx-3'>
-            <Route path='/' element={<Clients loggedInUserId={loggedInUserData.id}/>}/>
+            <Route path='/' element={<Clients loggedInUserData={loggedInUserData}/>}/>
             {loggedInUserData.group_name === 'Admin' ?
                 <>
                     <Route path='/dashboard/users' element={<Users darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
