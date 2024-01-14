@@ -27,7 +27,7 @@ export async function validateClient(
     if (name.length === 0) {
         errorMessage.name = 'Név megadása kötelező.';
         errorMessage.error = true;
-    } else if (name.length > 100){
+    } else if (name.length > 100) {
         errorMessage.name = 'Név maximális hossza 100 karakter lehet.';
         errorMessage.error = true;
     } else errorMessage.name = '';
@@ -74,11 +74,10 @@ export async function validateClient(
 
 async function checkExistClientId(clientId, accessgroup) {
     let existClientId;
-    console.log(accessgroup)
     await axios.post('http://localhost:8080/checkexistclientid', {clientid : clientId, accessgroup : accessgroup})
     .then((data) => {
         if (data.data.length === 0) existClientId = false;
         else existClientId = true;
-    })
-    return existClientId
+    });
+    return existClientId;
 }
