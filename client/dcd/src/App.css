@@ -28,6 +28,10 @@ html {
   gap: 1rem;
 }
 
+.menu-group-name, .menu-company-name{
+  font-size: 0.7rem;
+}
+
 .cursor-pointer {
   user-select: none;
   cursor: pointer;

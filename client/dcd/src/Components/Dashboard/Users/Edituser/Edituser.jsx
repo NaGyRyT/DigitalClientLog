@@ -90,12 +90,19 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 					&#x270D;
 				</Button>
 			</OverlayTrigger> :
+			<div className='d-flex flex-column'>
 			<span 
 				title='Bejelentkezett felhasználó' 
 				onClick={handleShowEditUserForm}
 				className='display-none cursor-pointer'>
 				{listItem.name}
 			</span>
+			<span 
+				className='m-0 p-0 menu-group-name'
+				title='Csoport neve' >
+				{listItem.group_name}
+			</span>
+			</div>
 		}
     	<Modal show={showEditUserForm} onHide={handleCloseEditUserForm} backdrop='static'>
 				<Modal.Header closeButton>
