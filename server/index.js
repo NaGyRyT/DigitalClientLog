@@ -136,7 +136,7 @@ app.post('/edituser', (req,res) => {
                 console.log(err);
             } else {                
                 res.send({result});
-            }
+            };
         });
     } else {
         database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ? WHERE id = ?', [name, group, password, id], (err, result) => {
@@ -156,7 +156,17 @@ app.post('/checkexistusername', (req,res) => {
             console.log(err);
         } else {
             res.send(result);
-        }
+        };
+    });
+});
+
+app.get('/getcompanydata', (req,res) => {
+    database.db.query(`SELECT * FROM company`, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        };
     });
 });
 

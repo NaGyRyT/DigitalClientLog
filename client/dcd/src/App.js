@@ -18,7 +18,13 @@ function App() {
     const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true'? true : false);
     const [activeMenuItem, setActiveMenuItem] = useState('users');
     const [showOffcanvasMenu, setShowOffcanvasMenu] = useState(false);
-    
+    const [companyData, setCompanyData] = useState('');
+
+    function loadCompanyData() {
+        axios.get('http://localhost:8080/getcompanydata')
+          .then ((data) => setCompanyData(data.data[0]))
+      };
+   
     function getToken() {
         let username = getLoggedInUser();
         let password = getLoggedInPassword();
@@ -29,14 +35,14 @@ function App() {
             })
             .then ((data) => {
                 if (data.data.length > 0) {
-                    setToken(true)
-                    setLoggedInUserData(data.data[0])
-                } else setToken(false)
+                    setToken(true);
+                    setLoggedInUserData(data.data[0]);
+                } else setToken(false);
             });
         } else {
             setToken(false);
             }
-    }
+    };
 
     function getLoggedInPassword( ) {
         let token = sessionStorage.getItem('token')
@@ -52,14 +58,13 @@ function App() {
         let token = sessionStorage.getItem('token');
         let username = '';
         if (token !== null) {
-            for (let char of token){
+            for (let char of token) {
                 if (char !== '$') {
-                    username += char
+                    username += char;
                 } else return username;
             }
         } else return '';
-
-    }
+    };
 
     function handleLogOut() {
         sessionStorage.removeItem('token');
@@ -70,9 +75,11 @@ function App() {
     useEffect(() => {
         document.body.setAttribute('data-bs-theme', darkMode ? 'dark' : 'light')
         localStorage.setItem('darkMode', darkMode);
-    }, [darkMode] )
+    }, [darkMode] );
 
     useEffect(getToken, []);
+
+    useEffect(loadCompanyData, []);
     
     if (!token) {         
         return <Loginform setToken={setToken} setLoggedInUserData={setLoggedInUserData} />
@@ -83,7 +90,10 @@ function App() {
         <BrowserRouter>
             <Navbar key='md' expand='md' className="bg-body-tertiary mb-3">
                 <Container fluid>
-                    <Navbar.Brand className='fs-4 p-0'>D<span className="fs-6">igital</span>C<span className="fs-6">lient</span>L<span className="fs-6">og</span></Navbar.Brand>
+                    <Navbar.Brand className='fs-4 p-0 d-flex flex-column'>
+                            <span>D<span className="fs-6">igital</span>C<span className="fs-6">lient</span>L<span className="fs-6">og</span></span>
+                            <span className='m-0 p-0 menu-company-name'>{companyData.shortname}</span>
+                    </Navbar.Brand>
                     <Navbar.Toggle 
                         onClick={()=> setShowOffcanvasMenu(true)}
                         aria-controls={`offcanvasNavbar-expand-md`} />
@@ -94,7 +104,7 @@ function App() {
                         className='w-auto'>
                         <Offcanvas.Header>
                             <Offcanvas.Title id={`offcanvasNavbarLabel-expand-md`}>
-                                {loggedInUserData.username}
+                                {loggedInUserData.name}
                             </Offcanvas.Title>
                             <button type="button" className="btn-close" onClick={()=> setShowOffcanvasMenu(false)}></button>
                         </Offcanvas.Header>
@@ -120,7 +130,7 @@ function App() {
                                     className='dark-mode-switcher cursor-pointer d-flex align-items-center'
                                     onClick={() => setDarkMode(darkMode ? false : true)}
                                     title={darkMode ? 'Világos mód' : 'Sötét mód'}>
-                                    {darkMode ? <Icon.BrightnessHighFill/> : <Icon.MoonStars/>}    
+                                    {darkMode ? <Icon.BrightnessHighFill/> : <Icon.MoonStars/>}
                                 </span>
                                 <Edituser
                                     listItem={loggedInUserData}
