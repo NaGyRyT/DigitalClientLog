@@ -19,7 +19,7 @@ html {
   font-size: 1.4rem;
 }
 
-.menuAssets{
+.menu-assets{
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -70,13 +70,32 @@ html {
       display: none;
   }
 
-  .menuAssets{
+  .menu-assets{
     justify-content: flex-start;
     flex-direction: column;
     margin: 0;
     padding: 0;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
+  }
+
+  .mobil-menu-name-group-container{
+    display: flex;
+    width: 200px
+  }
+
+  .mobil-menu-icons-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .btn-close{
+    position: absolute;
+    align-self: center;
+    right: 10px;
+    top: 10px;
+    font-size: 1rem;
   }
 
 }

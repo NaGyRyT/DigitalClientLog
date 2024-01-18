@@ -102,11 +102,32 @@ function App() {
                         placement="end"
                         show={showOffcanvasMenu}
                         className='w-auto'>
-                        <Offcanvas.Header>
+                        <Offcanvas.Header className='p-2 border-bottom'>
                             <Offcanvas.Title id={`offcanvasNavbarLabel-expand-md`}>
-                                {loggedInUserData.name}
+                            <Container className='menu-assets'>
+                                <div className='mobil-menu-name-group-container'>
+                                    <Edituser
+                                        listItem={loggedInUserData}
+                                        setLoggedInUserData={setLoggedInUserData}
+                                        loggedInUser={loggedInUserData.username}>
+                                    </Edituser>
+                                </div>
+                                <div className='mobil-menu-icons-container'>
+                                    <span
+                                        className='dark-mode-switcher cursor-pointer d-flex align-items-center'
+                                        onClick={() => setDarkMode(darkMode ? false : true)}
+                                        title={darkMode ? 'Világos mód' : 'Sötét mód'}>
+                                        {darkMode ? <Icon.BrightnessHighFill/> : <Icon.MoonStars/>}
+                                    </span>
+                                    <Icon.BoxArrowInRight 
+                                        onClick={handleLogOut} 
+                                        title='Kilépés'
+                                        className='cursor-pointer'
+                                        size={28}/>                        
+                                </div>
+                                <button type="button" className="btn-close" onClick={()=> setShowOffcanvasMenu(false)}></button>
+                            </Container>
                             </Offcanvas.Title>
-                            <button type="button" className="btn-close" onClick={()=> setShowOffcanvasMenu(false)}></button>
                         </Offcanvas.Header>
                         <Offcanvas.Body>
                             <Nav 
@@ -116,16 +137,16 @@ function App() {
                                 onClick={()=> setShowOffcanvasMenu(false)}>
                                     {loggedInUserData.group_name === 'Admin' ?
                                         <>
-                                            <Nav.Link eventKey='users'as={Link} to='/dashboard/users'>Felhasználók</Nav.Link>
-                                            <Nav.Link eventKey='groups'as={Link} to='/dashboard/groups'>Csoportok</Nav.Link>
+                                            <Nav.Link eventKey='users'as={Link} to='/dashboard/users'>Felhasználó</Nav.Link>
+                                            <Nav.Link eventKey='groups'as={Link} to='/dashboard/groups'>Csoport</Nav.Link>
                                         </>  :
                                         ''
                                     }
-                                <Nav.Link eventKey='clients'as={Link} to='/dashboard/clients'>Ügyfelek</Nav.Link>
+                                <Nav.Link eventKey='clients'as={Link} to='/dashboard/clients'>Ügyfél</Nav.Link>
                                 <Nav.Link eventKey='log'as={Link} to='/dashboard/log'>Napló</Nav.Link>
-                                <Nav.Link eventKey='statements'as={Link} to='/dashboard/statements'>Kimutatások</Nav.Link>
+                                <Nav.Link eventKey='statements'as={Link} to='/dashboard/statements'>Kimutatás</Nav.Link>
                             </Nav>
-                            <Container className='menuAssets'>
+                            <Container className='display-none menu-assets'>
                                 <span
                                     className='dark-mode-switcher cursor-pointer d-flex align-items-center'
                                     onClick={() => setDarkMode(darkMode ? false : true)}

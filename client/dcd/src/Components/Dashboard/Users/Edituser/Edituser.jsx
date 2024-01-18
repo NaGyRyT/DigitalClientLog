@@ -94,7 +94,7 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 			<span 
 				title='Bejelentkezett felhasználó' 
 				onClick={handleShowEditUserForm}
-				className='display-none cursor-pointer'>
+				className='cursor-pointer'>
 				{listItem.name}
 			</span>
 			<span 
