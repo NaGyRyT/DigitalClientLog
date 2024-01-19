@@ -586,7 +586,7 @@ app.get('/getlognumber/:accessgroup', (req,res) => {
         `
         SELECT DATE_FORMAT(date_time, '%Y-%m') as log_date, 
         COUNT(id) as log_count FROM log 
-        GROUP BY MONTH(date_time) 
+        GROUP BY DATE_FORMAT(date_time, '%Y-%m')
         ORDER BY log_date ASC
         ` :
         `
@@ -595,7 +595,7 @@ app.get('/getlognumber/:accessgroup', (req,res) => {
         FROM log
         INNER JOIN clients ON clients.id = log.client_id
         WHERE clients.accessgroup = ? 
-        GROUP BY MONTH(date_time) 
+        GROUP BY DATE_FORMAT(date_time, '%Y-%m')
         ORDER BY log_date ASC
         `;
     database.db.query(sqlSelectCount, [accessgroup], (err, result) => {
