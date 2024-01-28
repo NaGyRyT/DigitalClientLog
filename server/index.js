@@ -607,6 +607,26 @@ app.get('/getlognumber/:accessgroup', (req,res) => {
     });
 });
 
+app.get('/getlognumberperuser/:userid', (req,res) => {
+    const userid = req.params.userid;
+    const sqlSelectCount = 
+        `
+        SELECT DATE_FORMAT(date_time, '%Y-%m') as log_date, 
+        COUNT(log.id) as log_count 
+        FROM log
+        WHERE log.user_id = ? 
+        GROUP BY DATE_FORMAT(date_time, '%Y-%m')
+        ORDER BY log_date ASC
+        `;
+    database.db.query(sqlSelectCount, [userid], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
 app.get('/getdurationnumber/:accessgroup', (req,res) => {
     const accessgroup = req.params.accessgroup;
     const sqlSelectCount = accessgroup === '1' ?
@@ -655,6 +675,23 @@ app.get('/getlogperusernumber/:accessgroup', (req,res) => {
         GROUP BY users.name
         `;
     database.db.query(sqlSelectCount, [accessgroup], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.get('/getnotemptyloguserlist', (req,res) => {
+    const sqlSelect = `SELECT 
+                        users.id, 
+                        users.name
+                       FROM users 
+                       INNER JOIN log ON users.id = log.user_id
+                       GROUP BY users.id
+                       ORDER By users.id`
+    database.db.query(sqlSelect, (err, result) => {
         if (err) {
             console.log(err);
         } else {
