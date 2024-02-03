@@ -2,6 +2,7 @@ import React, { useState} from 'react'
 import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal } from 'react-bootstrap';
 import bcrypt from "bcryptjs-react";
+import API from '../../../../api';
 
 export default function Edituser( { listItem, loadUserList, groupList, loggedInUser, setLoggedInUserData } ) {
 	const [password, setPassword] = useState('');
@@ -32,7 +33,7 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 		e.preventDefault();
 		if (! await validateEditUser()) {
 			const trimmedHashedPassword = password === '' ? '' : bcrypt.hashSync(password.trim(), 10);
-			axios.post('http://localhost:8080/edituser', {
+			axios.post(`${API.address}/edituser`, {
 				password : trimmedHashedPassword,
 				name : name.trim(),
 				group : selectedGroup,

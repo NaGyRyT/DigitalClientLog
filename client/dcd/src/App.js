@@ -11,6 +11,7 @@ import { Nav, Navbar, Container, Offcanvas } from 'react-bootstrap';
 import * as Icon from 'react-bootstrap-icons';
 import './App.css';
 import Edituser from './Components/Dashboard/Users/Edituser/Edituser';
+import API from './api';
 
 function App() {
     const [token, setToken] = useState(false);
@@ -21,7 +22,7 @@ function App() {
     const [companyData, setCompanyData] = useState('');
 
     function loadCompanyData() {
-        axios.get('http://localhost:8080/getcompanydata')
+        axios.get(`${API.address}/getcompanydata`)
           .then ((data) => setCompanyData(data.data[0]))
       };
    
@@ -29,7 +30,7 @@ function App() {
         let username = getLoggedInUser();
         let password = getLoggedInPassword();
         if (username !== '' && password !== '') {
-            axios.post('http://localhost:8080/checkloggedinuser', {
+            axios.post(`${API.address}/checkloggedinuser`, {
                 username : username, 
                 password : password
             })
@@ -87,102 +88,102 @@ function App() {
     
     return (
         <>
-        <BrowserRouter>
-            <Navbar key='md' expand='md' className="bg-body-tertiary mb-3">
-                <Container fluid>
-                    <Navbar.Brand className='fs-4 p-0 d-flex flex-column'>
-                            <span>D<span className="fs-6">igital</span>C<span className="fs-6">lient</span>L<span className="fs-6">og</span></span>
-                            <span className='m-0 p-0 menu-company-name'>{companyData.shortname}</span>
-                    </Navbar.Brand>
-                    <Navbar.Toggle 
-                        onClick={()=> setShowOffcanvasMenu(true)}
-                        aria-controls={`offcanvasNavbar-expand-md`} />
-                    <Navbar.Offcanvas
-                        id={`offcanvasNavbar-expand-md`}                       
-                        placement="end"
-                        show={showOffcanvasMenu}
-                        className='w-auto'>
-                        <Offcanvas.Header className='p-2 border-bottom'>
-                            <Offcanvas.Title id={`offcanvasNavbarLabel-expand-md`}>
-                            <Container className='menu-assets'>
-                                <div className='mobil-menu-name-group-container'>
-                                    <Edituser
-                                        listItem={loggedInUserData}
-                                        setLoggedInUserData={setLoggedInUserData}
-                                        loggedInUser={loggedInUserData.username}>
-                                    </Edituser>
-                                </div>
-                                <div className='mobil-menu-icons-container'>
+            <BrowserRouter>
+                <Navbar key='md' expand='md' className="bg-body-tertiary mb-3">
+                    <Container fluid>
+                        <Navbar.Brand className='fs-4 p-0 d-flex flex-column'>
+                                <span>D<span className="fs-6">igital</span>C<span className="fs-6">lient</span>L<span className="fs-6">og</span></span>
+                                <span className='m-0 p-0 menu-company-name'>{companyData.shortname}</span>
+                        </Navbar.Brand>
+                        <Navbar.Toggle 
+                            onClick={()=> setShowOffcanvasMenu(true)}
+                            aria-controls={`offcanvasNavbar-expand-md`} />
+                        <Navbar.Offcanvas
+                            id={`offcanvasNavbar-expand-md`}                       
+                            placement="end"
+                            show={showOffcanvasMenu}
+                            className='w-auto'>
+                            <Offcanvas.Header className='p-2 border-bottom'>
+                                <Offcanvas.Title id={`offcanvasNavbarLabel-expand-md`}>
+                                <Container className='menu-assets'>
+                                    <div className='mobil-menu-name-group-container'>
+                                        <Edituser
+                                            listItem={loggedInUserData}
+                                            setLoggedInUserData={setLoggedInUserData}
+                                            loggedInUser={loggedInUserData.username}>
+                                        </Edituser>
+                                    </div>
+                                    <div className='mobil-menu-icons-container'>
+                                        <span
+                                            className='dark-mode-switcher cursor-pointer d-flex align-items-center'
+                                            onClick={() => setDarkMode(darkMode ? false : true)}
+                                            title={darkMode ? 'Világos mód' : 'Sötét mód'}>
+                                            {darkMode ? <Icon.BrightnessHighFill/> : <Icon.MoonStars/>}
+                                        </span>
+                                        <Icon.BoxArrowInRight 
+                                            onClick={handleLogOut} 
+                                            title='Kilépés'
+                                            className='cursor-pointer'
+                                            size={28}/>                        
+                                    </div>
+                                    <button type="button" className="btn-close" onClick={()=> setShowOffcanvasMenu(false)}></button>
+                                </Container>
+                                </Offcanvas.Title>
+                            </Offcanvas.Header>
+                            <Offcanvas.Body>
+                                <Nav 
+                                    className='me-auto'
+                                    activeKey={activeMenuItem}
+                                    onSelect={(selectedKey) => setActiveMenuItem(selectedKey)}
+                                    onClick={()=> setShowOffcanvasMenu(false)}>
+                                        {loggedInUserData.group_name === 'Admin' ?
+                                            <>
+                                                <Nav.Link eventKey='users'as={Link} to='/dashboard/users'>Felhasználó</Nav.Link>
+                                                <Nav.Link eventKey='groups'as={Link} to='/dashboard/groups'>Csoport</Nav.Link>
+                                            </>  :
+                                            ''
+                                        }
+                                    <Nav.Link eventKey='clients'as={Link} to='/dashboard/clients'>Ügyfél</Nav.Link>
+                                    <Nav.Link eventKey='log'as={Link} to='/dashboard/log'>Napló</Nav.Link>
+                                    <Nav.Link eventKey='statements'as={Link} to='/dashboard/statements'>Kimutatás</Nav.Link>
+                                </Nav>
+                                <Container className='display-none menu-assets'>
                                     <span
                                         className='dark-mode-switcher cursor-pointer d-flex align-items-center'
                                         onClick={() => setDarkMode(darkMode ? false : true)}
                                         title={darkMode ? 'Világos mód' : 'Sötét mód'}>
                                         {darkMode ? <Icon.BrightnessHighFill/> : <Icon.MoonStars/>}
                                     </span>
+                                    <Edituser
+                                        listItem={loggedInUserData}
+                                        setLoggedInUserData={setLoggedInUserData}
+                                        loggedInUser={loggedInUserData.username}>
+                                    </Edituser>
                                     <Icon.BoxArrowInRight 
                                         onClick={handleLogOut} 
                                         title='Kilépés'
                                         className='cursor-pointer'
-                                        size={28}/>                        
-                                </div>
-                                <button type="button" className="btn-close" onClick={()=> setShowOffcanvasMenu(false)}></button>
-                            </Container>
-                            </Offcanvas.Title>
-                        </Offcanvas.Header>
-                        <Offcanvas.Body>
-                            <Nav 
-                                className='me-auto'
-                                activeKey={activeMenuItem}
-                                onSelect={(selectedKey) => setActiveMenuItem(selectedKey)}
-                                onClick={()=> setShowOffcanvasMenu(false)}>
-                                    {loggedInUserData.group_name === 'Admin' ?
-                                        <>
-                                            <Nav.Link eventKey='users'as={Link} to='/dashboard/users'>Felhasználó</Nav.Link>
-                                            <Nav.Link eventKey='groups'as={Link} to='/dashboard/groups'>Csoport</Nav.Link>
-                                        </>  :
-                                        ''
-                                    }
-                                <Nav.Link eventKey='clients'as={Link} to='/dashboard/clients'>Ügyfél</Nav.Link>
-                                <Nav.Link eventKey='log'as={Link} to='/dashboard/log'>Napló</Nav.Link>
-                                <Nav.Link eventKey='statements'as={Link} to='/dashboard/statements'>Kimutatás</Nav.Link>
-                            </Nav>
-                            <Container className='display-none menu-assets'>
-                                <span
-                                    className='dark-mode-switcher cursor-pointer d-flex align-items-center'
-                                    onClick={() => setDarkMode(darkMode ? false : true)}
-                                    title={darkMode ? 'Világos mód' : 'Sötét mód'}>
-                                    {darkMode ? <Icon.BrightnessHighFill/> : <Icon.MoonStars/>}
-                                </span>
-                                <Edituser
-                                    listItem={loggedInUserData}
-                                    setLoggedInUserData={setLoggedInUserData}
-                                    loggedInUser={loggedInUserData.username}>
-                                </Edituser>
-                                <Icon.BoxArrowInRight 
-                                    onClick={handleLogOut} 
-                                    title='Kilépés'
-                                    className='cursor-pointer'
-                                    size={28}/>                         
-                            </Container>
-                        </Offcanvas.Body>
-                    </Navbar.Offcanvas>
-                </Container>
-        </Navbar>
-        <Routes className='mx-3'>
-            <Route path='/' element={<Clients loggedInUserData={loggedInUserData}/>}/>
-            {loggedInUserData.group_name === 'Admin' ?
-                <>
-                    <Route path='/dashboard/users' element={<Users darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
-                    <Route path='/dashboard/groups' element={<Groups loggedInUserId={loggedInUserData.id}/>}/>
-                </> :
-                ''
-            }
-            <Route path='/dashboard/clients' element={<Clients loggedInUserData={loggedInUserData}/>}/>
-            <Route path='/dashboard/log' element={<Log loggedInUserData={loggedInUserData}/>}/>
-            <Route path='/dashboard/statements' element={<Statements darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
-        </Routes>
-      </BrowserRouter>
-    </>
+                                        size={28}/>                         
+                                </Container>
+                            </Offcanvas.Body>
+                        </Navbar.Offcanvas>
+                    </Container>
+            </Navbar>
+            <Routes className='mx-3'>
+                <Route path='/' element={<Clients loggedInUserData={loggedInUserData}/>}/>
+                {loggedInUserData.group_name === 'Admin' ?
+                    <>
+                        <Route path='/dashboard/users' element={<Users darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
+                        <Route path='/dashboard/groups' element={<Groups loggedInUserId={loggedInUserData.id}/>}/>
+                    </> :
+                    ''
+                }
+                <Route path='/dashboard/clients' element={<Clients loggedInUserData={loggedInUserData}/>}/>
+                <Route path='/dashboard/log' element={<Log loggedInUserData={loggedInUserData}/>}/>
+                <Route path='/dashboard/statements' element={<Statements darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
+            </Routes>
+            </BrowserRouter>
+        </>
     );
 }
 

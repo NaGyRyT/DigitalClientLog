@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
+import API from '../../../../api';
 
 export default function Deletelog( {listItem, loadLogEntries} ) {
     const [showDeleteLogForm, setShowDeleteLogForm] = useState(false);
@@ -10,7 +11,7 @@ export default function Deletelog( {listItem, loadLogEntries} ) {
     
     const handleDeleteLogSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8080/deletelog', {id : listItem.id})
+        axios.post(`${API.address}/deletelog`, {id : listItem.id})
             .then(() => {
                 loadLogEntries(false);
                 setShowDeleteLogForm(false);

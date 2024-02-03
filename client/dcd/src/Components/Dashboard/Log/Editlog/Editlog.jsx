@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col, ListGroup } from 'react-bootstrap';
 import { validateLog } from '../Validatelog/Validatelog'
+import API from '../../../../api';
 
 export default function Editlog({ logEntry, loadLogEntries }) {
     const [time, setTime] = useState(logEntry.date_time.slice(11,16));
@@ -26,7 +27,7 @@ export default function Editlog({ logEntry, loadLogEntries }) {
 		const tempErrorMessage = await validateLog(date, time, duration, description);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
-			axios.post('http://localhost:8080/editlog', {
+			axios.post(`${API.address}/editlog`, {
                 id : logEntry.id,
                 datetime : date + ' ' + time,
                 duration : duration,

@@ -6,6 +6,7 @@ import Durationchart from './Durationchart/Durationchart'
 import Logperuserchart from './Logperuserchart/Logperuserchart'
 import { Row, Col, Form } from 'react-bootstrap';
 import axios from 'axios';
+import API from '../../../api';
 
 export default function Statements( { darkMode, loggedInUserData}) {
   const [genderData, setGenderData] = useState([]);
@@ -53,48 +54,48 @@ export default function Statements( { darkMode, loggedInUserData}) {
     }, [darkMode]);
 
   const loadGenderNumber = () => {
-    axios.get(`http://localhost:8080/getgendernumber/${loggedInUserData.accessgroup}`)
+    axios.get(`${API.address}/getgendernumber/${loggedInUserData.accessgroup}`)
         .then ((data) => 
           setGenderData(data.data)
         );
     };
 
   const loadAgesNumber = () => {
-    axios.get(`http://localhost:8080/getagesnumber/${loggedInUserData.accessgroup}`)
+    axios.get(`${API.address}/getagesnumber/${loggedInUserData.accessgroup}`)
         .then ((data) => 
           setAgesData(data.data)
         );
     };
 
   const loadLogNumber = () => {
-    axios.get(`http://localhost:8080/getlognumber/${loggedInUserData.accessgroup}`)
+    axios.get(`${API.address}/getlognumber/${loggedInUserData.accessgroup}`)
         .then ((data) => 
           setLogData(data.data)
         );
     };
 
   const loadLogNumberPerUser = () => {
-    axios.get(`http://localhost:8080/getlognumberperuser/${userId}`)
+    axios.get(`${API.address}/getlognumberperuser/${userId}`)
         .then ((data) => 
           setLogDataPerUser(data.data)
         );
     };
 
   const loadDurationNumber = () => {
-    axios.get(`http://localhost:8080/getdurationnumber/${loggedInUserData.accessgroup}`)
+    axios.get(`${API.address}/getdurationnumber/${loggedInUserData.accessgroup}`)
         .then ((data) => 
           setDurationData(data.data)
         );
     };
   const loadLogPerUserNumber = () => {
-      axios.get(`http://localhost:8080/getlogperusernumber/${loggedInUserData.accessgroup}`)
+      axios.get(`${API.address}/getlogperusernumber/${loggedInUserData.accessgroup}`)
           .then ((data) => 
             setLogPerUserData(data.data)
           );
       };
 
   function loadNotEmptyLogUserList() {
-    axios.get('http://localhost:8080/getnotemptyloguserlist')
+    axios.get(`${API.address}/getnotemptyloguserlist`)
     .then ((data) => {
       setUserList(data.data);
     });

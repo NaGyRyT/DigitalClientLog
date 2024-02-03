@@ -2,6 +2,7 @@ import React,  { useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Container, Alert } from 'react-bootstrap';
 import './Loginform.css';
+import API from '../../api';
 
 
 export default function Loginform( { setToken, setLoggedInUserData }) {
@@ -10,7 +11,7 @@ export default function Loginform( { setToken, setLoggedInUserData }) {
 	const [message, setMessage] = useState('')
 
 	async function loginUser(credentials) {
-		await axios.post('http://localhost:8080/login', {username : credentials.username.trim(), 
+		await axios.post(`${API.address}/login`, {username : credentials.username.trim(), 
 														password : credentials.password.trim()})
 		.then ((data) => {
 			if (data.data.length !== 0) {

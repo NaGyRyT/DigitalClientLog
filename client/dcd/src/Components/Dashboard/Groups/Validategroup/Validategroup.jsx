@@ -1,4 +1,5 @@
 import axios from 'axios';
+import API from '../../../../api';
 
 export async function validateGroup(
     groupName = '',
@@ -26,7 +27,7 @@ export async function validateGroup(
 
 async function checkExistGroupName(groupName) {
     let existGroupName;
-    await axios.post('http://localhost:8080/checkexistgroupname', {groupname : groupName})
+    await axios.post(`${API.address}/checkexistgroupname`, {groupname : groupName})
     .then((data) => {
         if (data.data.length === 0) existGroupName = false;
         else existGroupName = true;

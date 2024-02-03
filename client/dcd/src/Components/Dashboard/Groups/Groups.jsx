@@ -4,6 +4,7 @@ import { useEffect, useState} from 'react';
 import Grouplist from './Grouplist/Grouplist';
 import Newgroup from './Newgroup/Newgroup'
 import { handleSort } from '../Tablesort/Tablesort';
+import API from '../../../api';
 
 export default function Groups( { loggedInUserId }) {
   const [groupList, setGroupList] = useState([]);
@@ -15,7 +16,7 @@ export default function Groups( { loggedInUserId }) {
       sessionStorage.getItem('groupTableSortedColumnName') : 'id');
   
  function loadGroupList(needToChangeOrderDirection = false) {
-      axios.get('http://localhost:8080/getgrouplist')
+      axios.get(`${API.address}/getgrouplist`)
           .then ((data) => setGroupList(handleSort(data.data, sortDirection, sortedColumn, 'group', needToChangeOrderDirection)));
     };
   

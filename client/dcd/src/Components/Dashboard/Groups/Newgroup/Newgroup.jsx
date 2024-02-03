@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
 import { validateGroup } from '../Validategroup/Validategroup';
+import API from '../../../../api';
 
 export default function Newgroup( {loadGroupList} ) {
 	const [groupName, setGroupName] = useState('');
@@ -31,7 +32,7 @@ export default function Newgroup( {loadGroupList} ) {
 		const tempErrorMessage = await validateGroup(groupName, description);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
-			axios.post('http://localhost:8080/newgroup', {
+			axios.post(`${API.address}/newgroup`, {
                 groupname : groupName.trim(),
                 description : description,
             })

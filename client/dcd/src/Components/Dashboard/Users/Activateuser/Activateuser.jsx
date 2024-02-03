@@ -1,11 +1,12 @@
 import React from 'react'
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import axios from 'axios';
+import API from '../../../../api';
 
 export default function Activateuser( { listItem, loadUserList} ) {
 
   const handleActivateUser = async (e) => {
-    axios.post('http://localhost:8080/activeuser', {id : listItem.id})
+    axios.post(`${API.address}/activeuser`, {id : listItem.id})
       .then(() => {
          loadUserList(false);
        })

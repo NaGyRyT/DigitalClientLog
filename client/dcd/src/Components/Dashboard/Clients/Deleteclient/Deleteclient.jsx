@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
+import API from '../../../../api';
 
 export default function Deleteclient( {listItem, loadClientList} ) {
     const [showDeleteClientForm, setShowDeleteClientForm] = useState(false);
@@ -11,7 +12,7 @@ export default function Deleteclient( {listItem, loadClientList} ) {
         setShowDeleteClientForm(true)};
     const handleDeleteClientSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8080/deleteclient', {id : listItem.id})
+        axios.post(`${API.address}/deleteclient`, {id : listItem.id})
             .then(() => {
                 loadClientList(false);
                 setShowDeleteClientForm(false);
@@ -20,7 +21,7 @@ export default function Deleteclient( {listItem, loadClientList} ) {
 
     async function checkExistClientIdInLog() {
         let existClientIdInLog;
-        await axios.post('http://localhost:8080/checkexistclientidinlog', {clientid : listItem.id})
+        await axios.post(`${API.address}/checkexistclientidinlog`, {clientid : listItem.id})
         .then((data) => {
             if (data.data.length === 0) existClientIdInLog = false;
             else existClientIdInLog = true;

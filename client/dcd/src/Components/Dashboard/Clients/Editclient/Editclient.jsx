@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
 import { validateClient } from '../Validateclient/Validateclient';
+import API from '../../../../api';
 
 export default function Editclient( {
         listItem,
@@ -47,7 +48,7 @@ export default function Editclient( {
 		const tempErrorMessage = await validateClient(name, clientId, birthDate, gender, email, phone, zip, cityId, listItem.id);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
-			axios.post('http://localhost:8080/editclient', {
+			axios.post(`${API.address}/editclient`, {
                 name : name.trim(),
                 id : listItem.id,
                 clientid : clientId,

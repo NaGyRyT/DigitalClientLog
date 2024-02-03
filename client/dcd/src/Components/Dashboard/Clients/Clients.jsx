@@ -4,6 +4,7 @@ import { useEffect, useState} from 'react';
 import Clientlist from './Clientlist/Clientlist';
 import Newclient from './Newclient/Newclient';
 import { handleSort } from '../Tablesort/Tablesort';
+import API from '../../../api';
 
 export default function Clients( { loggedInUserData }) {
   const [clientList, setClientList] = useState([]);
@@ -16,7 +17,7 @@ export default function Clients( { loggedInUserData }) {
       sessionStorage.getItem('clientTableSortedColumnName') : 'id');
   
  function loadClientList(needToChangeOrderDirection = false) {
-      axios.get('http://localhost:8080/getclientlist')
+      axios.get(`${API.address}/getclientlist`)
           .then ((data) => setClientList(handleSort(data.data, sortDirection, sortedColumn, 'client', needToChangeOrderDirection)));
     };
   
@@ -25,7 +26,7 @@ export default function Clients( { loggedInUserData }) {
   });
 
   function loadCityList() {
-		axios.get('http://localhost:8080/getcities')
+		axios.get(`${API.address}/getcities`)
 		.then ((data) => {
 			setCityList(data.data);
 		});

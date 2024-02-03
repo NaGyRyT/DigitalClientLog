@@ -4,6 +4,7 @@ import { useEffect, useState} from 'react';
 import Userlist from './Userlist/Userlist';
 import Newuser from './Newuser/Newuser';
 import { handleSort } from '../Tablesort/Tablesort';
+import API from '../../../api';
 
 export default function Users( {loggedInUserData}) {   
     const [groupList, setGroupList] = useState([]);
@@ -17,14 +18,14 @@ export default function Users( {loggedInUserData}) {
     const [viewHideInactivedUser, setViewHideInactivedUser] = useState(true);
 
     function loadUserList(needToChangeOrderDirection = false) {
-        axios.get('http://localhost:8080/getuserlist')
+        axios.get(`${API.address}/getuserlist`)
             .then ((data) => {
                 return setUserList( handleSort(data.data.filter((item) => item.id !== loggedInUserData.id), sortDirection, sortedColumn, 'user', needToChangeOrderDirection) );
           })
       };
 
     function loadGroupList() {
-		axios.get('http://localhost:8080/getaccessgrouplist')
+		axios.get(`${API.address}/getaccessgrouplist`)
 		.then ((data) => {
 			setGroupList(data.data);
 		});
@@ -39,20 +40,20 @@ export default function Users( {loggedInUserData}) {
   return (
     <>
         <Newuser
-            loadUserList = {loadUserList}
-            groupList = {groupList}
+            loadUserList={loadUserList}
+            groupList={groupList}
         />
         <Userlist
-            userList = {userList}
-            loadUserList = {loadUserList}
-            groupList = {groupList}
-            sortDirection = {sortDirection}
-            sortedColumn = {sortedColumn}
-            setSortDirection = {setSortDirection}
-            setSortedColumn = {setSortedColumn}
-            handleSort = {handleSort}
-            viewHideInactivedUser = {viewHideInactivedUser}
-            setViewHideInactivedUser = {setViewHideInactivedUser}
+            userList={userList}
+            loadUserList={loadUserList}
+            groupList={groupList}
+            sortDirection={sortDirection}
+            sortedColumn={sortedColumn}
+            setSortDirection={setSortDirection}
+            setSortedColumn={setSortedColumn}
+            handleSort={handleSort}
+            viewHideInactivedUser={viewHideInactivedUser}
+            setViewHideInactivedUser={setViewHideInactivedUser}
         />
     </>
   )

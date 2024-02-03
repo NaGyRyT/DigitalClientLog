@@ -2,6 +2,7 @@ import React, { useEffect, useState} from 'react';
 import Logentries from './Logentries/Logentries';
 import axios from 'axios';
 import { handleSort } from '../Tablesort/Tablesort';
+import API from '../../../api';
 
 export default function Log( { loggedInUserData } ) {
   const [logEntries, setLogEntries] = useState([]);
@@ -13,7 +14,7 @@ export default function Log( { loggedInUserData } ) {
       sessionStorage.getItem('logTableSortedColumnName') : 'id');
 
   function loadLogEntries(needToChangeOrderDirection = false) {
-    axios.get('http://localhost:8080/getlog')
+    axios.get(`${API.address}/getlog`)
       .then ((data) => {
         return setLogEntries( handleSort(data.data, sortDirection, sortedColumn, 'log', needToChangeOrderDirection) );
       })

@@ -5,6 +5,7 @@ import Viewlog from '../../Log/Viewlog/Viewlog'
 import Newlog from '../../Log/Newlog/Newlog';
 import Editlog from '../../Log/Editlog/Editlog';
 import Deletelog from '../../Log/Deletelog/Deletelog';
+import API from '../../../../api';
 
 
 export default function Viewclient( { listItem, loggedInUserId } ) {
@@ -17,7 +18,7 @@ export default function Viewclient( { listItem, loggedInUserId } ) {
     }
 
     async function getLog() {
-        await axios.get(`http://localhost:8080/getlog/${listItem.id}`)
+        await axios.get(`${API.address}/getlog/${listItem.id}`)
             .then ((data) => {
                 setLogEntries(data.data);
           })

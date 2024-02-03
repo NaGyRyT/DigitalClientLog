@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
 import { validateClient } from '../Validateclient/Validateclient';
+import API from '../../../../api';
 
 export default function Newclient( { 
 	loadClientList,
@@ -68,7 +69,7 @@ export default function Newclient( {
 		const tempErrorMessage = await validateClient(name, clientId, birthDate, gender, email, phone, zip, cityId, loggedInUserData.accessgroup);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
-			axios.post('http://localhost:8080/newclient', {name : name.trim(),
+			axios.post(`${API.address}/newclient`, {name : name.trim(),
 													   clientid : clientId,
 													   accessgroup : loggedInUserData.accessgroup,
 													   birthdate : birthDate,

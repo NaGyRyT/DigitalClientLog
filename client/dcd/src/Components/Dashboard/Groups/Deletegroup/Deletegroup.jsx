@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
+import API from '../../../../api';
 
 export default function Deletegroup( {listItem, loadGroupList} ) {
   const [showDeleteGroupForm, setShowDeleteGroupForm] = useState(false);
@@ -13,7 +14,7 @@ export default function Deletegroup( {listItem, loadGroupList} ) {
     
   const handleDeleteGroupSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:8080/deletegroup', {id : listItem.id})
+    axios.post(`${API.address}/deletegroup`, {id : listItem.id})
       .then(() => {
         loadGroupList(false);
         setShowDeleteGroupForm(false);
@@ -22,11 +23,11 @@ export default function Deletegroup( {listItem, loadGroupList} ) {
 
   async function checkExistGroupIdInUsers() {
     let existGroupIdInUsers;
-    await axios.post('http://localhost:8080/checkexistgroupidinusers', {groupid : listItem.id})
+    await axios.post(`${API.address}/checkexistgroupidinusers`, {groupid : listItem.id})
       .then(async (data) => {
         if (data.data.length === 0) {
           existGroupIdInUsers = false;
-          await axios.post('http://localhost:8080/checkexistgroupidinclients', {groupid : listItem.id})
+          await axios.post(`${API.address}/checkexistgroupidinclients`, {groupid : listItem.id})
             .then((data)=> data.data.length === 0 ? existGroupIdInUsers = false : existGroupIdInUsers = true);
         }
         else existGroupIdInUsers = true;

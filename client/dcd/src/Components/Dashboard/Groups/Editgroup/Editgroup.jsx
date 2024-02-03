@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { Form, Alert, Button, Modal, Row, Col, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { validateGroup } from '../Validategroup/Validategroup';
+import API from '../../../../api';
 
 export default function Editgroup( {loadGroupList, listItem} ) {
 	const [groupName, setGroupName] = useState(listItem.group_name);
@@ -21,7 +22,7 @@ export default function Editgroup( {loadGroupList, listItem} ) {
 		const tempErrorMessage = await validateGroup(groupName, description, listItem.group_name);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
-			axios.post('http://localhost:8080/Editgroup', {
+			axios.post(`${API.address}/Editgroup`, {
                 id : listItem.id,
                 groupname : groupName.trim(),
                 description : description,

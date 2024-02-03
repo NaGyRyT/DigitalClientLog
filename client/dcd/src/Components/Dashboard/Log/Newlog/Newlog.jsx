@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { Form, Alert, Button, Modal, Row, Col, ListGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { validateLog } from '../Validatelog/Validatelog';
+import API from '../../../../api';
 
 export default function Newlog( { 
     loggedInUserId,
@@ -44,7 +45,7 @@ export default function Newlog( {
 		const tempErrorMessage = await validateLog(date, time, duration, description);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
-			axios.post('http://localhost:8080/newlog', {
+			axios.post(`${API.address}/newlog`, {
                 userid : loggedInUserId,
                 clientid : selectedClient.id,
                 datetime : date + ' ' + time,
