@@ -6,7 +6,6 @@ import Durationchart from './Durationchart/Durationchart'
 import Logperuserchart from './Logperuserchart/Logperuserchart'
 import { Row, Col, Form } from 'react-bootstrap';
 import axios from 'axios';
-import Userlist from '../Users/Userlist/Userlist';
 
 export default function Statements( { darkMode, loggedInUserData}) {
   const [genderData, setGenderData] = useState([]);
@@ -17,6 +16,7 @@ export default function Statements( { darkMode, loggedInUserData}) {
   const [logPerUserData, setLogPerUserData] = useState([]);
   const [userList, setUserList] = useState([]);
   const [userId, setUserId] = useState(loggedInUserData.id);
+  const [selectedUser, setSelectedUser] = useState(loggedInUserData.name);
   const [color, setColor] = useState(darkMode ? '#adb5bd' : '#495057');
   const [gridColor, setGridColor] = useState(darkMode ? '#495057' : '#dee2e6');
   const options = {
@@ -114,7 +114,7 @@ export default function Statements( { darkMode, loggedInUserData}) {
 
   return (
     <>
-      <p className='text-center'>Csoportra vonatkozó kimutatások</p>
+      <p className='text-center'>{loggedInUserData.accessgroup === 1 ? 'Az összes csoportra vonatkozó kimutatás' : loggedInUserData.group_name +' csoportra vonatkozó kimutatás'}</p>
       <Row className='justify-content-center mb-5 mx-1 p-1'>
         <Col className='m-1' xs={12} md={3}>
           {genderData.length > 0 ? <Genderchart genderData={genderData} options={options}/> : ''}
@@ -134,27 +134,29 @@ export default function Statements( { darkMode, loggedInUserData}) {
           {logPerUserData.length > 0 ? <Logperuserchart logPerUserData={logPerUserData} options={options}/> : ''}
         </Col>
       </Row>
-      <p className='text-center'>Felhasználóra vonatkozó kimutatások</p>
+      <p className='text-center'>{selectedUser} felhasználóra vonatkozó kimutatás</p>
       {loggedInUserData.accessgroup === 1 ?
             <Row className='justify-content-center mx-1'>
               <Col className='m-1' xs={12} md={6}>
                 <Form.Select 
                   onChange={(e) => {
+                    setSelectedUser(e.target.options[e.target.selectedIndex].text)
                     setUserId(e.target.value)}}
                   value={userId}
                 >
                   {userList.map((userListItem) => 
                   <option 
                     key={userListItem.id}
-                    value={userListItem.id}>
+                    value={userListItem.id}
+                    >
                     {userListItem.name}
                   </option>)}
               </Form.Select>	
               </Col>
             </Row> : ''
           }
-      <Row className='justify-content-center'>
-        <Col className='m-1' xs={12} md={8}>
+      <Row className='justify-content-center mx-1'>
+        <Col className='m-1' xs={12} md={4}>
           {logData.length > 0 ?<Logchart logData={logDataPerUser} options={options}/> : ''}
         </Col>
       </Row>
