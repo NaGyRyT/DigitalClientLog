@@ -15,15 +15,18 @@ import API from './api';
 
 function App() {
     const [token, setToken] = useState(false);
-    const [loggedInUserData, setLoggedInUserData] = useState(getLoggedInUser); 
+    const [loggedInUserData, setLoggedInUserData] = useState('');
     const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true'? true : false);
     const [activeMenuItem, setActiveMenuItem] = useState('users');
     const [showOffcanvasMenu, setShowOffcanvasMenu] = useState(false);
     const [companyData, setCompanyData] = useState('');
 
     function loadCompanyData() {
-        axios.get(`${API.address}/getcompanydata`)
-          .then ((data) => setCompanyData(data.data[0]))
+        axios.get(`${API.address}/getcompanydata`, {
+            headers: {
+              'x-api-key': loggedInUserData.password
+            }})
+            .then ((data) => setCompanyData(data.data[0]))
       };
    
     function getToken() {
@@ -34,7 +37,7 @@ function App() {
                 username : username, 
                 password : password
             })
-            .then ((data) => {
+            .then (async (data) => {
                 if (data.data.length > 0) {
                     setToken(true);
                     setLoggedInUserData(data.data[0]);
@@ -72,15 +75,15 @@ function App() {
         setToken(false);
         return <Loginform setToken={setToken} setLoggedInUserData={setLoggedInUserData}/>
     };
-
+    
     useEffect(() => {
         document.body.setAttribute('data-bs-theme', darkMode ? 'dark' : 'light')
         localStorage.setItem('darkMode', darkMode);
     }, [darkMode] );
 
     useEffect(getToken, []);
-
-    useEffect(loadCompanyData, []);
+    
+    useEffect(() => {if (loggedInUserData !== '') loadCompanyData()}, [loggedInUserData]);
     
     if (!token) {         
         return <Loginform setToken={setToken} setLoggedInUserData={setLoggedInUserData} />
@@ -110,7 +113,8 @@ function App() {
                                         <Edituser
                                             listItem={loggedInUserData}
                                             setLoggedInUserData={setLoggedInUserData}
-                                            loggedInUser={loggedInUserData.username}>
+                                            loggedInUser={loggedInUserData.username}
+                                            loggedInUserData={loggedInUserData}>
                                         </Edituser>
                                     </div>
                                     <div className='mobil-menu-icons-container'>
@@ -157,7 +161,8 @@ function App() {
                                     <Edituser
                                         listItem={loggedInUserData}
                                         setLoggedInUserData={setLoggedInUserData}
-                                        loggedInUser={loggedInUserData.username}>
+                                        loggedInUser={loggedInUserData.username}
+                                        loggedInUserData={loggedInUserData}>
                                     </Edituser>
                                     <Icon.BoxArrowInRight 
                                         onClick={handleLogOut} 
@@ -174,7 +179,7 @@ function App() {
                 {loggedInUserData.group_name === 'Admin' ?
                     <>
                         <Route path='/dashboard/users' element={<Users darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
-                        <Route path='/dashboard/groups' element={<Groups loggedInUserId={loggedInUserData.id}/>}/>
+                        <Route path='/dashboard/groups' element={<Groups loggedInUserData={loggedInUserData}/>}/>
                     </> :
                     ''
                 }

@@ -3,10 +3,10 @@ import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import axios from 'axios';
 import API from '../../../../api';
 
-export default function Activateuser( { listItem, loadUserList} ) {
+export default function Activateuser( { listItem, loadUserList, loggedInUserData} ) {
 
   const handleActivateUser = async (e) => {
-    axios.post(`${API.address}/activeuser`, {id : listItem.id})
+    axios.post(`${API.address}/activeuser`, {id : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
       .then(() => {
          loadUserList(false);
        })

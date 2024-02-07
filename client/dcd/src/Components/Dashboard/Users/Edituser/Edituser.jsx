@@ -4,7 +4,7 @@ import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal } from 'react-boots
 import bcrypt from "bcryptjs-react";
 import API from '../../../../api';
 
-export default function Edituser( { listItem, loadUserList, groupList, loggedInUser, setLoggedInUserData } ) {
+export default function Edituser( { listItem, loadUserList, groupList, loggedInUser, setLoggedInUserData, loggedInUserData } ) {
 	const [password, setPassword] = useState('');
 	const [name, setName] = useState(listItem.name);
 	const [errorMessage, setErrorMessage] = useState({
@@ -38,7 +38,7 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 				name : name.trim(),
 				group : selectedGroup,
 				id : listItem.id
-			})
+			}, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
 			setErrorMessage({
 			name : '',

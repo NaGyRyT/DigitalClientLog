@@ -3,7 +3,7 @@ import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import API from '../../../../api';
 
-export default function Deleteuser( {listItem, loadUserList} ) {
+export default function Deleteuser( {listItem, loadUserList, loggedInUserData} ) {
     const [showDeleteUserForm, setShowDeleteUserForm] = useState(false);
     const [existUserIdInLog, setExistUserIdInLog] = useState(false)
 
@@ -20,13 +20,13 @@ export default function Deleteuser( {listItem, loadUserList} ) {
     const handleDeleteUserSubmit = async (e) => {
         e.preventDefault();
         if (existUserIdInLog) {
-            axios.post(`${API.address}/inactiveuser`, {id : listItem.id})
+            axios.post(`${API.address}/inactiveuser`, {id : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
             .then(() => {
                 loadUserList(false);
                 setShowDeleteUserForm(false);
             })
         } else {
-            axios.post(`${API.address}/deleteuser`, {id : listItem.id})
+            axios.post(`${API.address}/deleteuser`, {id : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
             .then(() => {
                 loadUserList(false);
                 setShowDeleteUserForm(false);
@@ -36,7 +36,7 @@ export default function Deleteuser( {listItem, loadUserList} ) {
 
     async function checkExistUserIdInLog() {
         let existUserIdInLog;
-        await axios.post(`${API.address}/checkExistUserIdInLog`, {userid : listItem.id})
+        await axios.post(`${API.address}/checkExistUserIdInLog`, {userid : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
         .then((data) => {
             if (data.data.length === 0) existUserIdInLog = false;
             else existUserIdInLog = true;

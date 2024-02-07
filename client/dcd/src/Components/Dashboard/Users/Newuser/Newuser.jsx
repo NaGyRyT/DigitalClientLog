@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs-react";
 import { Form, Alert, Button, Modal } from 'react-bootstrap';
 import API from '../../../../api';
 
-export default function Newuser( { loadUserList, groupList } ) {
+export default function Newuser( { loadUserList, groupList, loggedInUserData } ) {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [name, setName] = useState('');
@@ -42,7 +42,8 @@ export default function Newuser( { loadUserList, groupList } ) {
 			axios.post(`${API.address}/newuser`, {username : username.trim(), 
 														password : trimmedHashedPassword,
 														name : name.trim(),
-														group : selectedGroup})
+														group : selectedGroup,
+													}, {headers: { 'x-api-key': loggedInUserData.password }})
 			.then(() => {
 				handleCloseNewUserForm();
 				loadUserList();
@@ -54,7 +55,7 @@ export default function Newuser( { loadUserList, groupList } ) {
     
 	async function checkExistUsername() {
 		let existUser;
-		await axios.post(`${API.address}/checkexistusername`, {username : username})
+		await axios.post(`${API.address}/checkexistusername`, {username : username}, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then((data) => {
 			if (data.data.length === 0) existUser = false;
 			else existUser = true;

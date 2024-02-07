@@ -14,6 +14,7 @@ export default function Grouplist( {
     sortedColumn,
     setSortedColumn,
     setSortDirection,
+    loggedInUserData
     } ) {
     const [groupnameSearch, setGroupnameSearch] = useState('');
     const [descriptionSearch, setDescriptionSearch] = useState('');
@@ -111,10 +112,12 @@ export default function Grouplist( {
                             <>
                             <Editgroup
                             listItem={listItem}
-                            loadGroupList={loadGroupList}/>
+                            loadGroupList={loadGroupList}
+                            loggedInUserData={loggedInUserData}/>
                             <Deletegroup
                             listItem={listItem}
-                            loadGroupList={loadGroupList}/>                  
+                            loadGroupList={loadGroupList}
+                            loggedInUserData={loggedInUserData}/>
                         </>
                         }
                     </td>

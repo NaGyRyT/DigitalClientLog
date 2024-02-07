@@ -18,14 +18,17 @@ export default function Users( {loggedInUserData}) {
     const [viewHideInactivedUser, setViewHideInactivedUser] = useState(true);
 
     function loadUserList(needToChangeOrderDirection = false) {
-        axios.get(`${API.address}/getuserlist`)
+        axios.get(`${API.address}/getuserlist`, {
+            headers: {
+              'x-api-key': loggedInUserData.password
+            }})
             .then ((data) => {
                 return setUserList( handleSort(data.data.filter((item) => item.id !== loggedInUserData.id), sortDirection, sortedColumn, 'user', needToChangeOrderDirection) );
           })
       };
-
+    
     function loadGroupList() {
-		axios.get(`${API.address}/getaccessgrouplist`)
+		axios.get(`${API.address}/getaccessgrouplist`, { headers: { 'x-api-key': loggedInUserData.password } } )
 		.then ((data) => {
 			setGroupList(data.data);
 		});
@@ -33,7 +36,7 @@ export default function Users( {loggedInUserData}) {
   
     useEffect(() => {
         if (userList.length === 0) loadUserList()
-    });
+    }, [userList]);
 
     useEffect(loadGroupList, []);
 
@@ -42,6 +45,7 @@ export default function Users( {loggedInUserData}) {
         <Newuser
             loadUserList={loadUserList}
             groupList={groupList}
+            loggedInUserData={loggedInUserData}
         />
         <Userlist
             userList={userList}
@@ -54,6 +58,7 @@ export default function Users( {loggedInUserData}) {
             handleSort={handleSort}
             viewHideInactivedUser={viewHideInactivedUser}
             setViewHideInactivedUser={setViewHideInactivedUser}
+            loggedInUserData={loggedInUserData}
         />
     </>
   )

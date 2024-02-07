@@ -5,6 +5,7 @@ export async function validateGroup(
     groupName = '',
     description = '',
     origGroupName = '',
+    loggedInUserData
     ) {
     const errorMessage = {
         groupName :'',
@@ -14,7 +15,7 @@ export async function validateGroup(
     if (groupName.length < 5) {
         errorMessage.groupName = 'Csoportnév minimum 5 karakter.';
         errorMessage.error = true;
-    } else if (groupName.toLowerCase() !== origGroupName.toLowerCase() && await checkExistGroupName(groupName)) {
+    } else if (groupName.toLowerCase() !== origGroupName.toLowerCase() && await checkExistGroupName(groupName, loggedInUserData)) {
         errorMessage.groupName = 'Ilyen nevű csoport már létezik.';
         errorMessage.error = true;
     } else errorMessage.groupName = '';
@@ -25,9 +26,9 @@ export async function validateGroup(
     return errorMessage
 }
 
-async function checkExistGroupName(groupName) {
+async function checkExistGroupName(groupName, loggedInUserData) {
     let existGroupName;
-    await axios.post(`${API.address}/checkexistgroupname`, {groupname : groupName})
+    await axios.post(`${API.address}/checkexistgroupname`, {groupname : groupName}, {headers: { 'x-api-key': loggedInUserData.password }})
     .then((data) => {
         if (data.data.length === 0) existGroupName = false;
         else existGroupName = true;

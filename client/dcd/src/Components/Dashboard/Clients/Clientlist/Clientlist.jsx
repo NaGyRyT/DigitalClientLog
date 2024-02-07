@@ -245,20 +245,24 @@ export default function Clientlist({
                         className='m-1'
                         listItem={listItem}
                         selectedClient={listItem}
-                        loggedInUserId={loggedInUserData.id}/>
+                        loggedInUserData={loggedInUserData}
+                      />
                       <Newlog
                         selectedClient={listItem}
-                        loggedInUserId={loggedInUserData.id}
-                        fromClientList={true}/>
+                        loggedInUserData={loggedInUserData}
+                        fromClientList={true}
+                      />
                       <Editclient
                         listItem={listItem}
                         loadClientList={loadClientList}
                         cityList={cityList}
+                        loggedInUserData={loggedInUserData}
                       />
                       {listItem.username === "admin" ? "" : 
                       <Deleteclient
                         listItem={listItem}
                         loadClientList={loadClientList}
+                        loggedInUserData={loggedInUserData}
                       />
                       }
                     </>

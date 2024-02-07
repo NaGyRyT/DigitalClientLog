@@ -5,7 +5,7 @@ import { Form, Alert, Button, Modal, Row, Col, Tooltip, OverlayTrigger } from 'r
 import { validateGroup } from '../Validategroup/Validategroup';
 import API from '../../../../api';
 
-export default function Editgroup( {loadGroupList, listItem} ) {
+export default function Editgroup( {loadGroupList, listItem, loggedInUserData} ) {
 	const [groupName, setGroupName] = useState(listItem.group_name);
 	const [description, setDescription] = useState(listItem.description);
 	const [errorMessage, setErrorMessage] = useState({
@@ -19,14 +19,14 @@ export default function Editgroup( {loadGroupList, listItem} ) {
 	const handleShowEditGroupForm = () => setShowEditGroupForm(true);
   	const handleEditGroupSubmit = async (e) => {
 		e.preventDefault();
-		const tempErrorMessage = await validateGroup(groupName, description, listItem.group_name);
+		const tempErrorMessage = await validateGroup(groupName, description, listItem.group_name, loggedInUserData);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
 			axios.post(`${API.address}/Editgroup`, {
                 id : listItem.id,
                 groupname : groupName.trim(),
                 description : description,
-			})
+			}, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
             handleCloseEditGroupForm();
 			loadGroupList();

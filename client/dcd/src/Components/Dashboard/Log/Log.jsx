@@ -14,7 +14,7 @@ export default function Log( { loggedInUserData } ) {
       sessionStorage.getItem('logTableSortedColumnName') : 'id');
 
   function loadLogEntries(needToChangeOrderDirection = false) {
-    axios.get(`${API.address}/getlog`)
+    axios.get(`${API.address}/getlog`, {headers: { 'x-api-key': loggedInUserData.password }})
       .then ((data) => {
         return setLogEntries( handleSort(data.data, sortDirection, sortedColumn, 'log', needToChangeOrderDirection) );
       })

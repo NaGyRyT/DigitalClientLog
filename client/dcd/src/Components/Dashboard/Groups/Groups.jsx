@@ -6,7 +6,7 @@ import Newgroup from './Newgroup/Newgroup'
 import { handleSort } from '../Tablesort/Tablesort';
 import API from '../../../api';
 
-export default function Groups( { loggedInUserId }) {
+export default function Groups( { loggedInUserData }) {
   const [groupList, setGroupList] = useState([]);
   const [sortDirection, setSortDirection] = useState(
       sessionStorage.getItem('groupTableSortDirection') ? 
@@ -16,7 +16,7 @@ export default function Groups( { loggedInUserId }) {
       sessionStorage.getItem('groupTableSortedColumnName') : 'id');
   
  function loadGroupList(needToChangeOrderDirection = false) {
-      axios.get(`${API.address}/getgrouplist`)
+      axios.get(`${API.address}/getgrouplist`, {headers: { 'x-api-key': loggedInUserData.password }})
           .then ((data) => setGroupList(handleSort(data.data, sortDirection, sortedColumn, 'group', needToChangeOrderDirection)));
     };
   
@@ -28,16 +28,18 @@ export default function Groups( { loggedInUserId }) {
   return (
     <>
       <Newgroup
-        loadGroupList = {loadGroupList}
+        loadGroupList={loadGroupList}
+        loggedInUserData={loggedInUserData}
       />
       <Grouplist
-        groupList = {groupList}
-        sortDirection = {sortDirection}
-        sortedColumn = {sortedColumn}
-        setSortDirection = {setSortDirection}
-        setSortedColumn = {setSortedColumn}
-        handleSort = {handleSort}
-        loadGroupList = {loadGroupList}        
+        groupList={groupList}
+        sortDirection={sortDirection}
+        sortedColumn={sortedColumn}
+        setSortDirection={setSortDirection}
+        setSortedColumn={setSortedColumn}
+        handleSort={handleSort}
+        loadGroupList={loadGroupList}
+        loggedInUserData={loggedInUserData}
       />
     </>
   )

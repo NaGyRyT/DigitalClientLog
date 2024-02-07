@@ -54,48 +54,48 @@ export default function Statements( { darkMode, loggedInUserData}) {
     }, [darkMode]);
 
   const loadGenderNumber = () => {
-    axios.get(`${API.address}/getgendernumber/${loggedInUserData.accessgroup}`)
+    axios.get(`${API.address}/getgendernumber/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
         .then ((data) => 
           setGenderData(data.data)
         );
     };
 
   const loadAgesNumber = () => {
-    axios.get(`${API.address}/getagesnumber/${loggedInUserData.accessgroup}`)
+    axios.get(`${API.address}/getagesnumber/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
         .then ((data) => 
           setAgesData(data.data)
         );
     };
 
   const loadLogNumber = () => {
-    axios.get(`${API.address}/getlognumber/${loggedInUserData.accessgroup}`)
+    axios.get(`${API.address}/getlognumber/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
         .then ((data) => 
           setLogData(data.data)
         );
     };
 
   const loadLogNumberPerUser = () => {
-    axios.get(`${API.address}/getlognumberperuser/${userId}`)
+    axios.get(`${API.address}/getlognumberperuser/${userId}`, {headers: { 'x-api-key': loggedInUserData.password }})
         .then ((data) => 
           setLogDataPerUser(data.data)
         );
     };
 
   const loadDurationNumber = () => {
-    axios.get(`${API.address}/getdurationnumber/${loggedInUserData.accessgroup}`)
+    axios.get(`${API.address}/getdurationnumber/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
         .then ((data) => 
           setDurationData(data.data)
         );
     };
   const loadLogPerUserNumber = () => {
-      axios.get(`${API.address}/getlogperusernumber/${loggedInUserData.accessgroup}`)
+      axios.get(`${API.address}/getlogperusernumber/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
           .then ((data) => 
             setLogPerUserData(data.data)
           );
       };
 
   function loadNotEmptyLogUserList() {
-    axios.get(`${API.address}/getnotemptyloguserlist`)
+    axios.get(`${API.address}/getnotemptyloguserlist`, {headers: { 'x-api-key': loggedInUserData.password }})
     .then ((data) => {
       setUserList(data.data);
     });

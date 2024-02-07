@@ -3,7 +3,7 @@ import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import API from '../../../../api';
 
-export default function Deletegroup( {listItem, loadGroupList} ) {
+export default function Deletegroup( {listItem, loadGroupList, loggedInUserData} ) {
   const [showDeleteGroupForm, setShowDeleteGroupForm] = useState(false);
   const [existGroupIdInUsers, setExistGroupIdInUsers] = useState(true);
   const handleCloseDeleteGroupForm = () => setShowDeleteGroupForm(false);
@@ -14,7 +14,7 @@ export default function Deletegroup( {listItem, loadGroupList} ) {
     
   const handleDeleteGroupSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${API.address}/deletegroup`, {id : listItem.id})
+    axios.post(`${API.address}/deletegroup`, {id : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
       .then(() => {
         loadGroupList(false);
         setShowDeleteGroupForm(false);
@@ -23,11 +23,11 @@ export default function Deletegroup( {listItem, loadGroupList} ) {
 
   async function checkExistGroupIdInUsers() {
     let existGroupIdInUsers;
-    await axios.post(`${API.address}/checkexistgroupidinusers`, {groupid : listItem.id})
+    await axios.post(`${API.address}/checkexistgroupidinusers`, {groupid : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
       .then(async (data) => {
         if (data.data.length === 0) {
           existGroupIdInUsers = false;
-          await axios.post(`${API.address}/checkexistgroupidinclients`, {groupid : listItem.id})
+          await axios.post(`${API.address}/checkexistgroupidinclients`, {groupid : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
             .then((data)=> data.data.length === 0 ? existGroupIdInUsers = false : existGroupIdInUsers = true);
         }
         else existGroupIdInUsers = true;

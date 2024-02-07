@@ -6,7 +6,7 @@ import { validateLog } from '../Validatelog/Validatelog';
 import API from '../../../../api';
 
 export default function Newlog( { 
-    loggedInUserId,
+    loggedInUserData,
     selectedClient,
     getLog,
     fromClientList
@@ -46,12 +46,12 @@ export default function Newlog( {
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
 			axios.post(`${API.address}/newlog`, {
-                userid : loggedInUserId,
+                userid : loggedInUserData.id,
                 clientid : selectedClient.id,
                 datetime : date + ' ' + time,
                 duration : duration,
                 description : description.trim()
-            })
+            }, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
             handleCloseNewLogForm();
 			if (!fromClientList) getLog();

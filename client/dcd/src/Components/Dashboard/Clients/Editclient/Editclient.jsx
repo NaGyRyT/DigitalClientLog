@@ -8,6 +8,7 @@ export default function Editclient( {
         listItem,
         loadClientList,
         cityList,
+        loggedInUserData
 }) {
     const [name, setName] = useState(listItem.name);
     const [clientId, setClientId] = useState(listItem.client_id);
@@ -45,7 +46,7 @@ export default function Editclient( {
 
     const handleEditClientSubmit = async (e) => {
 		e.preventDefault();
-		const tempErrorMessage = await validateClient(name, clientId, birthDate, gender, email, phone, zip, cityId, listItem.id);
+		const tempErrorMessage = await validateClient(name, clientId, birthDate, gender, email, phone, zip, cityId, listItem.id, loggedInUserData);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
 			axios.post(`${API.address}/editclient`, {
@@ -60,7 +61,8 @@ export default function Editclient( {
                 floor : floor.trim(),
                 door : door.trim(),
                 phone : phone.trim(),
-                email : email.trim()})
+                email : email.trim()},
+                {headers: { 'x-api-key': loggedInUserData.password }})
 		    .then(() => {
                 handleCloseEditClientForm();
                 loadClientList();

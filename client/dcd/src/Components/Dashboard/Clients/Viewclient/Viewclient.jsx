@@ -8,7 +8,7 @@ import Deletelog from '../../Log/Deletelog/Deletelog';
 import API from '../../../../api';
 
 
-export default function Viewclient( { listItem, loggedInUserId } ) {
+export default function Viewclient( { listItem, loggedInUserData } ) {
     const [showViewClientForm, setShowViewClientForm] = useState(false);
     const [logEntries, setLogEntries] = useState([]); 
     const handleCloseViewClientForm = () => setShowViewClientForm(false);  
@@ -18,7 +18,7 @@ export default function Viewclient( { listItem, loggedInUserId } ) {
     }
 
     async function getLog() {
-        await axios.get(`${API.address}/getlog/${listItem.id}`)
+        await axios.get(`${API.address}/getlog/${listItem.id}`, {headers: { 'x-api-key': loggedInUserData.password }})
             .then ((data) => {
                 setLogEntries(data.data);
           })
@@ -106,14 +106,17 @@ export default function Viewclient( { listItem, loggedInUserId } ) {
                                         </td>
                                         <td className='width-150'>
                                             <Viewlog logEntry={item}></Viewlog>
-                                            {item.user_id === loggedInUserId ?
+                                            {item.user_id === loggedInUserData.id ?
                                             <>
-                                             <Editlog
-                                                logEntry = {item}
-                                                loadLogEntries = {getLog}/>
-                                            <Deletelog
-                                                listItem = {item}
-                                                loadLogEntries = {getLog}/></> : ''
+                                                <Editlog
+                                                    logEntry = {item}
+                                                    loadLogEntries = {getLog}
+                                                    loggedInUserData={loggedInUserData}/>
+                                                <Deletelog
+                                                    listItem = {item}
+                                                    loadLogEntries = {getLog}
+                                                    loggedInUserData={loggedInUserData}/>
+                                            </> : ''
                                             }
                                         </td>
                                     </tr>)}
@@ -125,7 +128,7 @@ export default function Viewclient( { listItem, loggedInUserId } ) {
                 <Modal.Footer>
                     <Newlog
                         selectedClient={listItem}
-                        loggedInUserId={loggedInUserId}
+                        loggedInUserData={loggedInUserData}
                         fromClientList={false}
                         getLog={getLog}/>
                     <Button onClick={handleCloseViewClientForm}>

@@ -17,7 +17,8 @@ export default function Userlist({
     setSortedColumn,
     setSortDirection,
     viewHideInactivedUser,
-    setViewHideInactivedUser
+    setViewHideInactivedUser,
+    loggedInUserData
 }) {
   const [usernameSearch, setUsernameSearch] = useState('');
   const [nameSearch, setNameSearch] = useState('');
@@ -168,6 +169,7 @@ export default function Userlist({
                     <Activateuser
                       listItem={listItem}
                       loadUserList={loadUserList}
+                      loggedInUserData={loggedInUserData}
                     /> : 
                     <>
                       <Viewuser
@@ -178,11 +180,13 @@ export default function Userlist({
                         listItem={listItem}
                         loadUserList={loadUserList}
                         groupList={groupList}
+                        loggedInUserData={loggedInUserData}
                       />
                       {listItem.username === "admin" ? "" : 
                       <Deleteuser
                         listItem={listItem}
                         loadUserList={loadUserList}
+                        loggedInUserData={loggedInUserData}
                       />
                       }
                     </>

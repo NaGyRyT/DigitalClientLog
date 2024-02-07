@@ -242,10 +242,12 @@ export default function Logentries( {
                     <> 
                     <Editlog
                       logEntry={listItem}
-                      loadLogEntries={loadLogEntries}/>
+                      loadLogEntries={loadLogEntries}
+                      loggedInUserData={loggedInUserData}/>
                     <Deletelog
                       listItem={listItem}
-                      loadLogEntries={loadLogEntries}/></> : 
+                      loadLogEntries={loadLogEntries}
+                      loggedInUserData={loggedInUserData}/></> : 
                       ''
                     }
                   </>    

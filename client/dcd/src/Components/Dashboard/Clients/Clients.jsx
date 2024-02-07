@@ -17,7 +17,7 @@ export default function Clients( { loggedInUserData }) {
       sessionStorage.getItem('clientTableSortedColumnName') : 'id');
   
  function loadClientList(needToChangeOrderDirection = false) {
-      axios.get(`${API.address}/getclientlist`)
+      axios.get(`${API.address}/getclientlist`, {headers: { 'x-api-key': loggedInUserData.password }})
           .then ((data) => setClientList(handleSort(data.data, sortDirection, sortedColumn, 'client', needToChangeOrderDirection)));
     };
   
@@ -26,7 +26,7 @@ export default function Clients( { loggedInUserData }) {
   });
 
   function loadCityList() {
-		axios.get(`${API.address}/getcities`)
+		axios.get(`${API.address}/getcities`, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then ((data) => {
 			setCityList(data.data);
 		});

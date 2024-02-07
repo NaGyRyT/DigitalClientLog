@@ -4,7 +4,7 @@ import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col, ListGrou
 import { validateLog } from '../Validatelog/Validatelog'
 import API from '../../../../api';
 
-export default function Editlog({ logEntry, loadLogEntries }) {
+export default function Editlog({ logEntry, loadLogEntries, loggedInUserData }) {
     const [time, setTime] = useState(logEntry.date_time.slice(11,16));
     const [date, setDate] = useState(logEntry.date_time.slice(0,10));
     const [duration, setDuration] = useState(logEntry.duration);
@@ -31,7 +31,8 @@ export default function Editlog({ logEntry, loadLogEntries }) {
                 id : logEntry.id,
                 datetime : date + ' ' + time,
                 duration : duration,
-                description : description.trim()})
+                description : description.trim()},
+                {headers: { 'x-api-key': loggedInUserData.password }})
 		    .then(() => {
                 handleShowHideEditLogForm()
                 loadLogEntries();

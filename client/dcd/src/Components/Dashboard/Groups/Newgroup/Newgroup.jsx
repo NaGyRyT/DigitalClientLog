@@ -5,7 +5,7 @@ import { Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
 import { validateGroup } from '../Validategroup/Validategroup';
 import API from '../../../../api';
 
-export default function Newgroup( {loadGroupList} ) {
+export default function Newgroup( {loadGroupList, loggedInUserData} ) {
 	const [groupName, setGroupName] = useState('');
 	const [description, setDescription] = useState('');
 	const [errorMessage, setErrorMessage] = useState({
@@ -29,13 +29,13 @@ export default function Newgroup( {loadGroupList} ) {
   	const handleNewGroupSubmit = async (e) => {
 		setDisableSubmitButton(true);
 		e.preventDefault();
-		const tempErrorMessage = await validateGroup(groupName, description);
+		const tempErrorMessage = await validateGroup(groupName, description, '', loggedInUserData);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
 			axios.post(`${API.address}/newgroup`, {
                 groupname : groupName.trim(),
                 description : description,
-            })
+            }, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
             handleCloseNewGroupForm();
 			loadGroupList();
