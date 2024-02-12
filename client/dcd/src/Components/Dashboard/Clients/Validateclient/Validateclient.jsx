@@ -6,6 +6,7 @@ import API from '../../../../api';
 export async function validateClient(
     name = '',
     clientId = '',
+    origClientId ='',
     birthDate = '',
     gender = '',
     email = '',
@@ -25,7 +26,7 @@ export async function validateClient(
         phone : '',
         email : '',
         error : false,
-        }
+        };
     if (name.length === 0) {
         errorMessage.name = 'Név megadása kötelező.';
         errorMessage.error = true;
@@ -36,7 +37,7 @@ export async function validateClient(
     if (clientId.length < 9) { 
         errorMessage.clientId = 'Azonosító megadása kötelező 9 karakter lehet.';
         errorMessage.error = true;
-    } else if (await checkExistClientId(clientId, accessgroup, loggedInUserData)) {
+    } else if (clientId !== origClientId && await checkExistClientId(clientId, accessgroup, loggedInUserData)) {
         errorMessage.clientId = 'Ezzel az azonosítóval már van regisztrált ügyfél.';
         errorMessage.error = true;
     } else errorMessage.id = "";
@@ -54,7 +55,7 @@ export async function validateClient(
     if (zip.length === 4 && cityId === 0) {
         errorMessage.zip = 'Nincs ilyen irányítószám.';
         errorMessage.error = true;
-    }
+    };
     if (cityId === 0 ) {
         errorMessage.city = 'Város választása kötelező.';
         errorMessage.error = true;
@@ -72,12 +73,13 @@ export async function validateClient(
         errorMessage.error = true;
     } else errorMessage.phone = '';
     return errorMessage
-}
+};
 
 async function checkExistClientId(clientId, accessgroup, loggedInUserData) {
     let existClientId;
     await axios.post(`${API.address}/checkexistclientid`, {clientid : clientId, accessgroup : accessgroup}, {headers: { 'x-api-key': loggedInUserData.password }})
     .then((data) => {
+        console.log(data.data)
         if (data.data.length === 0) existClientId = false;
         else existClientId = true;
     });

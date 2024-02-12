@@ -46,7 +46,7 @@ export default function Editclient( {
 
     const handleEditClientSubmit = async (e) => {
 		e.preventDefault();
-		const tempErrorMessage = await validateClient(name, clientId, birthDate, gender, email, phone, zip, cityId, listItem.id, loggedInUserData);
+		const tempErrorMessage = await validateClient(name, clientId, listItem.client_id, birthDate, gender, email, phone, zip, cityId, listItem.id, loggedInUserData);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
 			axios.post(`${API.address}/editclient`, {

@@ -66,7 +66,7 @@ export default function Newclient( {
   	const handleNewClientSubmit = async (e) => {
 		setDisableSubmitButton(true);
 		e.preventDefault();
-		const tempErrorMessage = await validateClient(name, clientId, birthDate, gender, email, phone, zip, cityId, loggedInUserData.accessgroup, loggedInUserData);
+		const tempErrorMessage = await validateClient(name, clientId, '', birthDate, gender, email, phone, zip, cityId, loggedInUserData.accessgroup, loggedInUserData);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
 			axios.post(`${API.address}/newclient`, {name : name.trim(),
