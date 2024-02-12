@@ -23,7 +23,7 @@ export default function Clients( { loggedInUserData }) {
   
   useEffect(() => {
       if (clientList.length === 0) loadClientList()
-  });
+  }, [clientList.length]);
 
   function loadCityList() {
 		axios.get(`${API.address}/getcities`, {headers: { 'x-api-key': loggedInUserData.password }})

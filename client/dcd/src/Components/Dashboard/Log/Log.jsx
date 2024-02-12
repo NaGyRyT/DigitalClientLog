@@ -22,7 +22,7 @@ export default function Log( { loggedInUserData } ) {
 
   useEffect(() => {
     if (logEntries.length === 0) loadLogEntries();
-});
+}, [logEntries.length]);
   return (
     <>
       <Logentries

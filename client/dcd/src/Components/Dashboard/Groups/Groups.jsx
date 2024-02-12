@@ -22,7 +22,7 @@ export default function Groups( { loggedInUserData }) {
   
   useEffect(() => {
       if (groupList.length === 0) loadGroupList()
-  });
+  }, [groupList.length]);
 
 
   return (

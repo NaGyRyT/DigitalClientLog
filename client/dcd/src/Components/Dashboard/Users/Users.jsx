@@ -36,7 +36,7 @@ export default function Users( {loggedInUserData}) {
   
     useEffect(() => {
         if (userList.length === 0) loadUserList()
-    }, [userList]);
+    }, [userList.length]);
 
     useEffect(loadGroupList, []);
 
