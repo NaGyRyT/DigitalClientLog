@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useState} from 'react';
 import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal } from 'react-bootstrap';
 import bcrypt from "bcryptjs-react";
@@ -41,13 +41,15 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 			}, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
 			setErrorMessage({
-			name : '',
-			password : ''
-			})
+				name : '',
+				password : ''
+			});
+
 			if (loggedInUser === undefined) loadUserList(false) 
-		else {
+			else {
 				let newListItem = listItem;
-				newListItem.name = name;				
+				newListItem.name = name;
+				if (password !== '') newListItem.password = trimmedHashedPassword;
 				setLoggedInUserData(newListItem);
 			}
 			setShowEditUserForm(false);
