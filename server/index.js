@@ -4,7 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const database = require('./database_connect.js');
-const API = require('./api_auth.js');
+const { API } = require('./apikey.js');
 
 app.use(bodyParser.urlencoded({extended : false}));
 app.use(bodyParser.json());
@@ -20,7 +20,29 @@ https.createServer(options, app).listen(444, () => {
     console.log('Server listening HTTPS on port 444')
 }); */
 
-app.use('/api/login', (req, res) => {
+const authenticateKey = (req, res, next) => {
+    const password = req.header('x-api-key');
+    const subdomain = req.header('subdomain');
+    database.db.changeUser( {database : subdomain}, (err) => {
+        if (err) throw err;
+      });
+    if (password === API.key) {
+        next();
+    } else
+    database.db.query('SELECT password from users WHERE users.password = ?', [password], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (result.length > 0) {
+                next();
+            } else {
+                res.status(403).send({ error: { code: 403, message: 'You not allowed.' } });
+            }
+        }
+    });
+  };
+
+app.use('/api/login', authenticateKey, (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     const sqlSelect = `SELECT 
@@ -59,7 +81,7 @@ app.use('/api/login', (req, res) => {
     });
 });
 
-app.use('/api/checkloggedinuser', (req, res) => {
+app.use('/api/checkloggedinuser', authenticateKey, (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     const sqlSelect = `SELECT 
@@ -88,7 +110,7 @@ app.use('/api/checkloggedinuser', (req, res) => {
     });
 });
 
-app.post('/api/newuser', API.authenticateKey, (req,res) => {
+app.post('/api/newuser', authenticateKey, (req,res) => {
     const username = req.body.username;
     const password = req.body.password;
     const name = req.body.name;
@@ -103,7 +125,7 @@ app.post('/api/newuser', API.authenticateKey, (req,res) => {
 
 });
 
-app.post('/api/deleteuser', API.authenticateKey, (req,res) => {
+app.post('/api/deleteuser', authenticateKey, (req,res) => {
     const id = req.body.id;
     database.db.query('DELETE FROM users WHERE id = ?', [id], (err, result) => {
         if (err) {
@@ -114,7 +136,7 @@ app.post('/api/deleteuser', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/inactiveuser', API.authenticateKey, (req,res) => {
+app.post('/api/inactiveuser', authenticateKey, (req,res) => {
     const id = req.body.id;
     database.db.query('UPDATE users SET inactive = 1 WHERE id = ?', [id], (err, result) => {
         if (err) {
@@ -125,7 +147,7 @@ app.post('/api/inactiveuser', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/activeuser', API.authenticateKey, (req,res) => {
+app.post('/api/activeuser', authenticateKey, (req,res) => {
     const id = req.body.id;
     database.db.query('UPDATE users SET inactive = 0 WHERE id = ?', [id], (err, result) => {
         if (err) {
@@ -136,7 +158,7 @@ app.post('/api/activeuser', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/edituser', API.authenticateKey, (req,res) => {
+app.post('/api/edituser', authenticateKey, (req,res) => {
     const password = req.body.password;
     const id = req.body.id;
     const name = req.body.name;
@@ -160,7 +182,7 @@ app.post('/api/edituser', API.authenticateKey, (req,res) => {
     };
 });
 
-app.post('/api/checkexistusername', API.authenticateKey, (req,res) => {
+app.post('/api/checkexistusername', authenticateKey, (req,res) => {
     const username = req.body.username;
     database.db.query('SELECT * FROM users WHERE username = ?', [username], (err, result) => {
         if (err) {
@@ -171,7 +193,7 @@ app.post('/api/checkexistusername', API.authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/getcompanydata', API.authenticateKey, (req,res) => {
+app.get('/api/getcompanydata', authenticateKey, (req,res) => {
     database.db.query(`SELECT * FROM company`, (err, result) => {
         if (err) {
             console.log(err);
@@ -181,7 +203,7 @@ app.get('/api/getcompanydata', API.authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/getuserlist', API.authenticateKey, (req,res) => {
+app.get('/api/getuserlist', authenticateKey, (req,res) => {
     const sqlSelect = `SELECT 
                         users.id, 
                         users.username, 
@@ -202,7 +224,7 @@ app.get('/api/getuserlist', API.authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/getaccessgrouplist', API.authenticateKey, (req,res) => {
+app.get('/api/getaccessgrouplist', authenticateKey, (req,res) => {
     database.db.query('SELECT * FROM accessgroups' , (err, result) => {
         if (err) {
             console.log(err);
@@ -212,7 +234,7 @@ app.get('/api/getaccessgrouplist', API.authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/getcities', API.authenticateKey, (req,res) => {
+app.get('/api/getcities', authenticateKey, (req,res) => {
     database.db.query('SELECT * FROM cities' , (err, result) => {
         if (err) {
             console.log(err);
@@ -222,7 +244,7 @@ app.get('/api/getcities', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/newclient', API.authenticateKey, (req,res) => {
+app.post('/api/newclient', authenticateKey, (req,res) => {
     const name = req.body.name;
     const clientid = req.body.clientid;
     const accessgroup = req.body.accessgroup;
@@ -273,7 +295,7 @@ app.post('/api/newclient', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/editclient', API.authenticateKey, (req,res) => {
+app.post('/api/editclient', authenticateKey, (req,res) => {
     const name = req.body.name;
     const id = req.body.id;
     const clientid = req.body.clientid;
@@ -324,7 +346,7 @@ app.post('/api/editclient', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/checkexistclientid', API.authenticateKey, (req,res) => {
+app.post('/api/checkexistclientid', authenticateKey, (req,res) => {
     const clientid = req.body.clientid;
     const accessgroup = req.body.accessgroup;
     database.db.query('SELECT * FROM clients WHERE client_id = ? AND accessgroup = ?', [clientid, accessgroup], (err, result) => {
@@ -336,7 +358,7 @@ app.post('/api/checkexistclientid', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/deleteclient', API.authenticateKey, (req,res) => {
+app.post('/api/deleteclient', authenticateKey, (req,res) => {
     const id = req.body.id;
     database.db.query('DELETE FROM clients WHERE id = ?', [id], (err, result) => {
         if (err) {
@@ -347,7 +369,7 @@ app.post('/api/deleteclient', API.authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/getclientlist', API.authenticateKey, (req,res) => {
+app.get('/api/getclientlist', authenticateKey, (req,res) => {
     const sqlSelect = `SELECT 
                         clients.id,
                         accessgroup,
@@ -384,7 +406,7 @@ app.get('/api/getclientlist', API.authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/getlog', API.authenticateKey, (req,res) => {
+app.get('/api/getlog', authenticateKey, (req,res) => {
     const sqlSelect = `SELECT 
                         log.id,
                         users.name AS user_name,
@@ -408,7 +430,7 @@ app.get('/api/getlog', API.authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/getlog/:clientid', API.authenticateKey, (req,res) => {
+app.get('/api/getlog/:clientid', authenticateKey, (req,res) => {
     const clientId = req.params.clientid;
     const sqlSelect = `SELECT 
                         log.id,
@@ -432,7 +454,7 @@ app.get('/api/getlog/:clientid', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/checkexistclientidinlog', API.authenticateKey, (req,res) => {
+app.post('/api/checkexistclientidinlog', authenticateKey, (req,res) => {
     const clientid = req.body.clientid;
     database.db.query('SELECT * FROM log WHERE client_id = ?', [clientid], (err, result) => {
         if (err) {
@@ -443,7 +465,7 @@ app.post('/api/checkexistclientidinlog', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/checkexistuseridinlog', API.authenticateKey, (req,res) => {
+app.post('/api/checkexistuseridinlog', authenticateKey, (req,res) => {
     const userid = req.body.userid;
     database.db.query('SELECT * FROM log WHERE user_id = ?', [userid], (err, result) => {
         if (err) {
@@ -454,7 +476,7 @@ app.post('/api/checkexistuseridinlog', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/newlog', API.authenticateKey, (req,res) => {
+app.post('/api/newlog', authenticateKey, (req,res) => {
     const user_id = req.body.userid;
     const client_id = req.body.clientid;
     const date_time = req.body.datetime;
@@ -469,7 +491,7 @@ app.post('/api/newlog', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/editlog', API.authenticateKey, (req,res) => {
+app.post('/api/editlog', authenticateKey, (req,res) => {
     const id = req.body.id;
     const date_time = req.body.datetime;
     const duration = req.body.duration;
@@ -491,7 +513,7 @@ app.post('/api/editlog', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/deletelog', API.authenticateKey, (req,res) => {
+app.post('/api/deletelog', authenticateKey, (req,res) => {
     const id = req.body.id;
     database.db.query('DELETE FROM log WHERE id = ?', [id], (err, result) => {
         if (err) {
@@ -502,7 +524,7 @@ app.post('/api/deletelog', API.authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/getgendernumber/:accessgroup', API.authenticateKey, (req,res) => {
+app.get('/api/getgendernumber/:accessgroup', authenticateKey, (req,res) => {
     const accessgroup = req.params.accessgroup;
     const sqlSelectCount = accessgroup === '1' ?
     `
@@ -529,7 +551,7 @@ app.get('/api/getgendernumber/:accessgroup', API.authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/getagesnumber/:accessgroup', API.authenticateKey, (req,res) => {
+app.get('/api/getagesnumber/:accessgroup', authenticateKey, (req,res) => {
     const accessgroup = req.params.accessgroup;
     const sqlSelectCount = accessgroup === '1' ?
         `
@@ -591,7 +613,7 @@ app.get('/api/getagesnumber/:accessgroup', API.authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/getlognumber/:accessgroup', API.authenticateKey, (req,res) => {
+app.get('/api/getlognumber/:accessgroup', authenticateKey, (req,res) => {
     const accessgroup = req.params.accessgroup;
     const sqlSelectCount = accessgroup === '1' ?
         `
@@ -618,7 +640,7 @@ app.get('/api/getlognumber/:accessgroup', API.authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/getlognumberperuser/:userid', API.authenticateKey, (req,res) => {
+app.get('/api/getlognumberperuser/:userid', authenticateKey, (req,res) => {
     const userid = req.params.userid;
     const sqlSelectCount = 
         `
@@ -638,7 +660,7 @@ app.get('/api/getlognumberperuser/:userid', API.authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/getdurationnumber/:accessgroup', API.authenticateKey, (req,res) => {
+app.get('/api/getdurationnumber/:accessgroup', authenticateKey, (req,res) => {
     const accessgroup = req.params.accessgroup;
     const sqlSelectCount = accessgroup === '1' ?
         `
@@ -664,7 +686,7 @@ app.get('/api/getdurationnumber/:accessgroup', API.authenticateKey, (req,res) =>
     });
 });
 
-app.get('/api/getlogperusernumber/:accessgroup', API.authenticateKey, (req,res) => {
+app.get('/api/getlogperusernumber/:accessgroup', authenticateKey, (req,res) => {
     const accessgroup = req.params.accessgroup;
     const sqlSelectCount = accessgroup === '1' ?
         `
@@ -694,7 +716,7 @@ app.get('/api/getlogperusernumber/:accessgroup', API.authenticateKey, (req,res) 
     });
 });
 
-app.get('/api/getnotemptyloguserlist', API.authenticateKey, (req,res) => {
+app.get('/api/getnotemptyloguserlist', authenticateKey, (req,res) => {
     const sqlSelect = `SELECT 
                         users.id, 
                         users.name
@@ -712,7 +734,7 @@ app.get('/api/getnotemptyloguserlist', API.authenticateKey, (req,res) => {
 });
 
 
-app.get('/api/getgrouplist', API.authenticateKey, (req,res) => {
+app.get('/api/getgrouplist', authenticateKey, (req,res) => {
     const sqlSelect = `SELECT 
                         *
                        FROM accessgroups
@@ -726,7 +748,7 @@ app.get('/api/getgrouplist', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/newgroup', API.authenticateKey, (req,res) => {
+app.post('/api/newgroup', authenticateKey, (req,res) => {
     const groupname = req.body.groupname;
     const description = req.body.description;
     database.db.query('INSERT INTO accessgroups (group_name, description) VALUES (?, ?)', [groupname, description,], (err, result) => {
@@ -739,7 +761,7 @@ app.post('/api/newgroup', API.authenticateKey, (req,res) => {
 
 });
 
-app.post('/api/checkexistgroupname', API.authenticateKey, (req,res) => {
+app.post('/api/checkexistgroupname', authenticateKey, (req,res) => {
     const groupname = req.body.groupname;
     database.db.query('SELECT * FROM accessgroups WHERE group_name = ?', [groupname], (err, result) => {
         if (err) {
@@ -750,7 +772,7 @@ app.post('/api/checkexistgroupname', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/editgroup', API.authenticateKey, (req,res) => {
+app.post('/api/editgroup', authenticateKey, (req,res) => {
     const id = req.body.id;
     const groupname = req.body.groupname;
     const description = req.body.description;
@@ -771,7 +793,7 @@ app.post('/api/editgroup', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/checkexistgroupidinusers', API.authenticateKey, (req,res) => {
+app.post('/api/checkexistgroupidinusers', authenticateKey, (req,res) => {
     const groupid = req.body.groupid;
     database.db.query('SELECT accessgroup FROM users WHERE users.accessgroup = ?', [groupid], (err, result) => {
         if (err) {
@@ -782,7 +804,7 @@ app.post('/api/checkexistgroupidinusers', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/checkexistgroupidinclients', API.authenticateKey, (req,res) => {
+app.post('/api/checkexistgroupidinclients', authenticateKey, (req,res) => {
     const groupid = req.body.groupid;
     database.db.query('SELECT accessgroup FROM clients WHERE accessgroup = ?', [groupid], (err, result) => {
         if (err) {
@@ -793,7 +815,7 @@ app.post('/api/checkexistgroupidinclients', API.authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/deletegroup', API.authenticateKey, (req,res) => {
+app.post('/api/deletegroup', authenticateKey, (req,res) => {
     const id = req.body.id;
     database.db.query('DELETE FROM accessgroups WHERE id = ?', [id], (err, result) => {
         if (err) {
