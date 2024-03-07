@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Landingpage from './Components/Landingpage/Landingpage';
 import Loginform from './Components/Loginform/Loginform';
 import Statements from './Components/Dashboard/Statements/Statements';
 import Users from './Components/Dashboard/Users/Users';
@@ -12,6 +13,7 @@ import * as Icon from 'react-bootstrap-icons';
 import './App.css';
 import Edituser from './Components/Dashboard/Users/Edituser/Edituser';
 import API from './api';
+axios.defaults.headers.common['subdomain'] = window.location.host.split('.')[0];
 
 function App() {
     const [token, setToken] = useState(false);
@@ -28,15 +30,20 @@ function App() {
             }})
             .then ((data) => setCompanyData(data.data[0]))
       };
-   
+    
     function getToken() {
         let username = getLoggedInUser();
         let password = getLoggedInPassword();
         if (username !== '' && password !== '') {
-            axios.post(`${API.address}/checkloggedinuser`, {
-                username : username, 
-                password : password
-            })
+            axios.post(`${API.address}/checkloggedinuser`, 
+                {
+                    username : username, 
+                    password : password
+                },
+                {
+                    headers: {'x-api-key': API.key}
+                }
+            )
             .then (async (data) => {
                 if (data.data.length > 0) {
                     setToken(true);
@@ -84,11 +91,10 @@ function App() {
     useEffect(getToken, []);
     
     useEffect(() => {if (loggedInUserData !== '') loadCompanyData()}, [loggedInUserData]);
-    
-    if (!token) {         
+
+    if (!token && API.subdomains.find((item) => item === window.location.host.split('.')[0])) {    
         return <Loginform setToken={setToken} setLoggedInUserData={setLoggedInUserData} />
-    }
-    
+    } else if (token && API.subdomains.find((item) => item === window.location.host.split('.')[0]))
     return (
         <>
             <BrowserRouter>
@@ -185,11 +191,14 @@ function App() {
                 }
                 <Route path='/dashboard/clients' element={<Clients loggedInUserData={loggedInUserData}/>}/>
                 <Route path='/dashboard/log' element={<Log loggedInUserData={loggedInUserData}/>}/>
-                <Route path='/dashboard/statements' element={<Statements darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
+                <Route path='/dashboard/statements' element={<Statements darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/> :
+            
             </Routes>
             </BrowserRouter>
         </>
-    );
-}
+    ); else {
+        return <Landingpage/>
+    }
+};
 
 export default App;

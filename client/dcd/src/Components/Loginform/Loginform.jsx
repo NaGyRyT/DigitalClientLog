@@ -4,15 +4,24 @@ import { Button, Form, Container, Alert } from 'react-bootstrap';
 import './Loginform.css';
 import API from '../../api';
 
-
 export default function Loginform( { setToken, setLoggedInUserData }) {
 	const [username, setUserName] = useState('');
 	const [password, setPassword] = useState('');
-	const [message, setMessage] = useState('')
+	const [message, setMessage] = useState('');
 
 	async function loginUser(credentials) {
-		await axios.post(`${API.address}/login`, {username : credentials.username.trim(), 
-														password : credentials.password.trim()})
+		await axios.post(`${API.address}/login`, 
+			{
+				username : credentials.username.trim(), 
+				password : credentials.password.trim()
+			},
+			{
+				headers: 
+					{
+				  		'x-api-key': API.key
+					}
+			}
+			)
 		.then ((data) => {
 			if (data.data.length !== 0) {
 				setMessage('');
@@ -23,7 +32,7 @@ export default function Loginform( { setToken, setLoggedInUserData }) {
 				setMessage('Rossz felhasználónév vagy jelszó');
 			}
 		})
-	}
+	};
 
 	const handleLoginSubmit = async (e) => {
 		e.preventDefault();
@@ -32,7 +41,7 @@ export default function Loginform( { setToken, setLoggedInUserData }) {
 			username,
 			password
 		});
-	}
+	};
 
 return (
     <div className='login-form'>
@@ -65,7 +74,6 @@ return (
 					Belépés
 				</Button>
 			</Form>
-
 		</Container>
     </div>
   )
