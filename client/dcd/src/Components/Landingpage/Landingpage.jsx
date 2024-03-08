@@ -12,6 +12,7 @@ export default function Landingpage() {
       .then((data) => data.text())
       .then((text) => setReadme(text));
   }, [readmeMd]);
+  console.log(readme)
 
   return (
     <>

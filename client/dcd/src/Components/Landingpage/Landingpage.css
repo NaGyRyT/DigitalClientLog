@@ -1,3 +1,27 @@
 .readme {
     padding: 2.5rem;
 }
+
+.readme table{
+    border: 2px solid rgb(136, 136, 136);
+    margin: 1rem;
+    font-size: 0.8rem;
+}
+
+.readme thead:first-of-type {
+    border-bottom-width: 2px;
+  }
+
+.readme td:first-of-type, .readme th:first-of-type{
+    border-right: 2px solid rgb(136, 136, 136);
+}
+
+.readme th{
+    padding: 0.3rem;
+}
+
+.readme td{
+    padding: 0.3rem;
+    border: 1px solid rgb(136, 136, 136);
+}
+
