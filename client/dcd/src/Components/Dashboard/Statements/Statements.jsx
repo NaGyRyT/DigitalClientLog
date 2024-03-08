@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Genderchart from './Genderchart/Genderchart';
 import Ageschart from './Ageschart/Ageschart';
 import Logchart from './Logchart/Logchart';
-import Durationchart from './Durationchart/Durationchart'
-import Logperuserchart from './Logperuserchart/Logperuserchart'
+import Citychart from './Citychart/Citychart';
+import Durationchart from './Durationchart/Durationchart';
+import Logperuserchart from './Logperuserchart/Logperuserchart';
 import { Row, Col, Form } from 'react-bootstrap';
 import axios from 'axios';
 import API from '../../../api';
@@ -15,6 +16,7 @@ export default function Statements( { darkMode, loggedInUserData}) {
   const [logDataPerUser, setLogDataPerUser] = useState([]);
   const [durationData, setDurationData] = useState([]);
   const [logPerUserData, setLogPerUserData] = useState([]);
+  const [clientsCities, setClientsCities] = useState([]);
   const [userList, setUserList] = useState([]);
   const [userId, setUserId] = useState(loggedInUserData.id);
   const [selectedUser, setSelectedUser] = useState(loggedInUserData.name);
@@ -76,8 +78,8 @@ export default function Statements( { darkMode, loggedInUserData}) {
 
   const loadLogNumberPerUser = () => {
     axios.get(`${API.address}/getlognumberperuser/${userId}`, {headers: { 'x-api-key': loggedInUserData.password }})
-        .then ((data) => 
-          setLogDataPerUser(data.data)
+        .then ((data) => {
+          setLogDataPerUser(data.data);}
         );
     };
 
@@ -87,6 +89,14 @@ export default function Statements( { darkMode, loggedInUserData}) {
           setDurationData(data.data)
         );
     };
+
+  const loadClientsCities = () => {
+      axios.get(`${API.address}/getclientscities/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
+          .then ((data) => 
+            setClientsCities(data.data)
+          );
+      };
+
   const loadLogPerUserNumber = () => {
       axios.get(`${API.address}/getlogperusernumber/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
           .then ((data) => 
@@ -105,14 +115,21 @@ export default function Statements( { darkMode, loggedInUserData}) {
       if (genderData.length === 0) loadGenderNumber();
       if (agesData.length === 0) loadAgesNumber();
       if (logData.length === 0) loadLogNumber();
-      if (logDataPerUser.length === 0) loadLogNumberPerUser();
       if (durationData.length === 0) loadDurationNumber();
       if (logPerUserData.length === 0) loadLogPerUserNumber();
-      if (userList.length === 0 && loggedInUserData.accessgroup === 1) loadNotEmptyLogUserList();  
+      if (clientsCities.length === 0) loadClientsCities();
+      if (userList.length === 0 && loggedInUserData.accessgroup === 1) loadNotEmptyLogUserList();
   },[]);
 
   useEffect(loadLogNumberPerUser, [userId])
 
+  useEffect(()=> {
+    if (userList.length > 0 && userList.find((item) => item.id === loggedInUserData.id) === undefined) {
+      setSelectedUser(userList[0].name)
+      setUserId(userList[0].id)
+    }
+  }, [userList.length, ])
+  
   return (
     <>
       <p className='text-center'>{loggedInUserData.accessgroup === 1 ? 'Az összes csoportra vonatkozó kimutatás' : loggedInUserData.group_name +' csoportra vonatkozó kimutatás'}</p>
@@ -124,21 +141,26 @@ export default function Statements( { darkMode, loggedInUserData}) {
           {agesData.filter((data)=> data.piece !== null).length > 0 ? <Ageschart agesData={agesData} options={options}/> : ''}
         </Col>
         <Col className='m-1' xs={12} md={3}>
-          {logData.length > 0 ?<Logchart logData={logData} options={options}/> : ''}
+          {durationData.length > 0 ? <Durationchart durationData={durationData} options={options}/> : ''}
         </Col>
       </Row>
       <Row className='justify-content-center mb-5 mx-1 p-1'>
         <Col className='m-1' xs={12} md={5}>
-          {durationData.length > 0 ? <Durationchart durationData={durationData} options={options}/> : ''}
+          {clientsCities.length > 0 ? <Citychart cityData={clientsCities} options={options}/> : ''}
         </Col>
         <Col className='m-1' xs={12} md={5}>
           {logPerUserData.length > 0 ? <Logperuserchart logPerUserData={logPerUserData} options={options}/> : ''}
         </Col>
       </Row>
+      <Row className='justify-content-center mb-5 mx-1 p-1'>
+        <Col className='m-1' xs={12} md={5}>
+          {logData.length > 0 ?<Logchart logData={logData} options={options}/> : ''}
+        </Col>
+      </Row>
       <p className='text-center'>{selectedUser} felhasználóra vonatkozó kimutatás</p>
       {loggedInUserData.accessgroup === 1 ?
             <Row className='justify-content-center mx-1'>
-              <Col className='m-1' xs={12} md={6}>
+              <Col className='m-1' xs={12} md={5}>
                 <Form.Select 
                   onChange={(e) => {
                     setSelectedUser(e.target.options[e.target.selectedIndex].text)
@@ -157,7 +179,7 @@ export default function Statements( { darkMode, loggedInUserData}) {
             </Row> : ''
           }
       <Row className='justify-content-center mx-1'>
-        <Col className='m-1' xs={12} md={4}>
+        <Col className='m-1' xs={12} md={5}>
           {logData.length > 0 ?<Logchart logData={logDataPerUser} options={options}/> : ''}
         </Col>
       </Row>
