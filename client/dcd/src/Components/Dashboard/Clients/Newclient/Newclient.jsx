@@ -174,6 +174,7 @@ export default function Newclient( {
                                         autoComplete="email"
                                         type='e-mail'
                                         value={email}
+										maxLength={100}
                                         onChange={(e) => setEmail(e.target.value)}/>
                                 </Form.Group>
                             </Col>

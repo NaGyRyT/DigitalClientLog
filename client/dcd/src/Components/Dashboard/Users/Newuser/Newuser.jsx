@@ -113,6 +113,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 								autoComplete="username"
 								type='text'
 								value={username}
+								maxLength={100}
 								onChange={(e) => setUsername(e.target.value)}/>
 						</Form.Group>
 						<Form.Group md="4" controlId="formName">
@@ -120,6 +121,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 							{errorMessage.name === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.name}</Alert>}
 							<Form.Control 
 								autoComplete="name"
+								maxLength={255}
 								type='text'
 								value={name}
 								onChange={(e) => setName(e.target.value)}/>
@@ -131,6 +133,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 								autoComplete="new-password"
 								type='password'
 								value={password}
+								maxLength={60}
 								onChange={(e) => setPassword(e.target.value)}/>
 						</Form.Group>
 						<Form.Group md="4" controlId="formSelectFromGroup">

@@ -79,7 +79,6 @@ export default function Newgroup( {loadGroupList, loggedInUserData} ) {
                                 {errorMessage.description === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.description}</Alert>}
                                 <Form.Control 
                                     autoComplete="on"
-                                    maxLength={100}
                                     type='text'
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}/>

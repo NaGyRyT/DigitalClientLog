@@ -124,6 +124,7 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 							{errorMessage.name === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.name}</Alert>}
 							<Form.Control 
 								autoComplete="name"
+								maxLength={255}
 								type='text'
 								value={name}
 								onChange={(e) => setName(e.target.value)}/>
@@ -133,6 +134,7 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 							{errorMessage.password === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.password}</Alert>}
 							<Form.Control 
 								autoComplete="new-password"
+								maxLength={60}
 								type='password'
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}/>
