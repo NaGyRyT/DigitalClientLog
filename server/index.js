@@ -10,6 +10,7 @@ app.use(bodyParser.urlencoded({extended : false}));
 app.use(bodyParser.json());
 app.use(cors());
 
+/*******************HTTPS**************************/
 /* const https = require('node:https');
 const fs = require('node:fs');
 const options = {
@@ -19,6 +20,11 @@ const options = {
 https.createServer(options, app).listen(444, () => {
     console.log('Server listening HTTPS on port 444')
 }); */
+
+/*******************HTTP**************************/
+app.listen(8080, () => {
+    console.log('Server listening on port 8080');
+});
 
 const authenticateKey = (req, res, next) => {
     const password = req.header('x-api-key');
@@ -660,6 +666,33 @@ app.get('/api/getlognumberperuser/:userid', authenticateKey, (req,res) => {
     });
 });
 
+app.get('/api/getclientscities/:accessgroup', authenticateKey, (req,res) => {
+    const accessgroup = req.params.accessgroup;
+    const sqlSelectCount = accessgroup === '1' ?
+        `
+        SELECT city, 
+        COUNT(city_id) as piece
+        FROM clients
+        INNER JOIN cities ON clients.city_id = cities.id
+        GROUP BY city
+        ` :
+        `
+        SELECT city, 
+        COUNT(city_id) as piece
+        FROM clients
+        INNER JOIN cities ON clients.city_id = cities.id
+        WHERE accessgroup = ? 
+        GROUP BY city
+        `;
+    database.db.query(sqlSelectCount, [accessgroup], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
 app.get('/api/getdurationnumber/:accessgroup', authenticateKey, (req,res) => {
     const accessgroup = req.params.accessgroup;
     const sqlSelectCount = accessgroup === '1' ?
@@ -825,9 +858,4 @@ app.post('/api/deletegroup', authenticateKey, (req,res) => {
             console.log(id+'.', 'group deleted in the database');
         }
     });
-});
-
-
-app.listen(8080, () => {
-    console.log('Server listening on port 8080');
 });
