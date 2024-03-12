@@ -61,6 +61,7 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData }) 
         <Modal 
             show={showEditLogForm} 
             onHide={handleShowHideEditLogForm}
+            dialogClassName='modal-80w'
             backdrop='static'>
         <Modal.Header closeButton>
             <Modal.Title>Naplóbejegyzés módosítása</Modal.Title>
@@ -114,7 +115,7 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData }) 
                             {errorMessage.description === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.description}</Alert>}
                             <Form.Control
                                 as="textarea"
-                                rows={5}
+                                rows={8}
                                 autoComplete="tel"
                                 type='tel'
                                 placeholder='Ügyfélkapcsolat leírása...'

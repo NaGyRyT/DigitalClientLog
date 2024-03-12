@@ -89,6 +89,7 @@ export default function Newlog( {
 			<Modal 
 				show={showNewLogForm} 
 				onHide={handleCloseNewLogForm}
+                dialogClassName='modal-80w'
 				backdrop='static'>
 				<Modal.Header closeButton>
 					<Modal.Title>Új naplóbejegyzés felvitele</Modal.Title>
@@ -140,8 +141,7 @@ export default function Newlog( {
                                     {errorMessage.description === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.description}</Alert>}
                                     <Form.Control
                                         as="textarea"
-                                        rows={5}
-                                        autoComplete="tel"
+                                        rows={8}
                                         type='tel'
                                         placeholder='Ügyfélkapcsolat leírása...'
                                         value={description}
