@@ -22,5 +22,6 @@ yarn-debug.log*
 yarn-error.log*
 
 node_modules
-database_connect.js
 api.js
+apikey.js
+database_connect.js
