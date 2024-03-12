@@ -121,7 +121,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 							{errorMessage.name === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.name}</Alert>}
 							<Form.Control 
 								autoComplete="name"
-								maxLength={255}
+								maxLength={100}
 								type='text'
 								value={name}
 								onChange={(e) => setName(e.target.value)}/>
