@@ -49,7 +49,7 @@ export default function Viewclient( { listItem, loggedInUserData } ) {
                 className='' 
                 show={showViewClientForm}
                 onHide={handleCloseViewClientForm}
-                dialogClassName='modal-60w'
+                dialogClassName='modal-80w'
                 backdrop='static'>
                 <Modal.Header closeButton>
                         <Modal.Title>Ügyfél részletek</Modal.Title>
