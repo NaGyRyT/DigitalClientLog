@@ -146,7 +146,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 | Mezők    | id(int)            |
 |          | username(vc100)    |
 |          | password(vc60)     |
-|          | name(vc255)        |
+|          | name(vc100)        |
 |          | accessgroup(int)   |
 |          | inactive(tinyint1) |
 
