@@ -8,6 +8,8 @@ Egy egyszerű programot készítettem amivel ügyfelek adatait (név, cím, stb.
 
 Ha kíváncsi vagy hogy működik a program látogass el ide: https://tryme.digitalclientlog.com
 
+Az adatbázis minden nap 23:59-kor (GMT+1) felülíródik a minta adatokkal!
+
 Bejelentkezéshez:
 - adminisztrátor: admin/22222222
 - felhasználó: user/11111111
@@ -102,20 +104,79 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 
 ## Kimutatások
 - csak a saját csoportban lévő adatokból készül kimutatás kivéve az admin csoport tagjait ahol az összes csoport adataiból
-- korosztály (0-18, 18-40, 41-65, 65 felett)
 - nem (férfi/nő)
+- korosztály (0-18, 18-40, 41-65, 65 felett)
+- ügyféltalálkozások időtartama
+- ügyfelek települések szerintei eloszlása
 - felhasználókhoz tartozó naplóbejegyzések száma (havi lebontásban)
-- ügyféltalálkozások időtartama 
 - felhasználók naplóbejegyzéseinek száma
 - admin csoport tagjai azoknak felhasználóknak a kimutatásait is lekérdezhetik akiknek van naplóbejegyzésük, egyéb csoport tagjai csak a saját kimutatásaikat láthatják
 
 ---
 
+#### Adatbázis felépítés
+
+| Táblanév | clients            |
+|----------|--------------------|
+| Mezők    | id(int)            |
+|          | accessgroup(int)   |
+|          | name(vc100)        |
+|          | birth_date(date)   |
+|          | phone(vc15)        |
+|          | email(vc100)       |
+|          | gender(vc6)        |
+|          | client_id(vc9)     |
+|          | city_id(int)       |
+|          | street(vc100)      |
+|          | house_number(vc5)  |
+|          | floor(vc3)         |
+|          | door(vc4)          |
+
+| Táblanév | log                |
+|----------|--------------------|
+| Mezők    | id(int)            |
+|          | user_id(int)       |
+|          | client_id(int)     |
+|          | date_time(datetime)|
+|          | duration(vc3)      |
+|          | description(text)  |
+
+| Táblanév | users              |
+|----------|--------------------|
+| Mezők    | id(int)            |
+|          | username(vc100)    |
+|          | password(vc60)     |
+|          | name(vc255)        |
+|          | accessgroup(int)   |
+|          | inactive(tinyint1) |
+
+| Táblanév | company            |
+|----------|--------------------|
+| Mezők    | id(int)            |
+|          | name(vc100)        |
+|          | shortname(vc20)    |
+|          | address(vc100)     |
+
+| Táblanév | accessgroup        |
+|----------|--------------------|
+| Mezők    | id(int)            |
+|          | group_name(vc100)  |
+|          | description(text)  |
+
+| Táblanév | cities             |
+|----------|--------------------|
+| Mezők    | id(int)            |
+|          | zip(vc4)           |
+|          | city(vc100)        |
+
+
+
+#### Források/erőforrások
+
 - Adatbázis: MySQL
 - Szerver: Node.js 
 - Kliens: React
-
-#### Források/erőforrások
+---
 - https://react.dev/
 - https://www.npmjs.com/package/mysql
 - https://react-bootstrap.netlify.app/
@@ -124,6 +185,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 - https://www.npmjs.com/package/bcrypt
 - https://www.npmjs.com/package/bcryptjs-react
 - https://www.npmjs.com/package/react-markdown
+- https://www.npmjs.com/package/remark-gfm
 - https://www.chartjs.org/docs/latest/
 - https://letsencrypt.org/getting-started/
 - https://certbot.eff.org/

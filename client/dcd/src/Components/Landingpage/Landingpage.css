@@ -2,10 +2,15 @@
     padding: 2.5rem;
 }
 
-.readme table{
+.readme table {
     border: 2px solid rgb(136, 136, 136);
     margin: 1rem;
-    font-size: 0.8rem;
+    min-width: 250px;
+    float: left;
+}
+
+.readme h4:last-of-type {
+    clear: both;
 }
 
 .readme thead:first-of-type {
@@ -13,7 +18,10 @@
   }
 
 .readme td:first-of-type, .readme th:first-of-type{
+    border: 0;
     border-right: 2px solid rgb(136, 136, 136);
+    font-weight: bold;
+    width: 80px;
 }
 
 .readme th{
