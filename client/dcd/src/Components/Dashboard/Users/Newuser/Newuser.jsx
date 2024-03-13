@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState} from 'react';
 import bcrypt from "bcryptjs-react";
 import { Form, Alert, Button, Modal } from 'react-bootstrap';
+import { validateUser } from '../Validateuser/Validateuser';
 import API from '../../../../api';
 
 export default function Newuser( { loadUserList, groupList, loggedInUserData } ) {
@@ -13,7 +14,8 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 		name : '',
 		username : '',
 		password : '',
-		group : ''
+		group : '',
+		error : false,
   	});
   	const [selectedGroup, setSelectedGroup] = useState(0);
 	const [showNewUserForm, setShowNewUserForm] = useState(false);
@@ -24,11 +26,13 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 		setUsername('');
 		setName('');
 		setPassword('');
+		setSelectedGroup(0);
 		setErrorMessage({
-		name : '',
-		username : '',
-		password : '',
-		group : ''
+			name : '',
+			username : '',
+			password : '',
+			group : '',
+			error : false,
 		})
 	}
 
@@ -37,7 +41,9 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
   	const handleNewUserSubmit = async (e) => {
 		e.preventDefault();
 		setDisableSubmitButton(true);
-		if (! await validateNewUser()) {
+		const tempErrorMessage = await validateUser(username, name, password, selectedGroup, loggedInUserData);
+		setErrorMessage(tempErrorMessage);
+		if (! tempErrorMessage.error) {
 			const trimmedHashedPassword = bcrypt.hashSync(password.trim(), 10);
 			axios.post(`${API.address}/newuser`, {username : username.trim(), 
 														password : trimmedHashedPassword,
@@ -53,7 +59,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 		} else setDisableSubmitButton(false);
 	}
     
-	async function checkExistUsername() {
+	/*async function checkExistUsername() {
 		let existUser;
 		await axios.post(`${API.address}/checkexistusername`, {username : username}, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then((data) => {
@@ -74,14 +80,11 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 			error = true;
 		} else newErrorMessage.username = ""; 
 		if (name.length === 0) {
-			newErrorMessage.name = 'A név mező nem lehet üres.';
-			error = true;
-		} else if (name.length > 100){
-			newErrorMessage.name = 'A név maximum hossza 100 karakter lehet.';
+			newErrorMessage.name = 'A név minimum 1 maximum 100 karakter lehet.';
 			error = true;
 		} else newErrorMessage.name = '';
 		if (password.length < 8) {
-			newErrorMessage.password = 'A jelszó mező minimum 8 karakter lehet.';
+			newErrorMessage.password = 'A jelszó minimum 8 maximum 60 karakter lehet.';
 			error = true;
 		} else newErrorMessage.password = '';
 		if (selectedGroup === 0 ) {
@@ -90,7 +93,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 		} else newErrorMessage.group = '';
 		if (error) setErrorMessage(newErrorMessage);
 		return error
-	}
+	}*/
 
 	return (
 		<>
@@ -113,7 +116,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 								autoComplete="username"
 								type='text'
 								value={username}
-								maxLength={100}
+								maxLength={20}
 								onChange={(e) => setUsername(e.target.value)}/>
 						</Form.Group>
 						<Form.Group md="4" controlId="formName">

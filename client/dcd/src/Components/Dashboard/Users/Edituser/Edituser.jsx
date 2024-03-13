@@ -2,6 +2,7 @@ import React, { useState} from 'react';
 import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal } from 'react-bootstrap';
 import bcrypt from "bcryptjs-react";
+import { validateUser } from '../Validateuser/Validateuser';
 import API from '../../../../api';
 
 export default function Edituser( { listItem, loadUserList, groupList, loggedInUser, setLoggedInUserData, loggedInUserData } ) {
@@ -11,27 +12,34 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 		name : '',
 		username : '',
 		password : '',
-		group : ''
+		group : '',
+		error : false,
   	});
 	const [selectedGroup, setSelectedGroup] = useState(listItem.accessgroup);
 	const [showEditUserForm, setShowEditUserForm] = useState(false);
 
 	const handleCloseEditUserForm = () => {
-			setShowEditUserForm(false);
-			setName(listItem.name);
-			setPassword('');
-			setErrorMessage({
-				name : '',
-				password : ''
-				})
-  }
+		setShowEditUserForm(false);
+		setName(listItem.name);
+		setPassword('');
+		setErrorMessage({
+			name : '',
+			username : '',
+			password : '',
+			group : '',
+			error : false,
+		});
+  	}
 
 	const handleShowEditUserForm = () => {
 		setShowEditUserForm(true);
-  }
+  	}
+
 	const handleEditUserSubmit = async (e) => {
 		e.preventDefault();
-		if (! await validateEditUser()) {
+		const tempErrorMessage = await validateUser(listItem.username, name, password, selectedGroup, loggedInUserData, true, password === '' ? false : true);
+		setErrorMessage(tempErrorMessage);
+		if (! tempErrorMessage.error) {
 			const trimmedHashedPassword = password === '' ? '' : bcrypt.hashSync(password.trim(), 10);
 			axios.post(`${API.address}/edituser`, {
 				password : trimmedHashedPassword,
@@ -40,11 +48,6 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 				id : listItem.id
 			}, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
-			setErrorMessage({
-				name : '',
-				password : ''
-			});
-
 			if (loggedInUser === undefined) loadUserList(false) 
 			else {
 				let newListItem = listItem;
@@ -55,21 +58,6 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 			setShowEditUserForm(false);
 		})
 		}
-	}
-
-	async function validateEditUser() {
-		const newErrorMessage = structuredClone(errorMessage);
-		let error = false;
-		if ( name.length === 0 ) {
-			newErrorMessage.name = 'A név mező nem lehet üres.';
-			error = true;
-		} else newErrorMessage.name = '';
-		if ( password.length < 8 && password.length > 0) {
-			newErrorMessage.password = 'A jelszó mező minimum 8 karakter lehet.';
-			error = true;
-		} else newErrorMessage.password = '';
-		if ( error ) setErrorMessage(newErrorMessage);
-		return error
 	}
 
 	const renderTooltip = (props) => (
@@ -130,7 +118,7 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 								onChange={(e) => setName(e.target.value)}/>
 						</Form.Group>
 						<Form.Group md="4" controlId="formPassword">
-							<Form.Label>Jelszó</Form.Label>
+							<Form.Label>Jelszó (Ha nem írsz jelszót, akkor a jelszó nem fog módosulni.)</Form.Label>
 							{errorMessage.password === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.password}</Alert>}
 							<Form.Control 
 								autoComplete="new-password"
