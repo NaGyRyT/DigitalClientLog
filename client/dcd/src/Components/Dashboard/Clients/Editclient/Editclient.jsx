@@ -37,7 +37,31 @@ export default function Editclient( {
     const [showEditClientForm, setShowEditClientForm] = useState(false);
 
 	const handleCloseEditClientForm = () => {
-			setShowEditClientForm(false);
+        setShowEditClientForm(false);
+        setName(listItem.name);
+		setClientId(listItem.client_id);
+        setBirthDate(listItem.birth_date);
+        setGender(listItem.gender);
+        setZip(listItem.zip);
+		setCityId(listItem.city_id);
+		setStreet(listItem.street);
+		setHouseNumber(listItem.house_number);
+		setFloor(listItem.floor);
+		setDoor(listItem.door);
+        setPhone(listItem.phone);
+		setEmail(listItem.email);
+ 	 	setErrorMessage({
+            name : '',
+			clientId : '',
+            birthDate : '',
+            gender : '',
+            zip : '',
+			city : '',
+            phone : '',
+            email : '',
+			error : false, 
+		})
+
     }
 
     const handleShowEditClientForm = () => {
@@ -64,7 +88,7 @@ export default function Editclient( {
                 email : email.trim()},
                 {headers: { 'x-api-key': loggedInUserData.password }})
 		    .then(() => {
-                handleCloseEditClientForm();
+                setShowEditClientForm(false);
                 loadClientList();
 		    })
 		}

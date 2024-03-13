@@ -15,7 +15,16 @@ export default function Editgroup( {loadGroupList, listItem, loggedInUserData} )
   	});
 
 	const [showEditGroupForm, setShowEditGroupForm] = useState(false);
-	const handleCloseEditGroupForm = async () => setShowEditGroupForm(false);
+	const handleCloseEditGroupForm = async () => {
+		setShowEditGroupForm(false);
+		setGroupName(listItem.group_name);
+		setDescription(listItem.description);
+		setErrorMessage({
+			groupName : '',
+			description : '',
+			error : false,
+		});
+	};
 	const handleShowEditGroupForm = () => setShowEditGroupForm(true);
   	const handleEditGroupSubmit = async (e) => {
 		e.preventDefault();
@@ -28,16 +37,16 @@ export default function Editgroup( {loadGroupList, listItem, loggedInUserData} )
                 description : description,
 			}, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
-            handleCloseEditGroupForm();
+			setShowEditGroupForm(false);
 			loadGroupList();
-		})
-		}
-	}
+		});
+		};
+	};
 
     const renderTooltip = (tooltip) => (
         <Tooltip id="group-edit-button-tooltip">
           {tooltip}
-        </Tooltip>)
+        </Tooltip>);
 
 	return (
 		<>

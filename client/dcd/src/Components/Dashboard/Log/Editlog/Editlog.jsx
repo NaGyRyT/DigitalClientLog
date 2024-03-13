@@ -18,9 +18,22 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData }) 
   	});
     const [showEditLogForm, setShowEditLogForm] = useState(false);
 
-    const handleShowHideEditLogForm = () => {
-        setShowEditLogForm(!showEditLogForm);
-    };
+    const handleCloseEditLogForm = async () => {
+        setShowEditLogForm(false);
+        setTime(logEntry.date_time.slice(11,16));
+        setDate(logEntry.date_time.slice(0,10));
+        setDuration(logEntry.duration);
+        setDescription(logEntry.description);
+        setErrorMessage({
+            time : '',
+            date : '',
+            duration : '',
+            description : '',
+            error : false
+          });
+
+    }
+    const handleShowEditLogForm = () => setShowEditLogForm(true);
 
     const handleEditLogSubmit = async (e) => {
 		e.preventDefault();
@@ -34,7 +47,7 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData }) 
                 description : description.trim()},
                 {headers: { 'x-api-key': loggedInUserData.password }})
 		    .then(() => {
-                handleShowHideEditLogForm()
+                setShowEditLogForm(false);
                 loadLogEntries();
 		    })}
     };
@@ -54,13 +67,13 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData }) 
                 size = "sm"
                 className = "m-1"
                 variant = "info"
-                onClick = {handleShowHideEditLogForm}>
+                onClick = {handleShowEditLogForm}>
                 &#x270D;
             </Button>    
         </OverlayTrigger>
         <Modal 
             show={showEditLogForm} 
-            onHide={handleShowHideEditLogForm}
+            onHide={handleShowEditLogForm}
             dialogClassName='modal-80w'
             backdrop='static'>
         <Modal.Header closeButton>
@@ -127,7 +140,7 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData }) 
             </Form>
         </Modal.Body>
         <Modal.Footer>
-        <Button variant="secondary" onClick={handleShowHideEditLogForm}>
+        <Button variant="secondary" onClick={handleCloseEditLogForm}>
             Mégse
         </Button>
         <Button variant="primary" onClick={handleEditLogSubmit}>
