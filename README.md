@@ -31,7 +31,7 @@ Ezt a menüpontotot csak az admin csoport tagjai láthatják/kezelhetik.
 - két azonos felhasználónév nem engedélyezett
 - a felhasználónév minimum 4 maximum 20 karakter lehet
 - a név mező nem lehet üres, maximum 100 karakter lehet
-- a jelszó minimum 8 karakter lehet 
+- A jelszónak minimum 1 kisbetűt, 1 nagybetűt, 1 számot és 1 speciális karaktert kell tartalmaznia. A hossza minimum 8 maximum 60 karakter lehet. 
 - csoportot választani kötelező a legördülő listából
 
 ### Felhasználók listája
@@ -144,7 +144,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 | Táblanév | users              |
 |----------|--------------------|
 | Mezők    | id(int)            |
-|          | username(vc100)    |
+|          | username(vc20)     |
 |          | password(vc60)     |
 |          | name(vc100)        |
 |          | accessgroup(int)   |
@@ -180,7 +180,8 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 - https://react.dev/
 - https://www.npmjs.com/package/mysql
 - https://react-bootstrap.netlify.app/
-- https://www.npmjs.com/package/react-bootstrap-pagination-control
+- https://www.npmjs.com/package
+- react-bootstrap-pagination-control
 - https://www.npmjs.com/package/validator
 - https://www.npmjs.com/package/bcrypt
 - https://www.npmjs.com/package/bcryptjs-react
