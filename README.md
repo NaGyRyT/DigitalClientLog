@@ -11,8 +11,8 @@ Ha kíváncsi vagy hogy működik a program látogass el ide: https://tryme.digi
 Az adatbázis minden nap 23:59-kor (GMT+1) felülíródik a minta adatokkal!
 
 Bejelentkezéshez:
-- adminisztrátor: admin/22222222
-- felhasználó: user/11111111
+- Adminisztrátor: admin/22222222
+- Teszt felhasználó: user/11111111
 
 ---
 
@@ -169,27 +169,35 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 |          | zip(vc4)           |
 |          | city(vc100)        |
 
-
+---
 
 #### Források/erőforrások
 
 - Adatbázis: MySQL
-- Szerver: Node.js 
 - Kliens: React
+- Szerver: Node.js 
+---
+- https://www.npmjs.com/package/mysql2
+- https://www.npmjs.com/package/express
+- https://www.npmjs.com/package/cors
+- https://www.npmjs.com/package/body-parser
+- https://www.npmjs.com/package/bcrypt
 ---
 - https://react.dev/
-- https://www.npmjs.com/package/mysql
 - https://react-bootstrap.netlify.app/
-- https://www.npmjs.com/package
-- react-bootstrap-pagination-control
-- https://www.npmjs.com/package/validator
-- https://www.npmjs.com/package/bcrypt
+- https://www.chartjs.org/docs/latest/
+- https://www.npmjs.com/package/axios
 - https://www.npmjs.com/package/bcryptjs-react
+- https://www.npmjs.com/package/react-bootstrap
+- https://www.npmjs.com/package/react-bootstrap-icons
+- https://www.npmjs.com/package/react-bootstrap-pagination-control
+- https://www.npmjs.com/package/react-chartjs-2
+- https://www.npmjs.com/package/react-router
 - https://www.npmjs.com/package/react-markdown
 - https://www.npmjs.com/package/remark-gfm
-- https://www.chartjs.org/docs/latest/
+- https://www.npmjs.com/package/validator
+---
 - https://letsencrypt.org/getting-started/
 - https://certbot.eff.org/
 - https://www.arubacloud.com/
 - https://www.forpsi.hu/domain/
-
