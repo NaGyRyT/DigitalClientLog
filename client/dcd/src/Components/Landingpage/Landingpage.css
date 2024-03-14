@@ -9,7 +9,7 @@
     float: left;
 }
 
-.readme h4:last-of-type {
+.readme hr {
     clear: both;
 }
 
