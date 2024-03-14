@@ -79,7 +79,6 @@ async function checkExistClientId(clientId, accessgroup, loggedInUserData) {
     let existClientId;
     await axios.post(`${API.address}/checkexistclientid`, {clientid : clientId, accessgroup : accessgroup}, {headers: { 'x-api-key': loggedInUserData.password }})
     .then((data) => {
-        console.log(data.data)
         if (data.data.length === 0) existClientId = false;
         else existClientId = true;
     });
