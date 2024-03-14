@@ -6,7 +6,7 @@ export default function Citychart( { cityData, options} ) {
     const barData = {
         labels: cityData.map((data)=> data.city),
         datasets: [{
-            label: 'Az ügyfelek településssek szerinti eloszlása',
+            label: 'Az ügyfelek települések szerinti eloszlása',
             data: cityData.map((data)=> data.piece),
             backgroundColor: ['#EAD2AC', '#6096BA', '#A3CEF1', '#8B8C89']
         }]
