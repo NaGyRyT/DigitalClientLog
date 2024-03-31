@@ -83,7 +83,7 @@ export default function Newlog( {
             </OverlayTrigger>
             </> : 		
             <Button className='mx-3' variant="primary" onClick={handleShowNewLogForm}>
-                + Új naplóbejegyzés
+                + Új napló
             </Button>}
 
 			<Modal 

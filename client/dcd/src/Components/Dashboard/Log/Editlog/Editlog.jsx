@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col, ListGroup } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col, ListGroup, CloseButton } from 'react-bootstrap';
 import { validateLog } from '../Validatelog/Validatelog'
 import API from '../../../../api';
 
-export default function Editlog({ logEntry, loadLogEntries, loggedInUserData }) {
+export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, buttonTitle }) {
     const [time, setTime] = useState(logEntry.date_time.slice(11,16));
     const [date, setDate] = useState(logEntry.date_time.slice(0,10));
     const [duration, setDuration] = useState(logEntry.duration);
@@ -18,7 +18,8 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData }) 
   	});
     const [showEditLogForm, setShowEditLogForm] = useState(false);
 
-    const handleCloseEditLogForm = async () => {
+    const handleCloseEditLogForm = async (e) => {
+        e.stopPropagation();
         setShowEditLogForm(false);
         setTime(logEntry.date_time.slice(11,16));
         setDate(logEntry.date_time.slice(0,10));
@@ -33,10 +34,14 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData }) 
           });
 
     }
-    const handleShowEditLogForm = () => setShowEditLogForm(true);
+    const handleShowEditLogForm = (e) => {
+        e.stopPropagation();
+        setShowEditLogForm(true);
+    }
 
     const handleEditLogSubmit = async (e) => {
 		e.preventDefault();
+        e.stopPropagation();
 		const tempErrorMessage = await validateLog(date, time, duration, description);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
@@ -64,20 +69,22 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData }) 
 			delay={{ show: 50, hide: 100 }}
 			overlay={renderTooltip('Szerkesztés')}>
             <Button 
-                size = "sm"
+                size={buttonTitle === undefined ? "sm" : ''}
                 className = "m-1"
                 variant = "info"
                 onClick = {handleShowEditLogForm}>
                 &#x270D;
+                {buttonTitle}
             </Button>    
         </OverlayTrigger>
         <Modal 
             show={showEditLogForm} 
-            onHide={handleShowEditLogForm}
             dialogClassName='modal-80w'
-            backdrop='static'>
-        <Modal.Header closeButton>
+            backdrop='static'
+            onClick={(e)=>e.stopPropagation()}>
+        <Modal.Header>
             <Modal.Title>Naplóbejegyzés módosítása</Modal.Title>
+            <CloseButton className='justify-content-end' onClick={handleCloseEditLogForm}/>
         </Modal.Header>
         <Modal.Body>
             <Form onSubmit={handleEditLogSubmit}>

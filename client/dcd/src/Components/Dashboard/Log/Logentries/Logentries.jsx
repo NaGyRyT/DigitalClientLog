@@ -6,6 +6,7 @@ import Viewlog from '../Viewlog/Viewlog';
 import Editlog from '../Editlog/Editlog';
 import Deletelog from '../Deletelog/Deletelog';
 
+
 export default function Logentries( {
   logEntries,
   loadLogEntries,
@@ -16,6 +17,8 @@ export default function Logentries( {
   setSortDirection,
   loggedInUserData
   } ) {
+
+  const [clickedRowIndex, setClickedRowIndex] = useState('');
   const [usernameSearch, setUsernameSearch] = useState('');
   const [clientnameSearch, setClientnameSearch] = useState('');
   const [dateTimeSearch, setDateTimeSearch] = useState('');
@@ -28,7 +31,7 @@ export default function Logentries( {
     false : 
     true);
 
-    const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>;
+  const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>;
   
   const filteredList = logEntries
                         .filter((listItem) => loggedInUserData.accessgroup === 1 ? listItem : loggedInUserData.accessgroup === listItem.accessgroup_id)
@@ -81,8 +84,7 @@ export default function Logentries( {
     <Tooltip id="hide-foreign-log-tooltip">
       {tooltip}
     </Tooltip>)
-
-  
+ 
   return (
     <div className='m-3'>
       <Table striped bordered hover size="sm">
@@ -137,7 +139,7 @@ export default function Logentries( {
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-                  handleSort(logEntries, sortDirection, 'duration', 'log')
+                  handleSort(logEntries, sortDirection, 'duration', 'log');
                   setSortedColumn('duration');
                   setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
@@ -210,7 +212,7 @@ export default function Logentries( {
                   <Form.Check
                     role="button"
                     type='switch'
-                    id='view-hide-delete-switcher'
+                    id='own-log-switcher'
                     defaultChecked={hideForeignlog}
                     onChange={(e) => {
                       sessionStorage.setItem('logTableHideForeignLog', e.target.checked)
@@ -224,36 +226,47 @@ export default function Logentries( {
         <tbody>
           {paginatedList
             .map((listItem) => {
-              return (
-              <tr className={listItem.inactive === 1 ? "text-decoration-line-through" : ""} key={listItem.id}>
-                  <td>{listItem.id}</td>
-                  <td>{listItem.user_name}</td>
-                  <td>{listItem.client_name}</td>
-                  <td className='max-width-115 d-none d-sm-table-cell'>{listItem.date_time}</td>
-                  <td className='max-width-65 d-none d-md-table-cell'>{listItem.duration}</td>                    
-                  <td className='d-none d-lg-table-cell'>{listItem.description.length > 100 ? 
-                                                            listItem.description.slice(0, 100)+ '...' : 
-                                                            listItem.description}</td>
-                  <td className='width-150'>
-                  <>
-                    <Viewlog
-                      logEntry={listItem}/>
-                    { loggedInUserData.id === listItem.user_id ?
-                    <> 
-                    <Editlog
-                      logEntry={listItem}
-                      loadLogEntries={loadLogEntries}
-                      loggedInUserData={loggedInUserData}/>
-                    <Deletelog
-                      listItem={listItem}
-                      loadLogEntries={loadLogEntries}
-                      loggedInUserData={loggedInUserData}/></> : 
-                      ''
-                    }
+              return (           
+              <tr 
+                key={listItem.id}
+                className='cursor-pointer'
+                onClick={(e) => {
+                  setClickedRowIndex(listItem.id);
+                  e.stopPropagation();
+                  if (e.target.role === 'dialog') setClickedRowIndex(null);
+              }}>
+                <td>{listItem.id}</td>
+                <td>{listItem.user_name}</td>
+                <td>{listItem.client_name}</td>
+                <td className='max-width-115 d-none d-sm-table-cell'>{listItem.date_time}</td>
+                <td className='max-width-65 d-none d-md-table-cell'>{listItem.duration}</td>                    
+                <td className='d-none d-lg-table-cell'>{listItem.description.length > 100 ? 
+                                                          listItem.description.slice(0, 100)+ '...' : 
+                                                          listItem.description}</td>
+                <td className='width-150'>
+                <>
+                  <Viewlog
+                    logEntry={listItem}
+                    loggedInUserData={loggedInUserData}
+                    loadLogEntries={loadLogEntries}
+                    clickedRowIndex={clickedRowIndex}
+                    setClickedRowIndex={setClickedRowIndex}/>
+                  { loggedInUserData.id === listItem.user_id ?
+                  <> 
+                  <Editlog
+                    logEntry={listItem}
+                    loadLogEntries={loadLogEntries}
+                    loggedInUserData={loggedInUserData}/>
+                  <Deletelog
+                    listItem={listItem}
+                    loadLogEntries={loadLogEntries}
+                    loggedInUserData={loggedInUserData}/></> : 
+                    ''
+                  }
                   </>    
                 </td>
               </tr>
-)})}
+              )})}
         </tbody>
         <tfoot>
         <tr>

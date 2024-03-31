@@ -1,15 +1,34 @@
-import React, {useState} from 'react';
-import { Button, Modal, ListGroup, Tooltip, OverlayTrigger  } from 'react-bootstrap';
+import React, {useState, useEffect} from 'react';
+import { Button, Modal, ListGroup, Tooltip, OverlayTrigger, CloseButton  } from 'react-bootstrap';
+import Deletelog from '../Deletelog/Deletelog';
+import Editlog from '../Editlog/Editlog';
 
-export default function Viewlog( {logEntry}) {
+export default function Viewlog( {
+    logEntry,
+    loadLogEntries,
+    loggedInUserData,
+    clickedRowIndex,
+    setClickedRowIndex,
+    }) {
+    
     const [showViewLogForm, setShowViewLogForm] = useState(false);
-    const handleCloseViewLogForm = () => setShowViewLogForm(false);  
-    const handleShowViewLogForm = async() => {
-        setShowViewLogForm(true);
+
+    const handleCloseViewLogForm = (e) => {
+        e.stopPropagation();
+        setShowViewLogForm(false);
+        if (clickedRowIndex !== undefined) setClickedRowIndex(null);
     }
+    const handleShowViewLogForm = (e) => {
+        e.stopPropagation();
+        setShowViewLogForm(true);
+    };
 
     const renderTooltip = (tooltip) => (<Tooltip id="button-tooltip">{tooltip}</Tooltip>);
     
+    useEffect(()=> {
+        if (clickedRowIndex === logEntry.id) setShowViewLogForm(true)
+    },[clickedRowIndex])
+
 return (
     <>
         <OverlayTrigger
@@ -26,11 +45,11 @@ return (
         </OverlayTrigger>
         <Modal
             show={showViewLogForm}
-            onHide={handleCloseViewLogForm}
             backdrop='static'
             dialogClassName='modal-80w'>
-            <Modal.Header closeButton>
+            <Modal.Header>
                 <Modal.Title>Naplóbejegyzés részletek</Modal.Title>
+                <CloseButton className='justify-content-end' onClick={handleCloseViewLogForm}/>
             </Modal.Header>
             <Modal.Body>
                 <ListGroup>
@@ -44,11 +63,25 @@ return (
                 <p>{logEntry.description}</p>
             </Modal.Body>
             <Modal.Footer>
-                <Button onClick={handleCloseViewLogForm}>
-                    Bezár
-                </Button>
+            <Button 
+                onClick={handleCloseViewLogForm}
+                variant='secondary'>
+                Bezár
+            </Button>
+            { loggedInUserData.id === logEntry.user_id ?
+                <>
+                    <Editlog
+                        logEntry={logEntry}
+                        loadLogEntries={loadLogEntries}
+                        loggedInUserData={loggedInUserData}
+                        buttonTitle={'Szerkeszt'}/>
+                    <Deletelog
+                        listItem={logEntry}
+                        loadLogEntries={loadLogEntries}
+                        loggedInUserData={loggedInUserData}
+                        buttonTitle={'Töröl'}/>
+                </> : ''}
             </Modal.Footer>
-
         </Modal>
     </>
   )

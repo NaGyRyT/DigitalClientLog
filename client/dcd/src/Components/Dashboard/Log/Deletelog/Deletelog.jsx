@@ -1,15 +1,21 @@
 import React, { useState } from 'react'
-import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Button, Modal, CloseButton } from 'react-bootstrap';
 import axios from 'axios';
 import API from '../../../../api';
 
-export default function Deletelog( {listItem, loadLogEntries, loggedInUserData} ) {
+export default function Deletelog( {listItem, loadLogEntries, loggedInUserData, buttonTitle} ) {
     const [showDeleteLogForm, setShowDeleteLogForm] = useState(false);
-    const handleCloseDeleteLogForm = () => setShowDeleteLogForm(false);
-    const handleShowDeleteLogForm = () => {
-        setShowDeleteLogForm(true)};
+    const handleCloseDeleteLogForm = (e) => {
+        e.stopPropagation();
+        setShowDeleteLogForm(false);
+    }
+    const handleShowDeleteLogForm = (e) => {
+        e.stopPropagation();
+        setShowDeleteLogForm(true);
+    };
     
     const handleDeleteLogSubmit = (e) => {
+        e.stopPropagation();
         e.preventDefault();
         axios.post(`${API.address}/deletelog`, {id : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
             .then(() => {
@@ -19,27 +25,29 @@ export default function Deletelog( {listItem, loadLogEntries, loggedInUserData} 
     }
     
     const renderTooltip = (tooltip) => (
-        <Tooltip id="delete-button-tooltip">
+        <Tooltip id='delete-button-tooltip'>
             {tooltip}
         </Tooltip>
         );
     return (
         <>
             <OverlayTrigger
-                placement="top"
+                placement='top'
                 delay={{ show: 50, hide: 100 }}
                 overlay={renderTooltip('Törlés')}>
                 <Button 
-                    size="sm"
-                    className="m-1"
-                    variant="danger"
+                    size={buttonTitle === undefined ? 'sm' : ''}
+                    className='m-1'
+                    variant='danger'
                     onClick={handleShowDeleteLogForm}>
                     &#128465;
+                    {buttonTitle}
                 </Button>
             </OverlayTrigger>
-            <Modal show={showDeleteLogForm} onHide={handleCloseDeleteLogForm} backdrop='static'>
-                <Modal.Header closeButton>
-                        <Modal.Title>Naplóbejegyzés törlése</Modal.Title>
+            <Modal show={showDeleteLogForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
+                <Modal.Header>
+                    <Modal.Title>Naplóbejegyzés törlése</Modal.Title>
+                    <CloseButton className='justify-content-end' onClick={handleCloseDeleteLogForm}/>
                 </Modal.Header>
                 <Modal.Body>
                     Valóban törölni szeretnéd
@@ -47,10 +55,10 @@ export default function Deletelog( {listItem, loadLogEntries, loggedInUserData} 
                     <span className='fw-bold text-danger'> {listItem.id}.</span> sorszámú naplóbejegyzést?
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseDeleteLogForm}>
+                    <Button variant='secondary' onClick={handleCloseDeleteLogForm}>
                         Nem
                     </Button>
-                    <Button variant="primary" onClick={handleDeleteLogSubmit}>
+                    <Button variant='primary' onClick={handleDeleteLogSubmit}>
                         Igen
                     </Button>
                 </Modal.Footer>
