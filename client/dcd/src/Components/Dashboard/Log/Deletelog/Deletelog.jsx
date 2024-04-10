@@ -24,9 +24,9 @@ export default function Deletelog( {listItem, loadLogEntries, loggedInUserData, 
             })        
     }
     
-    const renderTooltip = (tooltip) => (
-        <Tooltip id='delete-button-tooltip'>
-            {tooltip}
+    const renderTooltip = (prop) => (
+        <Tooltip id='delete-button-tooltip'{...prop}>
+            Törlés
         </Tooltip>
         );
     return (
@@ -34,7 +34,7 @@ export default function Deletelog( {listItem, loadLogEntries, loggedInUserData, 
             <OverlayTrigger
                 placement='top'
                 delay={{ show: 50, hide: 100 }}
-                overlay={renderTooltip('Törlés')}>
+                overlay={renderTooltip}>
                 <Button 
                     size={buttonTitle === undefined ? 'sm' : ''}
                     className='m-1'

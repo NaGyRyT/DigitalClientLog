@@ -43,9 +43,9 @@ export default function Editgroup( {loadGroupList, listItem, loggedInUserData} )
 		};
 	};
 
-    const renderTooltip = (tooltip) => (
-        <Tooltip id="group-edit-button-tooltip">
-          {tooltip}
+    const renderTooltip = (props) => (
+        <Tooltip id="group-edit-button-tooltip" {...props}>
+          Szerkesztés
         </Tooltip>);
 
 	return (
@@ -53,7 +53,7 @@ export default function Editgroup( {loadGroupList, listItem, loggedInUserData} )
 			<OverlayTrigger
                 placement="top"
                 delay={{ show: 50, hide: 100 }}
-                overlay={renderTooltip('Szerkesztés')}>
+                overlay={renderTooltip}>
                 <Button 
                     size = "sm"
                     className = "m-1"

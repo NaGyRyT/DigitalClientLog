@@ -4,37 +4,45 @@ import Deletelog from '../Deletelog/Deletelog';
 import Editlog from '../Editlog/Editlog';
 
 export default function Viewlog( {
+    showLogDetailsButton,
     logEntry,
     loadLogEntries,
     loggedInUserData,
     clickedRowIndex,
     setClickedRowIndex,
+    showLogFormOnCalendar,
+    setShowLogFormOnCalendar,
     }) {
-    
     const [showViewLogForm, setShowViewLogForm] = useState(false);
 
     const handleCloseViewLogForm = (e) => {
         e.stopPropagation();
-        setShowViewLogForm(false);
-        if (clickedRowIndex !== undefined) setClickedRowIndex(null);
+        if (!showLogDetailsButton) setShowLogFormOnCalendar(false)
+            else setShowViewLogForm(false);
+        if (clickedRowIndex !== undefined && showLogDetailsButton) setClickedRowIndex(null);
     }
+    
     const handleShowViewLogForm = (e) => {
         e.stopPropagation();
-        setShowViewLogForm(true);
+        if (!showLogDetailsButton) setShowLogFormOnCalendar(true)
+            else setShowViewLogForm(true);
     };
 
-    const renderTooltip = (tooltip) => (<Tooltip id="button-tooltip">{tooltip}</Tooltip>);
+    const renderTooltip = (props) => (<Tooltip id="button-tooltip" {...props}>Részletek</Tooltip>);
     
     useEffect(()=> {
-        if (clickedRowIndex === logEntry.id) setShowViewLogForm(true)
+        if (clickedRowIndex === logEntry.id && clickedRowIndex !== undefined) 
+            if (!showLogDetailsButton && logEntry.duration !== undefined) setShowLogFormOnCalendar(true)
+                else if (logEntry.duration !== undefined) setShowViewLogForm(true);
     },[clickedRowIndex])
+
 
 return (
     <>
-        <OverlayTrigger
+        {showLogDetailsButton ? <OverlayTrigger
             placement="top"
             delay={{ show: 50, hide: 100 }}
-            overlay={renderTooltip('Részletek')}>
+            overlay={renderTooltip}>
             <Button 
                 size="sm"
                 className="m-1"
@@ -42,9 +50,9 @@ return (
                 onClick={handleShowViewLogForm}>
                 👁
             </Button>
-        </OverlayTrigger>
+        </OverlayTrigger> : ''}
         <Modal
-            show={showViewLogForm}
+            show={showViewLogForm || showLogFormOnCalendar}
             backdrop='static'
             dialogClassName='modal-80w'>
             <Modal.Header>

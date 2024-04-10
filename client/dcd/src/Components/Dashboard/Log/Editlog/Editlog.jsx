@@ -57,9 +57,9 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
 		    })}
     };
 
-    const renderTooltip = (tooltip) => (
-        <Tooltip id="edit-button-tooltip">
-          {tooltip}
+    const renderTooltip = (props) => (
+        <Tooltip id="edit-button-tooltip" {...props}>
+          Szerkesztés
         </Tooltip>)
 
   return (
@@ -67,7 +67,7 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
         <OverlayTrigger
 			placement="top"
 			delay={{ show: 50, hide: 100 }}
-			overlay={renderTooltip('Szerkesztés')}>
+			overlay={renderTooltip}>
             <Button 
                 size={buttonTitle === undefined ? "sm" : ''}
                 className = "m-1"

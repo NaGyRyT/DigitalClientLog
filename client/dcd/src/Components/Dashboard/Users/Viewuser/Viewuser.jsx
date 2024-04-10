@@ -7,8 +7,8 @@ export default function Viewuser( { listItem } ) {
     const handleShowViewUserForm = () => setShowViewUserForm(true);
    
     const renderTooltip = (props) => (
-        <Tooltip id="View-button-tooltip" >
-            {props}
+        <Tooltip id="View-button-tooltip"{...props}>
+            Részletek
         </Tooltip>
         );
     
@@ -17,7 +17,7 @@ export default function Viewuser( { listItem } ) {
                 <OverlayTrigger
                     placement="top"
                     delay={{ show: 50, hide: 100 }}
-                    overlay={renderTooltip('Részletek')}
+                    overlay={renderTooltip}
                 >
                     <Button 
                         size="sm"

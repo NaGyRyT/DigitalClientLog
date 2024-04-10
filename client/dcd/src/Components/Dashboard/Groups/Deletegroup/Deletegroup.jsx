@@ -35,9 +35,9 @@ export default function Deletegroup( {listItem, loadGroupList, loggedInUserData}
     return existGroupIdInUsers;
   }    
     
-  const renderTooltip = (tooltip) => (
-    <Tooltip id="delete-button-tooltip">
-      {tooltip}
+  const renderTooltip = (props) => (
+    <Tooltip id="delete-button-tooltip" {...props}>
+      Törlés
     </Tooltip>
     );
 
@@ -46,7 +46,7 @@ export default function Deletegroup( {listItem, loadGroupList, loggedInUserData}
       <OverlayTrigger
         placement="top"
         delay={{ show: 50, hide: 100 }}
-        overlay={renderTooltip('Törlés')}>
+        overlay={renderTooltip}>
         <Button 
             size="sm"
             className="m-1"

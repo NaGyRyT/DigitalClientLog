@@ -39,7 +39,7 @@ export default function Newlog( {
 		})
 	}
 	const handleShowNewLogForm = () => setShowNewLogForm(true);
-  	const handleNewClientSubmit = async (e) => {
+  	const handleNewLogSubmit = async (e) => {
         setDisableSubmitButton(true);
 		e.preventDefault();
 		const tempErrorMessage = await validateLog(date, time, duration, description);
@@ -60,9 +60,9 @@ export default function Newlog( {
 		} else setDisableSubmitButton(false);
 	};
 
-    const renderTooltip = (tooltip) => (
-        <Tooltip id="View-button-tooltip" >
-            {tooltip}
+    const renderTooltip = (props) => (
+        <Tooltip id="View-button-tooltip" {...props} >
+            Új naplóbejegyzés
         </Tooltip>
         );
 
@@ -72,7 +72,7 @@ export default function Newlog( {
             <OverlayTrigger
                 placement="top"
                 delay={{ show: 50, hide: 100 }}
-                overlay={renderTooltip('Új naplóbejegyzés')}>
+                overlay={renderTooltip}>
                 <Button 
                     size="sm"
                     className="m-1"
@@ -95,7 +95,7 @@ export default function Newlog( {
 					<Modal.Title>Új naplóbejegyzés felvitele</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-				    <Form onSubmit={handleNewClientSubmit}>
+				    <Form onSubmit={handleNewLogSubmit}>
                         <ListGroup className='mb-3'>
                             <ListGroup.Item>Ügyfél neve: {selectedClient.name}</ListGroup.Item>
                         </ListGroup>
@@ -105,6 +105,8 @@ export default function Newlog( {
                                     <Form.Label>Dátum</Form.Label>
                                     {errorMessage.date === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.date}</Alert>}
                                     <Form.Control
+                                        min='2000-01-01'
+                                        max='2099-12-31'
                                         type='date'
                                         value={date}
                                         onChange={(e) => setDate(e.target.value)}/>
@@ -155,7 +157,7 @@ export default function Newlog( {
 				<Button variant="secondary" onClick={handleCloseNewLogForm}>
 					Mégse
 				</Button>
-				<Button variant="primary" onClick={handleNewClientSubmit} disabled={disableSubmitButton}>
+				<Button variant="primary" onClick={handleNewLogSubmit} disabled={disableSubmitButton}>
 					Rögzít
 				</Button>
 				</Modal.Footer>

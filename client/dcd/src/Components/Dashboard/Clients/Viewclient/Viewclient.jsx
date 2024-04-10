@@ -24,9 +24,9 @@ export default function Viewclient( { listItem, loggedInUserData } ) {
           })
       };
     
-    const renderTooltip = (tooltip) => (
-        <Tooltip id="View-button-tooltip" >
-            {tooltip}
+    const renderTooltip = (props) => (
+        <Tooltip id="View-button-tooltip" {...props}>
+            Részletek/Új napló
         </Tooltip>
         );
     
@@ -34,10 +34,11 @@ export default function Viewclient( { listItem, loggedInUserData } ) {
         <>
             <OverlayTrigger
                 placement="top"
-                delay={{ show: 50, hide: 100 }}
-                overlay={renderTooltip('Részletek/Új napló')}
+                delay={{ show: 50, hide: 50 }}
+                overlay={renderTooltip}
             >
-                <Button 
+                <Button
+                    title='Részletek/Új napló'
                     size="sm"
                     className="m-1"
                     variant="success"
@@ -105,7 +106,12 @@ export default function Viewclient( { listItem, loggedInUserData } ) {
                                                                                 item.description}
                                         </td>
                                         <td className='width-150'>
-                                            <Viewlog logEntry={item}></Viewlog>
+                                            <Viewlog
+                                                showLogDetailsButton={true}
+                                                logEntry={item}
+                                                loggedInUserData={loggedInUserData}
+                                                loadLogEntries = {getLog}>
+                                            </Viewlog>
                                             {item.user_id === loggedInUserData.id ?
                                             <>
                                                 <Editlog
@@ -126,14 +132,14 @@ export default function Viewclient( { listItem, loggedInUserData } ) {
                     }
                 </Modal.Body>
                 <Modal.Footer>
+                <Button onClick={handleCloseViewClientForm} variant='secondary'>
+                        Bezár
+                    </Button>
                     <Newlog
                         selectedClient={listItem}
                         loggedInUserData={loggedInUserData}
                         fromClientList={false}
                         getLog={getLog}/>
-                    <Button onClick={handleCloseViewClientForm}>
-                        Bezár
-                    </Button>
                 </Modal.Footer>
             </Modal>
         </>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState} from 'react';
 import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
 import { validateClient } from '../Validateclient/Validateclient';
@@ -94,9 +94,9 @@ export default function Editclient( {
 		}
 	}
 
-    const renderTooltip = (tooltip) => (
-        <Tooltip id="edit-button-tooltip">
-          {tooltip}
+    const renderTooltip = (props) => (
+        <Tooltip id="edit-button-tooltip" {...props}>
+          Szerkesztés
         </Tooltip>)
 
     function findCity(zip) {
@@ -114,7 +114,7 @@ return (
         <OverlayTrigger
 			placement="top"
 			delay={{ show: 50, hide: 100 }}
-			overlay={renderTooltip('Szerkesztés')}>
+			overlay={renderTooltip}>
 			<Button 
 				size = "sm"
 				className = "m-1"
