@@ -83,7 +83,7 @@ export default function Newclient( {
 													   email : email.trim()}, 
 													{headers: { 'x-api-key': loggedInUserData.password }})
 			.then(() => {
-				handleCloseNewClientForm()
+				handleCloseNewClientForm();
 				loadClientList();
 				setDisableSubmitButton(false);
 			});
@@ -148,6 +148,8 @@ export default function Newclient( {
                                     <Form.Label>Születési dátum</Form.Label>
                                     {errorMessage.birthDate === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.birthDate}</Alert>}
                                     <Form.Control
+										min='1900-01-01'
+										max='2099-12-31'
                                         type='date'
                                         value={birthDate}
                                         onChange={(e) => setBirthDate(e.target.value)}/>
@@ -288,5 +290,5 @@ export default function Newclient( {
 				</Modal.Footer>
 			</Modal>
 		</>
-	)
+	);
 }
