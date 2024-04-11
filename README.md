@@ -6,6 +6,14 @@ Egy egyszerű programot készítettem amivel ügyfelek adatait (név, cím, stb.
 
 ---
 
+## Képernyőképek
+![print screen calendar](\client\dcd\src\Components\Assets\Printscreens\printscreen_calendar.webp)
+
+![print screen statement](\client\dcd\src\Components\Assets\Printscreens\printscreen_statement.webp)
+
+![print screen slog](\client\dcd\src\Components\Assets\Printscreens\printscreen_log.webp)
+
+---
 Ha kíváncsi vagy hogy működik a program látogass el ide: https://tryme.digitalclientlog.com
 
 Az adatbázis minden nap 23:59-kor (GMT+1) felülíródik a minta adatokkal!
