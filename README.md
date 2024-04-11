@@ -13,6 +13,7 @@ Az adatbázis minden nap 23:59-kor (GMT+1) felülíródik a minta adatokkal!
 Bejelentkezéshez:
 - Adminisztrátor: admin/22222222
 - Teszt felhasználó: user/11111111
+- Próbafelhasználó: probafelhasznalo/111111Qq@
 
 ---
 
@@ -35,10 +36,10 @@ Ezt a menüpontotot csak az admin csoport tagjai láthatják/kezelhetik.
 - csoportot választani kötelező a legördülő listából
 
 ### Felhasználók listája
+- keresés/rendezés
 - részletek
 - szerkesztés
 - törlés/inaktiválás
-- a táblában lehet keresni és rendezni is
 - az inaktavált felhasználókat meg lehet jeleníteni és újra lehet őket aktiválni
 
 #### Felhasználó adatainak szerkesztése
@@ -60,6 +61,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 - leírás kötelező
 
 ### Csoportok listája
+- keresés/rendezés
 - részletek
 - szerkesztés
 - törlés
@@ -77,6 +79,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 - utca, házszám, emelet nem kötelező
 
 ### Ügyfelek listája
+- keresés/rendezés
 - részletek
 - új naplóbejegyzés felvitele
 - szerkesztés
@@ -107,10 +110,15 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 - nem (férfi/nő)
 - korosztály (0-18, 18-40, 41-65, 65 felett)
 - ügyféltalálkozások időtartama
-- ügyfelek települések szerintei eloszlása
+- ügyfelek települések szerinti eloszlása
 - felhasználókhoz tartozó naplóbejegyzések száma (havi lebontásban)
 - felhasználók naplóbejegyzéseinek száma
 - admin csoport tagjai azoknak felhasználóknak a kimutatásait is lekérdezhetik akiknek van naplóbejegyzésük, egyéb csoport tagjai csak a saját kimutatásaikat láthatják
+
+## Naptár
+- létrehozható saját illetve csoport naptárbejegyzés
+- megejeleníthetőek a csoport naptárbejegyzések, a sajátok szerkeszthetőek és törölhetőek
+- megjeleníthetőek a naplóbejegyzések, a sajátok szerkeszthetőek, törölhetőek
 
 ---
 
@@ -139,6 +147,16 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 |          | client_id(int)     |
 |          | date_time(datetime)|
 |          | duration(vc3)      |
+|          | description(text)  |
+
+| Táblanév | calendar           |
+|----------|--------------------|
+| Mezők    | id(int)            |
+|          | user_id(int)       |
+|          | group_id(int)      |
+|          | date_time_start(datetime)|
+|          | date_time_end(datetime)|
+|          | subject(vc100)     |
 |          | description(text)  |
 
 | Táblanév | users              |
@@ -188,6 +206,8 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 - https://www.chartjs.org/docs/latest/
 - https://www.npmjs.com/package/axios
 - https://www.npmjs.com/package/bcryptjs-react
+- https://www.npmjs.com/package/moment
+- https://www.npmjs.com/package/react-big-calendar
 - https://www.npmjs.com/package/react-bootstrap
 - https://www.npmjs.com/package/react-bootstrap-icons
 - https://www.npmjs.com/package/react-bootstrap-pagination-control

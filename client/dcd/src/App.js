@@ -6,6 +6,7 @@ import Statements from './Components/Dashboard/Statements/Statements';
 import Users from './Components/Dashboard/Users/Users';
 import Groups from './Components/Dashboard/Groups/Groups';
 import Clients from './Components/Dashboard/Clients/Clients';
+import Usercalendar from './Components/Dashboard/Usercalendar/Usercalendar';
 import Log from './Components/Dashboard/Log/Log';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import { Nav, Navbar, Container, Offcanvas } from 'react-bootstrap';
@@ -156,6 +157,7 @@ function App() {
                                     <Nav.Link eventKey='clients'as={Link} to='/dashboard/clients'>Ügyfél</Nav.Link>
                                     <Nav.Link eventKey='log'as={Link} to='/dashboard/log'>Napló</Nav.Link>
                                     <Nav.Link eventKey='statements'as={Link} to='/dashboard/statements'>Kimutatás</Nav.Link>
+                                    <Nav.Link eventKey='calendar'as={Link} to='/dashboard/calendar'>Naptár</Nav.Link>
                                 </Nav>
                                 <Container className='display-none menu-assets'>
                                     <span
@@ -191,7 +193,9 @@ function App() {
                 }
                 <Route path='/dashboard/clients' element={<Clients loggedInUserData={loggedInUserData}/>}/>
                 <Route path='/dashboard/log' element={<Log loggedInUserData={loggedInUserData}/>}/>
-                <Route path='/dashboard/statements' element={<Statements darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/> :
+                <Route path='/dashboard/statements' element={<Statements darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
+                <Route path='/dashboard/calendar' element={<Usercalendar darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
+                :
             
             </Routes>
             </BrowserRouter>

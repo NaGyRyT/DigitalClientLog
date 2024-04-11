@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-.alert{
+.alert {
   padding: 0.2rem;
   margin: 0.5rem 0;
   font-size: 0.9rem;
@@ -15,11 +15,11 @@ html {
   scroll-behavior: smooth;
 }
 
-.dark-mode-switcher{
+.dark-mode-switcher {
   font-size: 1.4rem;
 }
 
-.menu-assets{
+.menu-assets {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -28,7 +28,7 @@ html {
   gap: 1rem;
 }
 
-.menu-group-name, .menu-company-name{
+.menu-group-name, .menu-company-name {
   font-size: 0.7rem;
 }
 
@@ -53,6 +53,10 @@ html {
   max-width: 65px;
 }
 
+.modal {
+  --bs-modal-zindex: 1050 !important;
+}
+
 .modal-80w {
   min-width: 80%;
 }
@@ -65,12 +69,12 @@ html {
   min-width: 360px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .display-none {
       display: none;
   }
 
-  .menu-assets{
+  .menu-assets {
     justify-content: flex-start;
     flex-direction: column;
     margin: 0;
@@ -79,7 +83,7 @@ html {
     gap: 0.5rem;
   }
 
-  .mobil-menu-name-group-container{
+  .mobil-menu-name-group-container {
     display: flex;
     width: 200px
   }
@@ -90,12 +94,18 @@ html {
     width: 100%;
   }
 
-  .btn-close{
+  .btn-close {
     position: absolute;
     align-self: center;
     right: 10px;
     top: 10px;
     font-size: 1rem;
   }
+}
 
+@media (max-width: 991px) {
+  .nav-link {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
 }

@@ -17,10 +17,13 @@ export default function Viewlog( {
 
     const handleCloseViewLogForm = (e) => {
         e.stopPropagation();
-        if (!showLogDetailsButton) setShowLogFormOnCalendar(false)
+        if (!showLogDetailsButton) {
+            setShowLogFormOnCalendar(false);
+            setClickedRowIndex([]);
+        }
             else setShowViewLogForm(false);
         if (clickedRowIndex !== undefined && showLogDetailsButton) setClickedRowIndex(null);
-    }
+    };
     
     const handleShowViewLogForm = (e) => {
         e.stopPropagation();
@@ -34,7 +37,7 @@ export default function Viewlog( {
         if (clickedRowIndex === logEntry.id && clickedRowIndex !== undefined) 
             if (!showLogDetailsButton && logEntry.duration !== undefined) setShowLogFormOnCalendar(true)
                 else if (logEntry.duration !== undefined) setShowViewLogForm(true);
-    },[clickedRowIndex])
+    },[clickedRowIndex]);
 
 
 return (

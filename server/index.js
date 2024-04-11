@@ -48,6 +48,8 @@ const authenticateKey = (req, res, next) => {
     });
   };
 
+
+/*------------------------------Login--------------------------*/
 app.use('/api/login', authenticateKey, (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -116,6 +118,8 @@ app.use('/api/checkloggedinuser', authenticateKey, (req, res) => {
     });
 });
 
+
+/*------------------------------Users--------------------------*/
 app.post('/api/newuser', authenticateKey, (req,res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -240,6 +244,103 @@ app.get('/api/getaccessgrouplist', authenticateKey, (req,res) => {
     });
 });
 
+
+/*------------------------------Groups--------------------------*/
+app.get('/api/getgrouplist', authenticateKey, (req,res) => {
+    const sqlSelect = `SELECT 
+                        *
+                       FROM accessgroups
+                       ORDER By id`;
+    database.db.query(sqlSelect, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.post('/api/newgroup', authenticateKey, (req,res) => {
+    const groupname = req.body.groupname;
+    const description = req.body.description;
+    database.db.query('INSERT INTO accessgroups (group_name, description) VALUES (?, ?)', [groupname, description,], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+
+});
+
+app.post('/api/checkexistgroupname', authenticateKey, (req,res) => {
+    const groupname = req.body.groupname;
+    database.db.query('SELECT * FROM accessgroups WHERE group_name = ?', [groupname], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.post('/api/editgroup', authenticateKey, (req,res) => {
+    const id = req.body.id;
+    const groupname = req.body.groupname;
+    const description = req.body.description;
+    const sqlUpdate = `
+        UPDATE
+            accessgroups
+        SET
+            group_name = ?,
+            description = ?
+        WHERE id = ?`
+    database.db.query(sqlUpdate, [groupname, description, id], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send({id : id});
+            console.log(id+'.', 'group modified in the database');
+        }
+    });
+});
+
+app.post('/api/checkexistgroupidinusers', authenticateKey, (req,res) => {
+    const groupid = req.body.groupid;
+    database.db.query('SELECT accessgroup FROM users WHERE users.accessgroup = ?', [groupid], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.post('/api/checkexistgroupidinclients', authenticateKey, (req,res) => {
+    const groupid = req.body.groupid;
+    database.db.query('SELECT accessgroup FROM clients WHERE accessgroup = ?', [groupid], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.post('/api/deletegroup', authenticateKey, (req,res) => {
+    const id = req.body.id;
+    database.db.query('DELETE FROM accessgroups WHERE id = ?', [id], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {                
+            res.send({result});
+            console.log(id+'.', 'group deleted in the database');
+        }
+    });
+});
+
+
+/*------------------------------Clients--------------------------*/
 app.get('/api/getcities', authenticateKey, (req,res) => {
     database.db.query('SELECT * FROM cities' , (err, result) => {
         if (err) {
@@ -412,6 +513,8 @@ app.get('/api/getclientlist', authenticateKey, (req,res) => {
     });
 });
 
+
+/*------------------------------Logs--------------------------*/
 app.get('/api/getlog', authenticateKey, (req,res) => {
     const sqlSelect = `SELECT 
                         log.id,
@@ -530,6 +633,8 @@ app.post('/api/deletelog', authenticateKey, (req,res) => {
     });
 });
 
+
+/*------------------------------Statements--------------------------*/
 app.get('/api/getgendernumber/:accessgroup', authenticateKey, (req,res) => {
     const accessgroup = req.params.accessgroup;
     const sqlSelectCount = accessgroup === '1' ?
@@ -767,36 +872,16 @@ app.get('/api/getnotemptyloguserlist', authenticateKey, (req,res) => {
 });
 
 
-app.get('/api/getgrouplist', authenticateKey, (req,res) => {
-    const sqlSelect = `SELECT 
-                        *
-                       FROM accessgroups
-                       ORDER By id`;
-    database.db.query(sqlSelect, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        }
-    });
-});
+/*------------------------------Calendar--------------------------*/
 
-app.post('/api/newgroup', authenticateKey, (req,res) => {
-    const groupname = req.body.groupname;
+app.post('/api/newcalendarevent', authenticateKey, (req,res) => {
+    const user_id = req.body.userid;
+    const group_id = req.body.groupevent;
+    const date_time_start = req.body.start;
+    const date_time_end = req.body.end; 
     const description = req.body.description;
-    database.db.query('INSERT INTO accessgroups (group_name, description) VALUES (?, ?)', [groupname, description,], (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        }
-    });
-
-});
-
-app.post('/api/checkexistgroupname', authenticateKey, (req,res) => {
-    const groupname = req.body.groupname;
-    database.db.query('SELECT * FROM accessgroups WHERE group_name = ?', [groupname], (err, result) => {
+    const subject = req.body.subject;
+    database.db.query('INSERT INTO calendar (user_id, group_id, date_time_start, date_time_end, description, subject) VALUES (?, ?, ?, ?, ?, ?)', [user_id, group_id, date_time_start, date_time_end, description, subject], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -805,57 +890,123 @@ app.post('/api/checkexistgroupname', authenticateKey, (req,res) => {
     });
 });
 
-app.post('/api/editgroup', authenticateKey, (req,res) => {
+app.post('/api/editcalendarevent', authenticateKey, (req,res) => {
     const id = req.body.id;
-    const groupname = req.body.groupname;
+    const user_id = req.body.userid;
+    const group_id = req.body.groupevent;
+    const date_time_start = req.body.start;
+    const date_time_end = req.body.end; 
     const description = req.body.description;
-    const sqlUpdate = `
-        UPDATE
-            accessgroups
-        SET
-            group_name = ?,
-            description = ?
-        WHERE id = ?`
-    database.db.query(sqlUpdate, [groupname, description, id], (err, result) => {
+    const subject = req.body.subject;
+    const sqlUpdate = `UPDATE
+                        calendar
+                       SET
+                       user_id = ?,
+                       group_id = ?,
+                       date_time_start = ?,
+                       date_time_end = ?,
+                       subject = ?,
+                       description = ?
+                    WHERE id = ?`
+    database.db.query(sqlUpdate, [user_id, group_id, date_time_start, date_time_end, subject, description, id], (err, result) => {
         if (err) {
             console.log(err);
         } else {
             res.send({id : id});
-            console.log(id+'.', 'group modified in the database');
+            console.log(id, 'event modified in calendar table');
         }
     });
 });
 
-app.post('/api/checkexistgroupidinusers', authenticateKey, (req,res) => {
-    const groupid = req.body.groupid;
-    database.db.query('SELECT accessgroup FROM users WHERE users.accessgroup = ?', [groupid], (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        }
-    });
-});
-
-app.post('/api/checkexistgroupidinclients', authenticateKey, (req,res) => {
-    const groupid = req.body.groupid;
-    database.db.query('SELECT accessgroup FROM clients WHERE accessgroup = ?', [groupid], (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        }
-    });
-});
-
-app.post('/api/deletegroup', authenticateKey, (req,res) => {
+app.post('/api/deleteevent', authenticateKey, (req,res) => {
     const id = req.body.id;
-    database.db.query('DELETE FROM accessgroups WHERE id = ?', [id], (err, result) => {
+    database.db.query('DELETE FROM calendar WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.log(err);
         } else {                
             res.send({result});
-            console.log(id+'.', 'group deleted in the database');
+        }
+    });
+});
+
+app.get('/api/geteventsfromcalendar/:accessgroup/:userid', authenticateKey, (req,res) => {
+    const userid = req.params.userid;
+    const accessgroup = req.params.accessgroup;
+    const sqlSelect =
+        `
+        SELECT
+            calendar.id,
+            calendar.user_id,
+            calendar.group_id,
+            calendar.description,
+            calendar.subject,
+            calendar.subject as title,
+            users.name as author,
+            DATE_FORMAT(calendar.date_time_start, '%Y-%m-%d %H:%i') as start,
+            DATE_FORMAT(calendar.date_time_end, '%Y-%m-%d %H:%i') as end
+        FROM calendar
+        INNER JOIN users ON users.id = calendar.user_id
+        WHERE calendar.user_id = ? OR calendar.group_id = ?
+        `;
+    database.db.query(sqlSelect, [userid, accessgroup], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.get('/api/geteventsfromlog/:accessgroup/:userid', authenticateKey, (req,res) => {
+    const accessgroup = req.params.accessgroup;
+    const userid = req.params.userid;
+    const sqlSelect = accessgroup === '1' ?
+        `
+        SELECT
+            users.name AS user_name,
+            accessgroups.id AS accessgroup_id,
+            users.id AS user_id,
+            clients.name As client_name,
+            log.id as id,
+            clients.name as title,
+            clients.name as subject,
+            log.description,
+            log.user_id,
+            log.duration,
+            DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i') as start,
+            DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i') as date_time,
+            DATE_ADD(DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i'), INTERVAL log.duration MINUTE) as end
+        FROM log 
+        INNER JOIN clients ON clients.id = log.client_id
+        INNER JOIN users ON users.id = log.user_id
+        INNER JOIN accessgroups ON clients.accessgroup = accessgroups.id
+        ` :
+        `
+        SELECT
+            users.name AS user_name,
+            accessgroups.id AS accessgroup_id,
+            users.id AS user_id,
+            clients.name As client_name,
+            log.id as id,
+            clients.name as title,
+            clients.name as subject,
+            log.description,
+            log.user_id,
+            log.duration,
+            DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i') as start,
+            DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i') as date_time,
+            DATE_ADD(DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i'), INTERVAL log.duration MINUTE) as end
+        FROM log 
+        INNER JOIN clients ON clients.id = log.client_id
+        INNER JOIN users ON users.id = log.user_id
+        INNER JOIN accessgroups ON clients.accessgroup = accessgroups.id
+        WHERE clients.accessgroup = ? AND log.user_id = ?
+        `;
+    database.db.query(sqlSelect, [accessgroup, userid], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
         }
     });
 });
