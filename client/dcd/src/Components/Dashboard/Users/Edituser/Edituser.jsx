@@ -118,7 +118,7 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 								onChange={(e) => setName(e.target.value)}/>
 						</Form.Group>
 						<Form.Group md="4" controlId="formPassword">
-							<Form.Label>Jelszó (Ha nem írsz jelszót, akkor a jelszó nem fog módosulni.)</Form.Label>
+							<Form.Label>Jelszó</Form.Label>
 							{errorMessage.password === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.password}</Alert>}
 							<Form.Control 
 								autoComplete="new-password"
@@ -126,6 +126,7 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 								type='password'
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}/>
+							<Form.Text>Ha nem írsz jelszót, akkor a jelszó nem fog módosulni.</Form.Text>
 						</Form.Group>
 						<Form.Group className={listItem.username === "admin" ? "d-none" : ""} controlId="formSelectFromGroup">
 							<Form.Label>Csoport</Form.Label>
