@@ -228,7 +228,6 @@ export default function Clientlist({
             .map((listItem) => {
               return (
               <tr 
-                className={listItem.inactive === 1 ? "text-decoration-line-through" : ""}
                 key={listItem.id}>
                 <td className=''>{listItem.id}</td>
                 <td className=''>{listItem.name}</td>
@@ -266,7 +265,6 @@ export default function Clientlist({
                       />
                       }
                     </>
-                  
                 </td>
               </tr>
 )})}

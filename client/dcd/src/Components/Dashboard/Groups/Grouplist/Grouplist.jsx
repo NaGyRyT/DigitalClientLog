@@ -99,7 +99,7 @@ export default function Grouplist( {
             {paginatedList
                 .map((listItem) => {
                 return (
-                <tr className={listItem.inactive === 1 ? "text-decoration-line-through" : ""} key={listItem.id}>
+                <tr key={listItem.id}>
                     <td>{listItem.id}</td>
                     <td>{listItem.group_name}</td>
                     <td className='d-none d-lg-table-cell'>{listItem.description.length > 100 ? 
