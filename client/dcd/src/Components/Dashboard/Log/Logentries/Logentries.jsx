@@ -80,9 +80,9 @@ export default function Logentries( {
       dateTimeSearch.slice(0,-1));
   }
 
-  const renderTooltip = (tooltip) => (
-    <Tooltip id="hide-foreign-log-tooltip">
-      {tooltip}
+  const renderTooltip = (props) => (
+    <Tooltip id="hide-foreign-log-tooltip"  {...props}>
+      Összes/csak saját naplóbejegyzés
     </Tooltip>)
  
   return (
@@ -208,7 +208,7 @@ export default function Logentries( {
                 <OverlayTrigger
               			placement="top"
                     delay={{ show: 50, hide: 100 }}
-                    overlay={renderTooltip('Összes/csak saját naplóbejegyzés')}> 
+                    overlay={renderTooltip}> 
                   <Form.Check
                     role="button"
                     type='switch'
@@ -246,6 +246,7 @@ export default function Logentries( {
                 <td className='width-150'>
                 <>
                   <Viewlog
+                    showLogDetailsButton={true}
                     logEntry={listItem}
                     loggedInUserData={loggedInUserData}
                     loadLogEntries={loadLogEntries}
