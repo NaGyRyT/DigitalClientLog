@@ -2,16 +2,32 @@
 
 ---
 
-Egy egyszerű programot készítettem amivel ügyfelek adatait (név, cím, stb.) és az ügyfél találkozással kapcsolatos adatokat (dátum, időtartam, leírás, stb.) lehet tárolni React, NodeJS, MySQL felhasználásával. A programban lehetőség van felhasználókat és csoportokat is felvenni. 
+Egy egyszerű programot készítettem amivel ügyfelek adatait (név, cím, stb.) és az ügyfél találkozással kapcsolatos adatokat (dátum, időtartam, leírás, stb.) lehet tárolni React, NodeJS, MySQL felhasználásával. Ezekből az adatokból kimutatás készül. A programban lehetőség van felhasználókat, csoportokat is felvenni valamint naptárat használni. 
 
 ---
 
 ## Képernyőképek
-![print screen calendar](/client/dcd/src/Components/Assets/Printscreens/printscreen_calendar.webp)
 
-![print screen statement](/client/dcd/src/Components/Assets/Printscreens/printscreen_statement.webp)
-
-![print screen log](/client/dcd/src/Components/Assets/Printscreens/printscreen_log.webp)
+<div class='image-container'>
+    <figure>
+        <a target="_blank" href="https://raw.githubusercontent.com/NaGyRyT/DigitalClientLog/main/client/dcd/src/Components/Assets/Printscreens/printscreen_calendar.webp">
+            <img src="https://raw.githubusercontent.com/NaGyRyT/DigitalClientLog/main/client/dcd/src/Components/Assets/Printscreens/printscreen_calendar.webp" alt="Naptár">
+        </a>
+        <figcaption>Naptár</figcaption>
+    </figure>
+    <figure>
+        <a target="_blank" href="https://raw.githubusercontent.com/NaGyRyT/DigitalClientLog/main/client/dcd/src/Components/Assets/Printscreens/printscreen_statement.webp">
+            <img src="https://raw.githubusercontent.com/NaGyRyT/DigitalClientLog/main/client/dcd/src/Components/Assets/Printscreens/printscreen_statement.webp" alt="Kimutatás">
+        </a>
+        <figcaption>Kimutatás</figcaption>
+    </figure>
+    <figure>
+        <a target="_blank" href="https://raw.githubusercontent.com/NaGyRyT/DigitalClientLog/main/client/dcd/src/Components/Assets/Printscreens/printscreen_log.webp">
+            <img src="https://raw.githubusercontent.com/NaGyRyT/DigitalClientLog/main/client/dcd/src/Components/Assets/Printscreens/printscreen_log.webp" alt="Napló">
+        </a>
+        <figcaption>Napló</figcaption>
+    </figure>
+</div>
 
 ---
 Ha kíváncsi vagy hogy működik a program látogass el ide: https://tryme.digitalclientlog.com
@@ -222,6 +238,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 - https://www.npmjs.com/package/react-chartjs-2
 - https://www.npmjs.com/package/react-router
 - https://www.npmjs.com/package/react-markdown
+- https://www.npmjs.com/package/rehype-raw
 - https://www.npmjs.com/package/remark-gfm
 - https://www.npmjs.com/package/validator
 ---
