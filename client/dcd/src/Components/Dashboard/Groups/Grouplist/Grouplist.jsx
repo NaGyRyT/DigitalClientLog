@@ -16,6 +16,7 @@ export default function Grouplist( {
     setSortDirection,
     loggedInUserData
     } ) {
+    const [clickedRowIndex, setClickedRowIndex] = useState(null);
     const [groupnameSearch, setGroupnameSearch] = useState('');
     const [descriptionSearch, setDescriptionSearch] = useState('');
     const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>;
@@ -99,7 +100,14 @@ export default function Grouplist( {
             {paginatedList
                 .map((listItem) => {
                 return (
-                <tr key={listItem.id}>
+                <tr key={listItem.id}
+                    className='cursor-pointer'
+                    onClick={(e) => {
+                        setClickedRowIndex(listItem.id);
+                        e.stopPropagation();
+                        if (e.target.role === 'dialog') setClickedRowIndex(null);
+                    }}
+                    >
                     <td>{listItem.id}</td>
                     <td>{listItem.group_name}</td>
                     <td className='d-none d-lg-table-cell'>{listItem.description.length > 100 ? 
@@ -107,7 +115,9 @@ export default function Grouplist( {
                                                                 listItem.description}</td>
                     <td className='width-150'>
                         <Viewgroup
-                        listItem={listItem}/>
+                        listItem={listItem}
+                        clickedRowIndex={clickedRowIndex}
+                        setClickedRowIndex={setClickedRowIndex}/>
                         {listItem.group_name === 'Admin' ? '' :
                             <>
                             <Editgroup

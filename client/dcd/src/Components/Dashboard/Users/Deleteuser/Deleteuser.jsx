@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { CloseButton, OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import API from '../../../../api';
 
 export default function Deleteuser( {listItem, loadUserList, loggedInUserData} ) {
     const [showDeleteUserForm, setShowDeleteUserForm] = useState(false);
-    const [existUserIdInLog, setExistUserIdInLog] = useState(false)
+    const [existUserIdInLog, setExistUserIdInLog] = useState(false);
 
     useEffect(()=> {
         const callApi = async () => {
@@ -14,17 +14,15 @@ export default function Deleteuser( {listItem, loadUserList, loggedInUserData} )
         callApi()
     }, []);
 
-    const handleCloseDeleteUserForm = (e) => {
-        e.stopPropagation();
+    const handleCloseDeleteUserForm = () => {
         setShowDeleteUserForm(false);
-    }
+    };
     const handleShowDeleteUserForm = (e) => {
         e.stopPropagation();
         setShowDeleteUserForm(true);
-    }
+    };
 
-    const handleDeleteUserSubmit = async (e) => {
-        e.preventDefault();
+    const handleDeleteUserSubmit = async () => {
         if (existUserIdInLog) {
             axios.post(`${API.address}/inactiveuser`, {id : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
             .then(() => {
@@ -38,7 +36,7 @@ export default function Deleteuser( {listItem, loadUserList, loggedInUserData} )
                 setShowDeleteUserForm(false);
             })
         }
-    }
+    };
 
     async function checkExistUserIdInLog() {
         let existUserIdInLog;
@@ -48,7 +46,7 @@ export default function Deleteuser( {listItem, loadUserList, loggedInUserData} )
             else existUserIdInLog = true;
         })
         return existUserIdInLog;
-    }
+    };
     
     const renderTooltip = (props) => (
         <Tooltip id="delete-button-tooltip" {...props}>
@@ -72,9 +70,8 @@ export default function Deleteuser( {listItem, loadUserList, loggedInUserData} )
                 </Button>
             </OverlayTrigger>
             <Modal show={showDeleteUserForm} onHide={handleCloseDeleteUserForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
-                <Modal.Header>
+                <Modal.Header closeButton>
                         <Modal.Title>Felhasználó törlése</Modal.Title>
-                        <CloseButton className='justify-content-end' onClick={handleCloseDeleteUserForm}/>
                 </Modal.Header>
                 <Modal.Body>
                     Valóban <span className='fw-bold text-danger'>{existUserIdInLog ? 'inaktiválni' : 'törölni'}</span> szeretnéd {listItem.username} felhasználót?

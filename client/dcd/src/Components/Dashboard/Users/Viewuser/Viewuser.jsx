@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { CloseButton, OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 
 export default function Viewuser( { listItem, clickedRowIndex, setClickedRowIndex} ) {
     const [showViewUserForm, setShowViewUserForm] = useState(false);
-    const handleCloseViewUserForm = (e) => {
-        e.stopPropagation();
+    const handleCloseViewUserForm = () => {
         setShowViewUserForm(false);
         setClickedRowIndex(null);
     }
@@ -22,8 +21,6 @@ export default function Viewuser( { listItem, clickedRowIndex, setClickedRowInde
     useEffect(()=> {
             if (clickedRowIndex === listItem.id && clickedRowIndex !== null) setShowViewUserForm(true);
         },[clickedRowIndex]);
-
-    
     
     return (
             <>
@@ -41,9 +38,8 @@ export default function Viewuser( { listItem, clickedRowIndex, setClickedRowInde
                     </Button>
                 </OverlayTrigger>
                 <Modal show={showViewUserForm} onHide={handleCloseViewUserForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
-                    <Modal.Header>
+                    <Modal.Header closeButton>
                             <Modal.Title>Felhasználó részletek</Modal.Title>
-                            <CloseButton className='justify-content-end' onClick={handleCloseViewUserForm}/>
                     </Modal.Header>
                     <Modal.Body>
                         <p className='border-bottom'>Felhasználónév: {listItem.username}</p>

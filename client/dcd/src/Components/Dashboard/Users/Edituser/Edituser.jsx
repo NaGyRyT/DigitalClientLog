@@ -1,6 +1,6 @@
 import React, { useState} from 'react';
 import axios from 'axios';
-import { CloseButton, OverlayTrigger, Tooltip, Form, Alert, Button, Modal } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal } from 'react-bootstrap';
 import bcrypt from "bcryptjs-react";
 import { validateUser } from '../Validateuser/Validateuser';
 import API from '../../../../api';
@@ -18,8 +18,7 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 	const [selectedGroup, setSelectedGroup] = useState(listItem.accessgroup);
 	const [showEditUserForm, setShowEditUserForm] = useState(false);
 
-	const handleCloseEditUserForm = (e) => {
-		e.stopPropagation();
+	const handleCloseEditUserForm = () => {
 		setShowEditUserForm(false);
 		setName(listItem.name);
 		setPassword('');
@@ -37,9 +36,7 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 		setShowEditUserForm(true);
   	}
 
-	const handleEditUserSubmit = async (e) => {
-		e.preventDefault();
-		e.stopPropagation();
+	const handleEditUserSubmit = async () => {
 		const tempErrorMessage = await validateUser(listItem.username, name, password, selectedGroup, loggedInUserData, true, password === '' ? false : true);
 		setErrorMessage(tempErrorMessage);
 		if (! tempErrorMessage.error) {
@@ -99,9 +96,8 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 			</div>
 		}
     	<Modal show={showEditUserForm} onHide={handleCloseEditUserForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
-				<Modal.Header>
+				<Modal.Header closeButton>
 					<Modal.Title>Felhasználó szerkesztése</Modal.Title>
-					<CloseButton className='justify-content-end' onClick={handleCloseEditUserForm}/>
 				</Modal.Header>
 				<Modal.Body>
 					<Form onSubmit={handleEditUserSubmit}>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { CloseButton, OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import API from '../../../../api';
 
@@ -7,9 +7,8 @@ export default function Deleteclient( {listItem, loadClientList, loggedInUserDat
     const [showDeleteClientForm, setShowDeleteClientForm] = useState(false);
     const [existClientIdInLog, setExistClientIdInLog] = useState(true)
     const handleCloseDeleteClientForm = (e) => {
-        e.stopPropagation();
         setShowDeleteClientForm(false);
-    }
+    };
     const handleShowDeleteClientForm = async (e) => {
         e.stopPropagation();
         setExistClientIdInLog(await checkExistClientIdInLog());
@@ -21,7 +20,7 @@ export default function Deleteclient( {listItem, loadClientList, loggedInUserDat
                 loadClientList(false);
                 setShowDeleteClientForm(false);
             })        
-    }
+    };
 
     async function checkExistClientIdInLog() {
         let existClientIdInLog;
@@ -31,8 +30,7 @@ export default function Deleteclient( {listItem, loadClientList, loggedInUserDat
             else existClientIdInLog = true;
         })
         return existClientIdInLog
-        
-    }
+    };
     
     const renderTooltip = (props) => (
         <Tooltip id="delete-button-tooltip" {...props}>
@@ -56,9 +54,8 @@ export default function Deleteclient( {listItem, loadClientList, loggedInUserDat
                 </Button>
             </OverlayTrigger>
             <Modal show={showDeleteClientForm} onHide={handleCloseDeleteClientForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
-                <Modal.Header>
+                <Modal.Header closeButton>
                         <Modal.Title>Ügyfél törlése</Modal.Title>
-                        <CloseButton className='justify-content-end' onClick={handleCloseDeleteClientForm}/>
                 </Modal.Header>
                 {existClientIdInLog ?
                 <>

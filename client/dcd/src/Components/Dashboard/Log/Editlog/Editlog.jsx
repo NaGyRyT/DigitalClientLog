@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col, ListGroup, CloseButton } from 'react-bootstrap';
 import { validateLog } from '../Validatelog/Validatelog'
@@ -18,8 +18,7 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
   	});
     const [showEditLogForm, setShowEditLogForm] = useState(false);
 
-    const handleCloseEditLogForm = async (e) => {
-        e.stopPropagation();
+    const handleCloseEditLogForm = async () => {
         setShowEditLogForm(false);
         setTime(logEntry.date_time.slice(11,16));
         setDate(logEntry.date_time.slice(0,10));
@@ -33,15 +32,13 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
             error : false
           });
 
-    }
+    };
     const handleShowEditLogForm = (e) => {
         e.stopPropagation();
         setShowEditLogForm(true);
     }
 
-    const handleEditLogSubmit = async (e) => {
-		e.preventDefault();
-        e.stopPropagation();
+    const handleEditLogSubmit = async () => {
 		const tempErrorMessage = await validateLog(date, time, duration, description);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {

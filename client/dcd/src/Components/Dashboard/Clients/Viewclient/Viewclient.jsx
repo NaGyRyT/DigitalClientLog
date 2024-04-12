@@ -1,6 +1,6 @@
 import React, { useState, useEffect  } from 'react';
 import axios from 'axios';
-import { CloseButton, OverlayTrigger, Tooltip, Button, Modal, Row, Col, Table } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Button, Modal, Row, Col, Table } from 'react-bootstrap';
 import Viewlog from '../../Log/Viewlog/Viewlog'
 import Newlog from '../../Log/Newlog/Newlog';
 import Editlog from '../../Log/Editlog/Editlog';
@@ -12,8 +12,7 @@ export default function Viewclient( { listItem, loggedInUserData, clickedRowInde
     const [showViewClientForm, setShowViewClientForm] = useState(false);
     const [clickedRowIndexOnViewClientForm, setClickedRowIndexOnViewClientForm] = useState(null);
     const [logEntries, setLogEntries] = useState([]); 
-    const handleCloseViewClientForm = (e) => {
-        e.stopPropagation();
+    const handleCloseViewClientForm = () => {
         setShowViewClientForm(false);
         setClickedRowIndex(null);
     };
@@ -62,9 +61,8 @@ export default function Viewclient( { listItem, loggedInUserData, clickedRowInde
                 dialogClassName='modal-80w'
                 backdrop='static'
                 onClick={(e)=>e.stopPropagation()}>
-                <Modal.Header>
+                <Modal.Header closeButton>
                         <Modal.Title>Ügyfél részletek</Modal.Title>
-                        <CloseButton className='justify-content-end' onClick={handleCloseViewClientForm}/>
                 </Modal.Header>
                 <Modal.Body>
                     <Row className='my-2 border-bottom'>

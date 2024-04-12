@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useState } from 'react';
 import { Form, Alert, Button, Modal, Row, Col, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { validateGroup } from '../Validategroup/Validategroup';
 import API from '../../../../api';
 
-export default function Editgroup( {loadGroupList, listItem, loggedInUserData} ) {
+export default function Editgroup( { loadGroupList, listItem, loggedInUserData, clickedRowIndex, setClickedRowIndex } ) {
 	const [groupName, setGroupName] = useState(listItem.group_name);
 	const [description, setDescription] = useState(listItem.description);
 	const [errorMessage, setErrorMessage] = useState({
@@ -25,7 +24,10 @@ export default function Editgroup( {loadGroupList, listItem, loggedInUserData} )
 			error : false,
 		});
 	};
-	const handleShowEditGroupForm = () => setShowEditGroupForm(true);
+	const handleShowEditGroupForm = (e) => {
+		e.stopPropagation();
+		setShowEditGroupForm(true);
+	}
   	const handleEditGroupSubmit = async (e) => {
 		e.preventDefault();
 		const tempErrorMessage = await validateGroup(groupName, description, listItem.group_name, loggedInUserData);
@@ -65,7 +67,8 @@ export default function Editgroup( {loadGroupList, listItem, loggedInUserData} )
 			<Modal 
 				show={showEditGroupForm} 
 				onHide={handleCloseEditGroupForm}
-				backdrop='static'>
+				backdrop='static'
+				onClick={(e)=>e.stopPropagation()}>
 				<Modal.Header closeButton>
 					<Modal.Title>Csoport szerkesztése</Modal.Title>
 				</Modal.Header>

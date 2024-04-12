@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 
-export default function Viewgroup( { listItem } ) {
+export default function Viewgroup( { listItem, clickedRowIndex, setClickedRowIndex } ) {
     const [showViewGroupForm, setShowViewGroupForm] = useState(false);
-    const handleCloseViewGroupForm = () => setShowViewGroupForm(false);  
-    const handleShowViewGroupForm = () => setShowViewGroupForm(true);
+    const handleCloseViewGroupForm = () => {
+        setShowViewGroupForm(false);
+        setClickedRowIndex(null);
+    }
+    const handleShowViewGroupForm = (e) => {
+        e.stopPropagation();
+        setShowViewGroupForm(true);
+    };
    
     const renderTooltip = (props) => (
         <Tooltip id="View-button-tooltip" {...props}>
             Részletek
         </Tooltip>
         );
+    
+    useEffect(()=> {
+            if (clickedRowIndex === listItem.id && clickedRowIndex !== null) setShowViewGroupForm(true);
+        },[clickedRowIndex]);
     
         return (
             <>
@@ -27,7 +37,7 @@ export default function Viewgroup( { listItem } ) {
                         👁
                     </Button>
                 </OverlayTrigger>
-                <Modal show={showViewGroupForm} onHide={handleCloseViewGroupForm} backdrop='static'>
+                <Modal show={showViewGroupForm} onHide={handleCloseViewGroupForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
                     <Modal.Header closeButton>
                             <Modal.Title>Csoport részletek</Modal.Title>
                     </Modal.Header>

@@ -7,7 +7,8 @@ export default function Deletegroup( {listItem, loadGroupList, loggedInUserData}
   const [showDeleteGroupForm, setShowDeleteGroupForm] = useState(false);
   const [existGroupIdInUsers, setExistGroupIdInUsers] = useState(true);
   const handleCloseDeleteGroupForm = () => setShowDeleteGroupForm(false);
-  const handleShowDeleteGroupForm = async () => {
+  const handleShowDeleteGroupForm = async (e) => {
+    e.stopPropagation();
     setExistGroupIdInUsers(await checkExistGroupIdInUsers());
     setShowDeleteGroupForm(true);
   }
@@ -55,7 +56,7 @@ export default function Deletegroup( {listItem, loadGroupList, loggedInUserData}
             &#128465;
         </Button>
       </OverlayTrigger>
-      <Modal show={showDeleteGroupForm} onHide={handleCloseDeleteGroupForm} backdrop='static'>
+      <Modal show={showDeleteGroupForm} onHide={handleCloseDeleteGroupForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
         <Modal.Header closeButton>
           <Modal.Title>Csoport törlése</Modal.Title>
         </Modal.Header>

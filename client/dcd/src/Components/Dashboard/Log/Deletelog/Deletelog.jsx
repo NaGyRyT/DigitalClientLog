@@ -1,28 +1,26 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { OverlayTrigger, Tooltip, Button, Modal, CloseButton } from 'react-bootstrap';
 import axios from 'axios';
 import API from '../../../../api';
 
-export default function Deletelog( {listItem, loadLogEntries, loggedInUserData, buttonTitle} ) {
+export default function Deletelog( { listItem, loadLogEntries, loggedInUserData, buttonTitle } ) {
     const [showDeleteLogForm, setShowDeleteLogForm] = useState(false);
-    const handleCloseDeleteLogForm = (e) => {
-        e.stopPropagation();
+    const handleCloseDeleteLogForm = () => {
         setShowDeleteLogForm(false);
-    }
+    };
     const handleShowDeleteLogForm = (e) => {
         e.stopPropagation();
         setShowDeleteLogForm(true);
     };
     
     const handleDeleteLogSubmit = (e) => {
-        e.stopPropagation();
         e.preventDefault();
         axios.post(`${API.address}/deletelog`, {id : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
             .then(() => {
                 loadLogEntries(false);
                 setShowDeleteLogForm(false);
-            })        
-    }
+            })
+    };
     
     const renderTooltip = (prop) => (
         <Tooltip id='delete-button-tooltip'{...prop}>
@@ -45,7 +43,7 @@ export default function Deletelog( {listItem, loadLogEntries, loggedInUserData, 
                 </Button>
             </OverlayTrigger>
             <Modal show={showDeleteLogForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
-                <Modal.Header>
+                <Modal.Header >
                     <Modal.Title>Naplóbejegyzés törlése</Modal.Title>
                     <CloseButton className='justify-content-end' onClick={handleCloseDeleteLogForm}/>
                 </Modal.Header>
@@ -65,4 +63,4 @@ export default function Deletelog( {listItem, loadLogEntries, loggedInUserData, 
             </Modal>
         </>
       )
-    }
+    };

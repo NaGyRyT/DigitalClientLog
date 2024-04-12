@@ -25,7 +25,6 @@ export default function Newlog( {
     const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 	const [showNewLogForm, setShowNewLogForm] = useState(false);
 	const handleCloseNewLogForm = async (e) => {
-        e.stopPropagation();
         setShowNewLogForm(false)
         setTime(new Date().toString().slice(16,21))
         setDate(new Date().toJSON().slice(0,10));
