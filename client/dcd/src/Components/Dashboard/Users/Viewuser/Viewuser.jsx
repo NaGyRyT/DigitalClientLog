@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
+import Edituser from '../Edituser/Edituser';
+import Deleteuser from '../Deleteuser/Deleteuser';
 
-export default function Viewuser( { listItem, clickedRowIndex, setClickedRowIndex} ) {
+export default function Viewuser( {
+        listItem,
+        clickedRowIndex,
+        setClickedRowIndex,
+        loadUserList,
+        groupList,
+        loggedInUserData
+    } ) {
     const [showViewUserForm, setShowViewUserForm] = useState(false);
     const handleCloseViewUserForm = () => {
         setShowViewUserForm(false);
@@ -47,9 +56,23 @@ export default function Viewuser( { listItem, clickedRowIndex, setClickedRowInde
                         <p className='border-bottom'>Csoport: {listItem.group_name}</p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={handleCloseViewUserForm}>
+                        <Button onClick={handleCloseViewUserForm} variant='secondary'>
+                            &#128682;
                             Bezár
                         </Button>
+                        <Edituser
+                            listItem={listItem}
+                            loadUserList={loadUserList}
+                            groupList={groupList}
+                            loggedInUserData={loggedInUserData}
+                            buttonTitle={'Szerkeszt'}
+                        />
+                        <Deleteuser
+                            listItem={listItem}
+                            loadUserList={loadUserList}
+                            loggedInUserData={loggedInUserData}
+                            buttonTitle={'Töröl'}
+                      />
 
                     </Modal.Footer>
                 </Modal>

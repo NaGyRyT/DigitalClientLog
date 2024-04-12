@@ -187,6 +187,9 @@ export default function Userlist({
                         listItem={listItem}
                         clickedRowIndex={clickedRowIndex}
                         setClickedRowIndex={setClickedRowIndex}
+                        loadUserList={loadUserList}
+                        groupList={groupList}
+                        loggedInUserData={loggedInUserData}
                       />
                       <Edituser
                         listItem={listItem}

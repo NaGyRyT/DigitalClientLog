@@ -5,7 +5,15 @@ import bcrypt from "bcryptjs-react";
 import { validateUser } from '../Validateuser/Validateuser';
 import API from '../../../../api';
 
-export default function Edituser( { listItem, loadUserList, groupList, loggedInUser, setLoggedInUserData, loggedInUserData } ) {
+export default function Edituser( {
+	listItem,
+	loadUserList,
+	groupList,
+	loggedInUser,
+	setLoggedInUserData,
+	loggedInUserData,
+	buttonTitle
+} ) {
 	const [password, setPassword] = useState('');
 	const [name, setName] = useState(listItem.name);
 	const [errorMessage, setErrorMessage] = useState({
@@ -74,11 +82,12 @@ export default function Edituser( { listItem, loadUserList, groupList, loggedInU
 				delay={{ show: 50, hide: 100 }}
 				overlay={renderTooltip}>
 				<Button 
-					size = "sm"
+					size={buttonTitle === undefined ? "sm" : ''}
 					className = "m-1"
 					variant = "info"
 					onClick = {handleShowEditUserForm}>
 					&#x270D;
+					{buttonTitle}
 				</Button>
 			</OverlayTrigger> :
 			<div className='d-flex flex-column'>

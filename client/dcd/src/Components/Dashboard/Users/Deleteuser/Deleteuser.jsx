@@ -3,7 +3,7 @@ import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import API from '../../../../api';
 
-export default function Deleteuser( {listItem, loadUserList, loggedInUserData} ) {
+export default function Deleteuser( {listItem, loadUserList, loggedInUserData, buttonTitle} ) {
     const [showDeleteUserForm, setShowDeleteUserForm] = useState(false);
     const [existUserIdInLog, setExistUserIdInLog] = useState(false);
 
@@ -59,14 +59,14 @@ export default function Deleteuser( {listItem, loadUserList, loggedInUserData} )
             <OverlayTrigger
                 placement="top"
                 delay={{ show: 50, hide: 100 }}
-                overlay={renderTooltip}
-            >
+                overlay={renderTooltip}>
                 <Button 
-                    size="sm"
+                    size={buttonTitle === undefined ? "sm" : ''}
                     className="m-1"
                     variant="danger"
                     onClick={handleShowDeleteUserForm}>
                     &#128465;
+                    {buttonTitle}
                 </Button>
             </OverlayTrigger>
             <Modal show={showDeleteUserForm} onHide={handleCloseDeleteUserForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
