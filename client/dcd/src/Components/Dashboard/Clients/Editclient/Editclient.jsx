@@ -128,7 +128,8 @@ return (
         <Modal 
             show={showEditClientForm} 
             onHide={handleCloseEditClientForm}
-            backdrop='static'>
+            backdrop='static'
+            onClick={(e)=>e.stopPropagation()}>
             <Modal.Header>
                 <Modal.Title>Ügyfél módosítása</Modal.Title>
                 <CloseButton className='justify-content-end' onClick={handleCloseEditClientForm}/>

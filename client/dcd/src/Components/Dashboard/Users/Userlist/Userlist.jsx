@@ -20,6 +20,7 @@ export default function Userlist({
     setViewHideInactivedUser,
     loggedInUserData
 }) {
+  const [clickedRowIndex, setClickedRowIndex] = useState(null);
   const [usernameSearch, setUsernameSearch] = useState('');
   const [nameSearch, setNameSearch] = useState('');
   const [groupSearch, setGroupSearch] = useState('');
@@ -159,7 +160,16 @@ export default function Userlist({
           {paginatedList
             .map((listItem) => {
               return (
-              <tr className={listItem.inactive === 1 ? "text-decoration-line-through" : ""} key={listItem.id}>
+              <tr 
+                className={listItem.inactive === 1 ? "text-decoration-line-through" : "cursor-pointer"} 
+                key={listItem.id}
+                onClick={(e) => {
+                  setClickedRowIndex(listItem.id);
+                  e.stopPropagation();
+                  if (e.target.role === 'dialog') setClickedRowIndex(null);
+              }}
+
+                >
                 <td>{listItem.id}</td>
                 <td>{listItem.username}</td>
                 <td>{listItem.name}</td>
@@ -175,6 +185,8 @@ export default function Userlist({
                       <Viewuser
                         className='m-1'
                         listItem={listItem}
+                        clickedRowIndex={clickedRowIndex}
+                        setClickedRowIndex={setClickedRowIndex}
                       />
                       <Edituser
                         listItem={listItem}

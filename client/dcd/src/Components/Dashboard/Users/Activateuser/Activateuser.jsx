@@ -6,6 +6,7 @@ import API from '../../../../api';
 export default function Activateuser( { listItem, loadUserList, loggedInUserData} ) {
 
   const handleActivateUser = async (e) => {
+    e.stopPropagation();
     axios.post(`${API.address}/activeuser`, {id : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
       .then(() => {
          loadUserList(false);

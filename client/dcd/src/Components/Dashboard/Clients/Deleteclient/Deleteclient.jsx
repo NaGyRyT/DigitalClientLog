@@ -55,7 +55,7 @@ export default function Deleteclient( {listItem, loadClientList, loggedInUserDat
                     &#128465;
                 </Button>
             </OverlayTrigger>
-            <Modal show={showDeleteClientForm} onHide={handleCloseDeleteClientForm} backdrop='static'>
+            <Modal show={showDeleteClientForm} onHide={handleCloseDeleteClientForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
                 <Modal.Header>
                         <Modal.Title>Ügyfél törlése</Modal.Title>
                         <CloseButton className='justify-content-end' onClick={handleCloseDeleteClientForm}/>

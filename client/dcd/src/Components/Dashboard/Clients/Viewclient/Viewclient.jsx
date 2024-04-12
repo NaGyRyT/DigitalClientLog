@@ -17,8 +17,7 @@ export default function Viewclient( { listItem, loggedInUserData, clickedRowInde
         setShowViewClientForm(false);
         setClickedRowIndex(null);
     };
-    const handleShowViewClientForm = async(e) => {
-        /* e.stopPropagation(); */
+    const handleShowViewClientForm = async() => {
         await getLog();
         setShowViewClientForm(true);
     }
@@ -61,7 +60,8 @@ export default function Viewclient( { listItem, loggedInUserData, clickedRowInde
                 show={showViewClientForm}
                 onHide={handleCloseViewClientForm}
                 dialogClassName='modal-80w'
-                backdrop='static'>
+                backdrop='static'
+                onClick={(e)=>e.stopPropagation()}>
                 <Modal.Header>
                         <Modal.Title>Ügyfél részletek</Modal.Title>
                         <CloseButton className='justify-content-end' onClick={handleCloseViewClientForm}/>

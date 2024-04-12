@@ -94,7 +94,8 @@ export default function Newlog( {
 				show={showNewLogForm} 
 				onHide={handleCloseNewLogForm}
                 dialogClassName='modal-80w'
-				backdrop='static'>
+				backdrop='static'
+                onClick={(e)=>e.stopPropagation()}>
 				<Modal.Header>
 					<Modal.Title>Új naplóbejegyzés felvitele</Modal.Title>
                     <CloseButton className='justify-content-end' onClick={handleCloseNewLogForm}/>

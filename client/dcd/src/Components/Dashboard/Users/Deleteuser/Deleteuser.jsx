@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
+import { CloseButton, OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import API from '../../../../api';
 
@@ -14,8 +14,14 @@ export default function Deleteuser( {listItem, loadUserList, loggedInUserData} )
         callApi()
     }, []);
 
-    const handleCloseDeleteUserForm = () => setShowDeleteUserForm(false);
-    const handleShowDeleteUserForm = () => setShowDeleteUserForm(true);
+    const handleCloseDeleteUserForm = (e) => {
+        e.stopPropagation();
+        setShowDeleteUserForm(false);
+    }
+    const handleShowDeleteUserForm = (e) => {
+        e.stopPropagation();
+        setShowDeleteUserForm(true);
+    }
 
     const handleDeleteUserSubmit = async (e) => {
         e.preventDefault();
@@ -65,9 +71,10 @@ export default function Deleteuser( {listItem, loadUserList, loggedInUserData} )
                     &#128465;
                 </Button>
             </OverlayTrigger>
-            <Modal show={showDeleteUserForm} onHide={handleCloseDeleteUserForm} backdrop='static'>
-                <Modal.Header closeButton>
+            <Modal show={showDeleteUserForm} onHide={handleCloseDeleteUserForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
+                <Modal.Header>
                         <Modal.Title>Felhasználó törlése</Modal.Title>
+                        <CloseButton className='justify-content-end' onClick={handleCloseDeleteUserForm}/>
                 </Modal.Header>
                 <Modal.Body>
                     Valóban <span className='fw-bold text-danger'>{existUserIdInLog ? 'inaktiválni' : 'törölni'}</span> szeretnéd {listItem.username} felhasználót?
