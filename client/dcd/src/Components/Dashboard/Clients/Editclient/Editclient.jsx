@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
-import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
+import { CloseButton, OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
 import { validateClient } from '../Validateclient/Validateclient';
 import API from '../../../../api';
 
@@ -36,7 +36,8 @@ export default function Editclient( {
 
     const [showEditClientForm, setShowEditClientForm] = useState(false);
 
-	const handleCloseEditClientForm = () => {
+	const handleCloseEditClientForm = (e) => {
+        e.stopPropagation();
         setShowEditClientForm(false);
         setName(listItem.name);
 		setClientId(listItem.client_id);
@@ -64,7 +65,8 @@ export default function Editclient( {
 
     }
 
-    const handleShowEditClientForm = () => {
+    const handleShowEditClientForm = (e) => {
+        e.stopPropagation();
 		setShowEditClientForm(true);
     }
 
@@ -127,8 +129,9 @@ return (
             show={showEditClientForm} 
             onHide={handleCloseEditClientForm}
             backdrop='static'>
-            <Modal.Header closeButton>
+            <Modal.Header>
                 <Modal.Title>Ügyfél módosítása</Modal.Title>
+                <CloseButton className='justify-content-end' onClick={handleCloseEditClientForm}/>
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={handleEditClientSubmit}>

@@ -18,6 +18,7 @@ export default function Clientlist({
     setSortDirection,
     loggedInUserData
 }) {
+  const [clickedRowIndex, setClickedRowIndex] = useState(null);
   const [clientnameSearch, setClientnameSearch] = useState('');
   const [clientIdSearch, setClientIdSearch] = useState('');
   const [birthDateSearch, setBirthDateSearch] = useState('');
@@ -228,7 +229,13 @@ export default function Clientlist({
             .map((listItem) => {
               return (
               <tr 
-                key={listItem.id}>
+                key={listItem.id}
+                className='cursor-pointer'
+                onClick={(e) => {
+                  setClickedRowIndex(listItem.id);
+                  e.stopPropagation();
+                  if (e.target.role === 'dialog') setClickedRowIndex(null);
+              }}>
                 <td className=''>{listItem.id}</td>
                 <td className=''>{listItem.name}</td>
                 <td className='max-width-115'>{listItem.client_id}</td>
@@ -243,8 +250,9 @@ export default function Clientlist({
                       <Viewclient
                         className='m-1'
                         listItem={listItem}
-                        selectedClient={listItem}
                         loggedInUserData={loggedInUserData}
+                        clickedRowIndex={clickedRowIndex}
+                        setClickedRowIndex={setClickedRowIndex}
                       />
                       <Newlog
                         selectedClient={listItem}

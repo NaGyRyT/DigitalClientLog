@@ -18,7 +18,7 @@ export default function Logentries( {
   loggedInUserData
   } ) {
 
-  const [clickedRowIndex, setClickedRowIndex] = useState('');
+  const [clickedRowIndex, setClickedRowIndex] = useState(null);
   const [usernameSearch, setUsernameSearch] = useState('');
   const [clientnameSearch, setClientnameSearch] = useState('');
   const [dateTimeSearch, setDateTimeSearch] = useState('');

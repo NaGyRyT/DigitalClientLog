@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useState } from 'react';
-import { Form, Alert, Button, Modal, Row, Col, ListGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { CloseButton, Form, Alert, Button, Modal, Row, Col, ListGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { validateLog } from '../Validatelog/Validatelog';
 import API from '../../../../api';
 
@@ -22,9 +22,10 @@ export default function Newlog( {
         description : '',
         error : false
   	});
-      const [disableSubmitButton, setDisableSubmitButton] = useState(false);
+    const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 	const [showNewLogForm, setShowNewLogForm] = useState(false);
-	const handleCloseNewLogForm = async () => {
+	const handleCloseNewLogForm = async (e) => {
+        e.stopPropagation();
         setShowNewLogForm(false)
         setTime(new Date().toString().slice(16,21))
         setDate(new Date().toJSON().slice(0,10));
@@ -38,7 +39,10 @@ export default function Newlog( {
 			error : false, 
 		})
 	}
-	const handleShowNewLogForm = () => setShowNewLogForm(true);
+	const handleShowNewLogForm = (e) => {
+        e.stopPropagation();
+        setShowNewLogForm(true);
+    }
   	const handleNewLogSubmit = async (e) => {
         setDisableSubmitButton(true);
 		e.preventDefault();
@@ -91,8 +95,9 @@ export default function Newlog( {
 				onHide={handleCloseNewLogForm}
                 dialogClassName='modal-80w'
 				backdrop='static'>
-				<Modal.Header closeButton>
+				<Modal.Header>
 					<Modal.Title>Új naplóbejegyzés felvitele</Modal.Title>
+                    <CloseButton className='justify-content-end' onClick={handleCloseNewLogForm}/>
 				</Modal.Header>
 				<Modal.Body>
 				    <Form onSubmit={handleNewLogSubmit}>

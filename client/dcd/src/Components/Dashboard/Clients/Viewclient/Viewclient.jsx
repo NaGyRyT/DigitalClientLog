@@ -1,6 +1,6 @@
-import React, { useState  } from 'react';
+import React, { useState, useEffect  } from 'react';
 import axios from 'axios';
-import { OverlayTrigger, Tooltip, Button, Modal, Row, Col, Table } from 'react-bootstrap';
+import { CloseButton, OverlayTrigger, Tooltip, Button, Modal, Row, Col, Table } from 'react-bootstrap';
 import Viewlog from '../../Log/Viewlog/Viewlog'
 import Newlog from '../../Log/Newlog/Newlog';
 import Editlog from '../../Log/Editlog/Editlog';
@@ -8,11 +8,17 @@ import Deletelog from '../../Log/Deletelog/Deletelog';
 import API from '../../../../api';
 
 
-export default function Viewclient( { listItem, loggedInUserData } ) {
+export default function Viewclient( { listItem, loggedInUserData, clickedRowIndex, setClickedRowIndex } ) {
     const [showViewClientForm, setShowViewClientForm] = useState(false);
+    const [clickedRowIndexOnViewClientForm, setClickedRowIndexOnViewClientForm] = useState(null);
     const [logEntries, setLogEntries] = useState([]); 
-    const handleCloseViewClientForm = () => setShowViewClientForm(false);  
-    const handleShowViewClientForm = async() => {
+    const handleCloseViewClientForm = (e) => {
+        e.stopPropagation();
+        setShowViewClientForm(false);
+        setClickedRowIndex(null);
+    };
+    const handleShowViewClientForm = async(e) => {
+        /* e.stopPropagation(); */
         await getLog();
         setShowViewClientForm(true);
     }
@@ -30,6 +36,11 @@ export default function Viewclient( { listItem, loggedInUserData } ) {
         </Tooltip>
         );
     
+    useEffect(()=> {
+        if (clickedRowIndex === listItem.id && clickedRowIndex !== null) handleShowViewClientForm();
+    },[clickedRowIndex]);
+
+
       return (
         <>
             <OverlayTrigger
@@ -38,7 +49,6 @@ export default function Viewclient( { listItem, loggedInUserData } ) {
                 overlay={renderTooltip}
             >
                 <Button
-                    title='Részletek/Új napló'
                     size="sm"
                     className="m-1"
                     variant="success"
@@ -52,8 +62,9 @@ export default function Viewclient( { listItem, loggedInUserData } ) {
                 onHide={handleCloseViewClientForm}
                 dialogClassName='modal-80w'
                 backdrop='static'>
-                <Modal.Header closeButton>
+                <Modal.Header>
                         <Modal.Title>Ügyfél részletek</Modal.Title>
+                        <CloseButton className='justify-content-end' onClick={handleCloseViewClientForm}/>
                 </Modal.Header>
                 <Modal.Body>
                     <Row className='my-2 border-bottom'>
@@ -96,7 +107,15 @@ export default function Viewclient( { listItem, loggedInUserData } ) {
                             </thead>
                             <tbody>
                                 {logEntries.map((item) => 
-                                    <tr key={item.id}>
+                                    <tr 
+                                        key={item.id}
+                                        className='cursor-pointer'
+                                        onClick={(e) => {
+                                            setClickedRowIndexOnViewClientForm(item.id);
+                                            e.stopPropagation();
+                                            if (e.target.role === 'dialog') setClickedRowIndexOnViewClientForm(null);
+                                        }}
+                                    >
                                         <td>{item.id}</td>
                                         <td>{item.user_name}</td>
                                         <td>{item.date_time}</td>
@@ -110,7 +129,9 @@ export default function Viewclient( { listItem, loggedInUserData } ) {
                                                 showLogDetailsButton={true}
                                                 logEntry={item}
                                                 loggedInUserData={loggedInUserData}
-                                                loadLogEntries = {getLog}>
+                                                loadLogEntries = {getLog}
+                                                clickedRowIndex={clickedRowIndexOnViewClientForm}
+                                                setClickedRowIndex={setClickedRowIndexOnViewClientForm}>
                                             </Viewlog>
                                             {item.user_id === loggedInUserData.id ?
                                             <>

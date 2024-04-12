@@ -1,13 +1,17 @@
 import React, { useState } from 'react'
-import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
+import { CloseButton, OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import API from '../../../../api';
 
 export default function Deleteclient( {listItem, loadClientList, loggedInUserData} ) {
     const [showDeleteClientForm, setShowDeleteClientForm] = useState(false);
     const [existClientIdInLog, setExistClientIdInLog] = useState(true)
-    const handleCloseDeleteClientForm = () => setShowDeleteClientForm(false);
-    const handleShowDeleteClientForm = async () => {
+    const handleCloseDeleteClientForm = (e) => {
+        e.stopPropagation();
+        setShowDeleteClientForm(false);
+    }
+    const handleShowDeleteClientForm = async (e) => {
+        e.stopPropagation();
         setExistClientIdInLog(await checkExistClientIdInLog());
         setShowDeleteClientForm(true)};
     const handleDeleteClientSubmit = (e) => {
@@ -52,8 +56,9 @@ export default function Deleteclient( {listItem, loadClientList, loggedInUserDat
                 </Button>
             </OverlayTrigger>
             <Modal show={showDeleteClientForm} onHide={handleCloseDeleteClientForm} backdrop='static'>
-                <Modal.Header closeButton>
+                <Modal.Header>
                         <Modal.Title>Ügyfél törlése</Modal.Title>
+                        <CloseButton className='justify-content-end' onClick={handleCloseDeleteClientForm}/>
                 </Modal.Header>
                 {existClientIdInLog ?
                 <>
