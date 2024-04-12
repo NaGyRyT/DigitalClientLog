@@ -3,7 +3,7 @@ import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import API from '../../../../api';
 
-export default function Deleteclient( {listItem, loadClientList, loggedInUserData} ) {
+export default function Deleteclient( { listItem, loadClientList, loggedInUserData, buttonTitle } ) {
     const [showDeleteClientForm, setShowDeleteClientForm] = useState(false);
     const [existClientIdInLog, setExistClientIdInLog] = useState(true)
     const handleCloseDeleteClientForm = (e) => {
@@ -46,11 +46,12 @@ export default function Deleteclient( {listItem, loadClientList, loggedInUserDat
                 overlay={renderTooltip}
             >
                 <Button 
-                    size="sm"
+                    size={buttonTitle === undefined ? "sm" : ''}
                     className="m-1"
                     variant="danger"
                     onClick={handleShowDeleteClientForm}>
                     &#128465;
+                    {buttonTitle}
                 </Button>
             </OverlayTrigger>
             <Modal show={showDeleteClientForm} onHide={handleCloseDeleteClientForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
@@ -85,4 +86,4 @@ export default function Deleteclient( {listItem, loadClientList, loggedInUserDat
             </Modal>
         </>
       )
-    }
+    };

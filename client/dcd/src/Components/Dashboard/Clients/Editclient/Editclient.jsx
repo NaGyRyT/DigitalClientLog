@@ -8,7 +8,8 @@ export default function Editclient( {
         listItem,
         loadClientList,
         cityList,
-        loggedInUserData
+        loggedInUserData,
+        buttonTitle
 }) {
     const [name, setName] = useState(listItem.name);
     const [clientId, setClientId] = useState(listItem.client_id);
@@ -117,11 +118,12 @@ return (
 			delay={{ show: 50, hide: 100 }}
 			overlay={renderTooltip}>
 			<Button 
-				size = "sm"
+				size={buttonTitle === undefined ? "sm" : ''}
 				className = "m-1"
 				variant = "info"
 				onClick = {handleShowEditClientForm}>
 				&#x270D;
+                {buttonTitle}
     		</Button>
 	    </OverlayTrigger>
         <Modal 

@@ -6,9 +6,18 @@ import Newlog from '../../Log/Newlog/Newlog';
 import Editlog from '../../Log/Editlog/Editlog';
 import Deletelog from '../../Log/Deletelog/Deletelog';
 import API from '../../../../api';
+import Deleteclient from '../Deleteclient/Deleteclient';
+import Editclient from '../Editclient/Editclient';
 
 
-export default function Viewclient( { listItem, loggedInUserData, clickedRowIndex, setClickedRowIndex } ) {
+export default function Viewclient( {
+        listItem,
+        loggedInUserData,
+        loadClientList,
+        clickedRowIndex,
+        setClickedRowIndex,
+        cityList
+     } ) {
     const [showViewClientForm, setShowViewClientForm] = useState(false);
     const [clickedRowIndexOnViewClientForm, setClickedRowIndexOnViewClientForm] = useState(null);
     const [logEntries, setLogEntries] = useState([]); 
@@ -152,6 +161,7 @@ export default function Viewclient( { listItem, loggedInUserData, clickedRowInde
                 </Modal.Body>
                 <Modal.Footer>
                 <Button onClick={handleCloseViewClientForm} variant='secondary'>
+                        &#128682;
                         Bezár
                     </Button>
                     <Newlog
@@ -159,6 +169,19 @@ export default function Viewclient( { listItem, loggedInUserData, clickedRowInde
                         loggedInUserData={loggedInUserData}
                         fromClientList={false}
                         getLog={getLog}/>
+                    <Editclient
+                        listItem={listItem}
+                        loadClientList={loadClientList}
+                        cityList={cityList}
+                        loggedInUserData={loggedInUserData}
+                        buttonTitle={'Szerkeszt'}
+                      />
+                    <Deleteclient
+                        listItem={listItem}
+                        loadClientList={loadClientList}
+                        loggedInUserData={loggedInUserData}
+                        buttonTitle={'Töröl'}
+                      />
                 </Modal.Footer>
             </Modal>
         </>

@@ -253,6 +253,8 @@ export default function Clientlist({
                         loggedInUserData={loggedInUserData}
                         clickedRowIndex={clickedRowIndex}
                         setClickedRowIndex={setClickedRowIndex}
+                        loadClientList={loadClientList}
+                        cityList={cityList}
                       />
                       <Newlog
                         selectedClient={listItem}
