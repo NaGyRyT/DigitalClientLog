@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
+import Editgroup from '../Editgroup/Editgroup';
+import Deletegroup from '../Deletegroup/Deletegroup';
 
-export default function Viewgroup( { listItem, clickedRowIndex, setClickedRowIndex } ) {
+export default function Viewgroup( {
+    listItem,
+    clickedRowIndex,
+    setClickedRowIndex,
+    loadGroupList,
+    loggedInUserData
+ } ) {
     const [showViewGroupForm, setShowViewGroupForm] = useState(false);
     const handleCloseViewGroupForm = () => {
         setShowViewGroupForm(false);
@@ -46,12 +54,26 @@ export default function Viewgroup( { listItem, clickedRowIndex, setClickedRowInd
                         <p className='border-bottom'>Csoport leirás: {listItem.description}</p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={handleCloseViewGroupForm}>
+                        <Button onClick={handleCloseViewGroupForm} variant="secondary">
+                            &#128682;
                             Bezár
                         </Button>
-
+                        {listItem.group_name === 'Admin' ? '' :
+                            <>
+                            <Editgroup
+                            listItem={listItem}
+                            loadGroupList={loadGroupList}
+                            loggedInUserData={loggedInUserData}
+                            buttonTitle={'Szerkeszt'}/>
+                            <Deletegroup
+                            listItem={listItem}
+                            loadGroupList={loadGroupList}
+                            loggedInUserData={loggedInUserData}
+                            buttonTitle={'Töröl'}/>
+                        </>
+                        }
                     </Modal.Footer>
                 </Modal>
             </>
         )
-    }
+    };

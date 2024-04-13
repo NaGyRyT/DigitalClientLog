@@ -4,7 +4,7 @@ import { Form, Alert, Button, Modal, Row, Col, Tooltip, OverlayTrigger } from 'r
 import { validateGroup } from '../Validategroup/Validategroup';
 import API from '../../../../api';
 
-export default function Editgroup( { loadGroupList, listItem, loggedInUserData, clickedRowIndex, setClickedRowIndex } ) {
+export default function Editgroup( { loadGroupList, listItem, loggedInUserData, buttonTitle} ) {
 	const [groupName, setGroupName] = useState(listItem.group_name);
 	const [description, setDescription] = useState(listItem.description);
 	const [errorMessage, setErrorMessage] = useState({
@@ -57,11 +57,12 @@ export default function Editgroup( { loadGroupList, listItem, loggedInUserData, 
                 delay={{ show: 50, hide: 100 }}
                 overlay={renderTooltip}>
                 <Button 
-                    size = "sm"
+                    size={buttonTitle === undefined ? "sm" : ''}
                     className = "m-1"
                     variant = "info"
                     onClick = {handleShowEditGroupForm}>
                     &#x270D;
+					{buttonTitle}
                 </Button>
 	        </OverlayTrigger>
 			<Modal 

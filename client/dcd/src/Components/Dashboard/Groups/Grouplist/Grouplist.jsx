@@ -117,7 +117,9 @@ export default function Grouplist( {
                         <Viewgroup
                         listItem={listItem}
                         clickedRowIndex={clickedRowIndex}
-                        setClickedRowIndex={setClickedRowIndex}/>
+                        setClickedRowIndex={setClickedRowIndex}
+                        loadGroupList={loadGroupList}
+                        loggedInUserData={loggedInUserData}/>
                         {listItem.group_name === 'Admin' ? '' :
                             <>
                             <Editgroup

@@ -3,7 +3,7 @@ import { OverlayTrigger, Tooltip, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import API from '../../../../api';
 
-export default function Deletegroup( {listItem, loadGroupList, loggedInUserData} ) {
+export default function Deletegroup( {listItem, loadGroupList, loggedInUserData, buttonTitle} ) {
   const [showDeleteGroupForm, setShowDeleteGroupForm] = useState(false);
   const [existGroupIdInUsers, setExistGroupIdInUsers] = useState(true);
   const handleCloseDeleteGroupForm = () => setShowDeleteGroupForm(false);
@@ -49,11 +49,12 @@ export default function Deletegroup( {listItem, loadGroupList, loggedInUserData}
         delay={{ show: 50, hide: 100 }}
         overlay={renderTooltip}>
         <Button 
-            size="sm"
+            size={buttonTitle === undefined ? "sm" : ''}
             className="m-1"
             variant="danger"
             onClick={handleShowDeleteGroupForm}>
             &#128465;
+            {buttonTitle}
         </Button>
       </OverlayTrigger>
       <Modal show={showDeleteGroupForm} onHide={handleCloseDeleteGroupForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
