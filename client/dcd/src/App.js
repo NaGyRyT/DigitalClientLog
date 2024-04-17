@@ -99,7 +99,7 @@ function App() {
     return (
         <>
             <BrowserRouter>
-                <Navbar key='md' expand='md' className="bg-body-tertiary mb-3">
+                <Navbar key='md' expand='md' className="bg-body-tertiary mb-1 mb-sm-3">
                     <Container fluid>
                         <Navbar.Brand className='fs-4 p-0 d-flex flex-column'>
                                 <span>D<span className="fs-6">igital</span>C<span className="fs-6">lient</span>L<span className="fs-6">og</span></span>
@@ -112,11 +112,12 @@ function App() {
                             id={`offcanvasNavbar-expand-md`}                       
                             placement="end"
                             show={showOffcanvasMenu}
-                            className='w-auto'>
+                            onHide={()=> setShowOffcanvasMenu(false)}
+                            className='w-auto mobile-menu'>
                             <Offcanvas.Header className='p-2 border-bottom'>
-                                <Offcanvas.Title id={`offcanvasNavbarLabel-expand-md`}>
+                                <Offcanvas.Title className='h6' id={`offcanvasNavbarLabel-expand-md`}>
                                 <Container className='menu-assets'>
-                                    <div className='mobil-menu-name-group-container'>
+                                    <div className='mobile-menu-name-group-container'>
                                         <Edituser
                                             listItem={loggedInUserData}
                                             setLoggedInUserData={setLoggedInUserData}
@@ -124,7 +125,7 @@ function App() {
                                             loggedInUserData={loggedInUserData}>
                                         </Edituser>
                                     </div>
-                                    <div className='mobil-menu-icons-container'>
+                                    <div className='mobile-menu-icons-container'>
                                         <span
                                             className='dark-mode-switcher cursor-pointer d-flex align-items-center'
                                             onClick={() => setDarkMode(darkMode ? false : true)}

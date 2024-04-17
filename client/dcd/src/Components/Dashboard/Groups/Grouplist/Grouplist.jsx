@@ -43,7 +43,7 @@ export default function Grouplist( {
     const paginatedList = filteredList.slice(currentPage * rowsPerPage - rowsPerPage, currentPage * rowsPerPage);
  
     return (
-        <div className='m-3'>
+        <div className='m-1 m-sm-3'>
         <Table striped bordered hover size="sm">
             <thead>
             <tr><th colSpan={12}>Csoportok listája</th></tr>

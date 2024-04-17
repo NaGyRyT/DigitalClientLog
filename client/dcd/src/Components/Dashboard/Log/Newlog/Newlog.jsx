@@ -85,7 +85,7 @@ export default function Newlog( {
                 </Button>
             </OverlayTrigger>
             </> : 		
-            <Button className='mx-3' variant="primary" onClick={handleShowNewLogForm}>
+            <Button variant="primary" onClick={handleShowNewLogForm}>
                 + Új napló
             </Button>}
 

@@ -57,12 +57,12 @@ export default function Userlist({
   const paginatedList = filteredList.slice(currentPage * rowsPerPage - rowsPerPage, currentPage * rowsPerPage);
 
   return (
-    <div className='m-3'>
+    <div className='m-1 m-sm-3'>
       <Table striped bordered hover size="sm">
         <thead>
           <tr><th colSpan={5}>Felhasználók listája</th></tr>
           <tr>
-            <th>#
+            <th className='d-none d-xs-table-cell'>#
             <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
@@ -95,7 +95,7 @@ export default function Userlist({
                  {chooseOrderSign('name')}
               </span>
             </th>
-            <th className='display-none'>Csoport
+            <th>Csoport
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
@@ -106,10 +106,10 @@ export default function Userlist({
                 {chooseOrderSign('group_name')}
               </span>
             </th>
-            <th></th>
+            <th className='d-none d-xs-table-cell'></th>
           </tr>
           <tr>
-            <th>{filteredList.length}</th>
+            <th className='d-none d-xs-table-cell'>{filteredList.length}</th>
             <th>
               <InputGroup>
                 <Form.Control
@@ -130,7 +130,7 @@ export default function Userlist({
                 {nameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setNameSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
-            <th className='display-none'>
+            <th>
               <InputGroup>
                 <Form.Control
                   id="groupSearch"
@@ -140,7 +140,7 @@ export default function Userlist({
                   {groupSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setGroupSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
-            <th>
+            <th className='d-none d-xs-table-cell'>
               <OverlayTrigger
               			placement="top"
                     delay={{ show: 50, hide: 100 }}
@@ -170,11 +170,11 @@ export default function Userlist({
               }}
 
                 >
-                <td>{listItem.id}</td>
+                <td className='d-none d-xs-table-cell'>{listItem.id}</td>
                 <td>{listItem.username}</td>
                 <td>{listItem.name}</td>
-                <td className='display-none'>{listItem.group_name}</td>
-                <td className='width-150'>
+                <td>{listItem.group_name}</td>
+                <td className='width-150 d-none d-xs-table-cell'>
                   {listItem.inactive === 1 ? 
                     <Activateuser
                       listItem={listItem}
@@ -212,7 +212,7 @@ export default function Userlist({
         </tbody>
         <tfoot>
         <tr>
-            <th>
+            <th className='d-none d-xs-table-cell'>
               #
             </th>
             <th>
@@ -221,10 +221,10 @@ export default function Userlist({
             <th>
               Név
             </th>
-            <th className='display-none'>
+            <th>
               Csoport
             </th>
-            <th ></th>
+            <th className='d-none d-xs-table-cell'></th>
           </tr>
         </tfoot>
       </Table>

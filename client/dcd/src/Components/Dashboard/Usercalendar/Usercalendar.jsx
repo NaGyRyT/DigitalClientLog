@@ -30,7 +30,7 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
 
   moment.locale('hu');
   const eventFetchInterval = 60000;
-  const views = ['day', 'work_week', 'week', 'month', 'agenda'];
+  const views = ['day', 'week', 'month', 'agenda'];
   const logBackgroundColor = '#ead2ac';
   const logColor = '#363636';
   const groupCalendarEventBackgroundColor = '#5b5d58';
@@ -50,7 +50,7 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
       date: 'Dátum',
       time: 'Idő',
       event: 'Esemény',
-      allday: 'Egész nap',
+      allDay: 'Egész nap',
       noEventsInRange : 'Nincs esemény ebben az intervallumban.',
       showMore: (total) => `+${total} plus`,
     }
@@ -193,8 +193,8 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
           loggedInUserData={loggedInUserData}
           loadEventsFromCalendar={loadEventsFromCalendar}
         />
-        <Row className='mx-3 my-2'>
-          <Col xs={12} sm={6}>
+        <Row className='mx-0 my-2 mx-sm-3'>
+          <Col>
             <Form.Check
               className='log-checkbox'
               type='checkbox'
@@ -203,7 +203,7 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
               defaultChecked={viewLogChecked}
               onChange={()=> setViewLogChecked(!viewLogChecked)}/>
           </Col>
-          <Col xs={12} sm={6}>
+          <Col>
             <Form.Check          
               className='group-checkbox'
               type='checkbox'

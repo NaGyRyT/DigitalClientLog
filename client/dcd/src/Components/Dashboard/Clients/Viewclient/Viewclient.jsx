@@ -109,7 +109,7 @@ export default function Viewclient( {
                                     <th>Dátum, Idő</th>
                                     <th>Perc</th>
                                     <th className='d-none d-sm-table-cell'>Leírás</th>
-                                    <th></th>
+                                    <th className='d-none d-sm-table-cell'></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -127,11 +127,11 @@ export default function Viewclient( {
                                         <td>{item.user_name}</td>
                                         <td>{item.date_time}</td>
                                         <td>{item.duration}</td>
-                                        <td className='d-none d-sm-table-cell'>{item.description.length > 60 ? 
+                                        <td className='d-none d-md-table-cell'>{item.description.length > 60 ? 
                                                                                 item.description.slice(0,60) + '...' :
                                                                                 item.description}
                                         </td>
-                                        <td className='width-150'>
+                                        <td className='d-none d-sm-table-cell width-150'>
                                             <Viewlog
                                                 showLogDetailsButton={true}
                                                 logEntry={item}
@@ -159,7 +159,7 @@ export default function Viewclient( {
                         ''
                     }
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer className="d-flex justify-content-between justify-content-md-end">
                 <Button onClick={handleCloseViewClientForm} variant='secondary'>
                         &#128682;
                         Bezár

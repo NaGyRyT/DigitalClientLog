@@ -78,12 +78,12 @@ export default function Clientlist({
   }
 
   return (
-    <div className='m-3'>
+    <div className='m-1 m-sm-3'>
       <Table striped bordered hover size="sm">
         <thead>
           <tr><th colSpan={10}>Ügyfelek listája</th></tr>
           <tr>
-            <th>#
+            <th className='d-none d-sm-table-cell'>#
             <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
@@ -116,7 +116,7 @@ export default function Clientlist({
                  {chooseOrderSign('client_id')}
               </span>
             </th>
-            <th className='d-none d-sm-table-cell'>Születés
+            <th className=''>Születés
                 <span 
                     className="cursor-pointer mx-2"
                     onClick={() => {
@@ -143,10 +143,10 @@ export default function Clientlist({
             <th className='d-none d-lg-table-cell'>E-mail</th>
             <th className='d-none d-lg-table-cell'>Telefon</th>
             <th className='d-none d-xl-table-cell'>Cím</th>
-            <th></th>
+            <th className='d-none d-sm-table-cell'></th>
           </tr>
           <tr>
-            <th>{filteredList.length}</th>
+            <th className='d-none d-sm-table-cell'>{filteredList.length}</th>
             <th>
               <InputGroup>
                 <Form.Control
@@ -168,7 +168,7 @@ export default function Clientlist({
                 {clientIdSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setClientIdSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
-            <th className='d-none d-sm-table-cell max-width-115'>
+            <th className='max-width-115'>
               <InputGroup>
                 <Form.Control
                   id="birthSearch"
@@ -221,7 +221,7 @@ export default function Clientlist({
                     {addressSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setAddressSearch('')}/></InputGroupText> : ''}
                 </InputGroup>
                 </th>
-                <th></th>
+                <th className='d-none d-sm-table-cell'></th>
             </tr>
         </thead>
         <tbody>
@@ -236,16 +236,16 @@ export default function Clientlist({
                   e.stopPropagation();
                   if (e.target.role === 'dialog') setClickedRowIndex(null);
               }}>
-                <td className=''>{listItem.id}</td>
+                <td className='d-none d-sm-table-cell'>{listItem.id}</td>
                 <td className=''>{listItem.name}</td>
                 <td className='max-width-115'>{listItem.client_id}</td>
-                <td className='max-width-115 d-none d-sm-table-cell'>{listItem.birth_date}</td>
+                <td className='max-width-115'>{listItem.birth_date}</td>
                 <td className='max-width-65 d-none d-md-table-cell'>{listItem.age}</td>
                 <td className='d-none d-md-table-cell'>{listItem.gender}</td>
                 <td className='d-none d-lg-table-cell'>{listItem.email}</td>
                 <td className='max-width-115 d-none d-lg-table-cell'>{listItem.phone}</td>
                 <td className='d-none d-xl-table-cell'>{listItem.address}</td>
-                <td className='width-200'>
+                <td className='width-200 d-none d-sm-table-cell'>
                     <>
                       <Viewclient
                         className='m-1'
@@ -281,16 +281,16 @@ export default function Clientlist({
         </tbody>
         <tfoot>
         <tr>
-            <th>#</th>
+            <th className='d-none d-sm-table-cell'>#</th>
             <th>Név</th>
             <th className='max-width-115'>Azonosító</th>
-            <th className='max-width-115 d-none d-sm-table-cell'>Születés</th>
+            <th className='max-width-115'>Születés</th>
             <th className='max-width-65 d-none d-md-table-cell'>Kor</th>
             <th className='d-none d-md-table-cell'>Nem</th>
             <th className='d-none d-lg-table-cell'>E-mail</th>
             <th className='max-width-115 d-none d-lg-table-cell'>Telefon</th>
             <th className='d-none d-xl-table-cell'>Cím</th>
-            <th></th>
+            <th className='d-none d-sm-table-cell'></th>
           </tr>
         </tfoot>
       </Table>

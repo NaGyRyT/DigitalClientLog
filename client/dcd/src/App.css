@@ -69,6 +69,13 @@ html {
   min-width: 360px;
 }
 
+@media (max-width: 575px) {
+  .table {
+    font-size: 0.95rem;
+  }
+
+}
+
 @media (max-width: 767px) {
   .display-none {
       display: none;
@@ -83,15 +90,23 @@ html {
     gap: 0.5rem;
   }
 
-  .mobil-menu-name-group-container {
-    display: flex;
-    width: 200px
+  .menu-assets.container {
+    padding: 0 1.5rem 0 0;
   }
 
-  .mobil-menu-icons-container {
+  .mobile-menu {
+    max-width: 75% !important;
+  }
+
+  .mobile-menu-name-group-container {
     display: flex;
-    justify-content: space-between;
+  }
+
+  .mobile-menu-icons-container {
+    display: flex;
+    justify-content: flex-start;
     width: 100%;
+    gap: 1rem;
   }
 
   .btn-close {

@@ -99,14 +99,33 @@ td.rbc-agenda-event-cell {
 
 @media (max-width: 575px) {
     .log-checkbox.form-check, .group-checkbox.form-check {
-        justify-content: flex-start;
-        margin-bottom: 0.25rem;   
+        font-size: 0.8rem;
+        gap: 0.25rem;
+        padding: 0;
+    }
+    .rbc-toolbar {
+        flex-direction: column;
+        font-size: 0.8rem;
+        gap: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .rbc-calendar {
+        font-size: 0.8rem;
+        padding: 0.25rem;
+    }
+
+    .rbc-event {
+        padding: 0.05rem;
+        font-size: 0.7rem;
+    }
+    .rbc-label {
+        padding: 0 0.05rem;
     }
 }
 
 @media (max-width: 767px) {
     .rbc-toolbar {
         flex-direction: column;
-        gap: 0.25rem;
     }
 }

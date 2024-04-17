@@ -86,12 +86,12 @@ export default function Logentries( {
     </Tooltip>)
  
   return (
-    <div className='m-3'>
+    <div className='m-1 m-sm-3'>
       <Table striped bordered hover size="sm">
         <thead>
           <tr><th colSpan={12}>Naplóbejegyzések listája</th></tr>
           <tr>
-            <th>#
+            <th className='d-none d-sm-table-cell'>#
             <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
@@ -124,7 +124,7 @@ export default function Logentries( {
                   {chooseOrderSign('client_name')}
               </span>
             </th>
-            <th className='d-none d-sm-table-cell'>Időpont
+            <th>Időpont
                 <span 
                     className="cursor-pointer mx-2"
                     onClick={() => {
@@ -147,10 +147,10 @@ export default function Logentries( {
               </span>
             </th>               
             <th className='d-none d-lg-table-cell'>Leírás</th>
-            <th></th>
+            <th className='d-none d-sm-table-cell'></th>
           </tr>
           <tr>
-            <th>{filteredList.length}</th>
+            <th className='d-none d-sm-table-cell'>{filteredList.length}</th>
             <th>
               <InputGroup>
                 <Form.Control
@@ -171,7 +171,7 @@ export default function Logentries( {
                 {clientnameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setClientnameSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
-            <th className='d-none d-sm-table-cell'>
+            <th>
               <InputGroup>
                 <Form.Control
                   id="datetimeSearch"
@@ -204,7 +204,7 @@ export default function Logentries( {
                   {descriptionSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setDescriptionSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
-              <th>            
+              <th className='d-none d-sm-table-cell'>            
                 <OverlayTrigger
               			placement="top"
                     delay={{ show: 50, hide: 100 }}
@@ -235,15 +235,15 @@ export default function Logentries( {
                   e.stopPropagation();
                   if (e.target.role === 'dialog') setClickedRowIndex(null);
               }}>
-                <td>{listItem.id}</td>
+                <td className='d-none d-sm-table-cell'>{listItem.id}</td>
                 <td>{listItem.user_name}</td>
                 <td>{listItem.client_name}</td>
-                <td className='max-width-115 d-none d-sm-table-cell'>{listItem.date_time}</td>
+                <td className='max-width-115'>{listItem.date_time}</td>
                 <td className='max-width-65 d-none d-md-table-cell'>{listItem.duration}</td>                    
                 <td className='d-none d-lg-table-cell'>{listItem.description.length > 100 ? 
                                                           listItem.description.slice(0, 100)+ '...' : 
                                                           listItem.description}</td>
-                <td className='width-150'>
+                <td className='d-none d-sm-table-cell width-150'>
                 <>
                   <Viewlog
                     showLogDetailsButton={true}
@@ -271,13 +271,13 @@ export default function Logentries( {
         </tbody>
         <tfoot>
         <tr>
-            <th>#</th>
+            <th className='d-none d-sm-table-cell'>#</th>
             <th>Felhasználónév</th>
             <th className='max-width-115'>Ügyfélnév</th>
-            <th className='max-width-115 d-none d-sm-table-cell'>Időpont</th>
+            <th className='max-width-115'>Időpont</th>
             <th className='max-width-65 d-none d-md-table-cell'>Perc</th>
             <th className='d-none d-lg-table-cell'>Leírás</th>
-            <th></th>
+            <th className='d-none d-sm-table-cell'></th>
           </tr>
         </tfoot>
       </Table>
