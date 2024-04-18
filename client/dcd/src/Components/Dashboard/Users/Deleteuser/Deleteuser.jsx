@@ -53,22 +53,24 @@ export default function Deleteuser( {listItem, loadUserList, loggedInUserData, b
             Törlés/Inaktiválás
         </Tooltip>
         );
+
+    const deleteUserButton =
+        <Button 
+            size={buttonTitle === undefined ? "sm" : ''}
+            className="m-1"
+            variant="danger"
+            onClick={handleShowDeleteUserForm}>
+            {buttonTitle ? buttonTitle : <>&#128465;</>}
+        </Button>
     
-      return (
+    return (
         <>
-            <OverlayTrigger
+            {buttonTitle === undefined ? <OverlayTrigger
                 placement="top"
                 delay={{ show: 50, hide: 100 }}
                 overlay={renderTooltip}>
-                <Button 
-                    size={buttonTitle === undefined ? "sm" : ''}
-                    className="m-1"
-                    variant="danger"
-                    onClick={handleShowDeleteUserForm}>
-                    &#128465;
-                    {buttonTitle}
-                </Button>
-            </OverlayTrigger>
+                {deleteUserButton}
+            </OverlayTrigger> : deleteUserButton}
             <Modal show={showDeleteUserForm} onHide={handleCloseDeleteUserForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
                 <Modal.Header closeButton>
                         <Modal.Title>Felhasználó törlése</Modal.Title>

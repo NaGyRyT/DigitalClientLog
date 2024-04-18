@@ -62,7 +62,7 @@ export default function Userlist({
         <thead>
           <tr><th colSpan={5}>Felhasználók listája</th></tr>
           <tr>
-            <th className='d-none d-xs-table-cell'>#
+            <th className='d-none d-sm-table-cell'>#
             <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
@@ -106,10 +106,10 @@ export default function Userlist({
                 {chooseOrderSign('group_name')}
               </span>
             </th>
-            <th className='d-none d-xs-table-cell'></th>
+            <th className='d-none d-sm-table-cell'></th>
           </tr>
           <tr>
-            <th className='d-none d-xs-table-cell'>{filteredList.length}</th>
+            <th className='d-none d-sm-table-cell'>{filteredList.length}</th>
             <th>
               <InputGroup>
                 <Form.Control
@@ -140,7 +140,7 @@ export default function Userlist({
                   {groupSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setGroupSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
-            <th className='d-none d-xs-table-cell'>
+            <th className='d-none d-sm-table-cell'>
               <OverlayTrigger
               			placement="top"
                     delay={{ show: 50, hide: 100 }}
@@ -170,11 +170,11 @@ export default function Userlist({
               }}
 
                 >
-                <td className='d-none d-xs-table-cell'>{listItem.id}</td>
+                <td className='d-none d-sm-table-cell'>{listItem.id}</td>
                 <td>{listItem.username}</td>
                 <td>{listItem.name}</td>
                 <td>{listItem.group_name}</td>
-                <td className='width-150 d-none d-xs-table-cell'>
+                <td className='width-150 d-none d-sm-table-cell'>
                   {listItem.inactive === 1 ? 
                     <Activateuser
                       listItem={listItem}
@@ -212,7 +212,7 @@ export default function Userlist({
         </tbody>
         <tfoot>
         <tr>
-            <th className='d-none d-xs-table-cell'>
+            <th className='d-none d-sm-table-cell'>
               #
             </th>
             <th>
@@ -224,7 +224,7 @@ export default function Userlist({
             <th>
               Csoport
             </th>
-            <th className='d-none d-xs-table-cell'></th>
+            <th className='d-none d-sm-table-cell'></th>
           </tr>
         </tfoot>
       </Table>

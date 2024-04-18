@@ -55,7 +55,6 @@ export default function Viewgroup( {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={handleCloseViewGroupForm} variant="secondary">
-                            &#128682;
                             Bezár
                         </Button>
                         {listItem.group_name === 'Admin' ? '' :

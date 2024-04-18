@@ -37,23 +37,26 @@ export default function Deleteclient( { listItem, loadClientList, loggedInUserDa
             Törlés
         </Tooltip>
         );
+
+    const deleteClientButton =
+        <Button 
+            size={buttonTitle === undefined ? "sm" : ''}
+            className="m-1"
+            variant="danger"
+            onClick={handleShowDeleteClientForm}>
+            {buttonTitle ? buttonTitle : <>&#128465;</>}
+        </Button>
     
       return (
         <>
-            <OverlayTrigger
-                placement="top"
-                delay={{ show: 50, hide: 100 }}
-                overlay={renderTooltip}
-            >
-                <Button 
-                    size={buttonTitle === undefined ? "sm" : ''}
-                    className="m-1"
-                    variant="danger"
-                    onClick={handleShowDeleteClientForm}>
-                    &#128465;
-                    {buttonTitle}
-                </Button>
-            </OverlayTrigger>
+            {buttonTitle === undefined ?
+                <OverlayTrigger
+                    placement="top"
+                    delay={{ show: 50, hide: 100 }}
+                    overlay={renderTooltip}>
+                        {deleteClientButton}
+                </OverlayTrigger> : 
+                deleteClientButton}
             <Modal show={showDeleteClientForm} onHide={handleCloseDeleteClientForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
                 <Modal.Header closeButton>
                         <Modal.Title>Ügyfél törlése</Modal.Title>

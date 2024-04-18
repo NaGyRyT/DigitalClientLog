@@ -69,27 +69,30 @@ export default function Edituser( {
 	}
 
 	const renderTooltip = (props) => (
-    <Tooltip id="edit-button-tooltip" {...props}>
-      Szerkesztés
-    </Tooltip>
-  );
+		<Tooltip id="edit-button-tooltip" {...props}>
+			Szerkesztés
+		</Tooltip>
+  	);
+
+	const editUserButton =
+	<Button 
+		size={buttonTitle === undefined ? "sm" : ''}
+		className = "m-1"
+		variant = "info"
+		onClick = {handleShowEditUserForm}>
+		{buttonTitle ? buttonTitle : <>&#x270D;</>}
+	</Button>
   
   return (
     <> 
  		{loggedInUser === undefined ? 
+			buttonTitle === undefined ? 
 			<OverlayTrigger
 				placement="top"
 				delay={{ show: 50, hide: 100 }}
 				overlay={renderTooltip}>
-				<Button 
-					size={buttonTitle === undefined ? "sm" : ''}
-					className = "m-1"
-					variant = "info"
-					onClick = {handleShowEditUserForm}>
-					&#x270D;
-					{buttonTitle}
-				</Button>
-			</OverlayTrigger> :
+					{editUserButton}
+			</OverlayTrigger>: editUserButton : 
 			<div className='d-flex flex-column'>
 			<span 
 				title='Bejelentkezett felhasználó' 

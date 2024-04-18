@@ -70,7 +70,7 @@ export default function Grouplist( {
                     {chooseOrderSign('group_name')}
                 </span>
                 </th>
-                <th className='d-none d-lg-table-cell'>Leírás</th>
+                <th className='d-none d-md-table-cell'>Leírás</th>
                 <th></th>
             </tr>
             <tr>
@@ -85,7 +85,7 @@ export default function Grouplist( {
                     {groupnameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setGroupnameSearch('')}/></InputGroupText> : ''}
                 </InputGroup>
                 </th>          
-                <th className='d-none d-lg-table-cell'>
+                <th className='d-none d-md-table-cell'>
                 <InputGroup>
                     <Form.Control
                     id="descriptionSearch"
@@ -110,7 +110,7 @@ export default function Grouplist( {
                     >
                     <td>{listItem.id}</td>
                     <td>{listItem.group_name}</td>
-                    <td className='d-none d-lg-table-cell'>{listItem.description.length > 100 ? 
+                    <td className='d-none d-md-table-cell'>{listItem.description.length > 100 ? 
                                                                 listItem.description.slice(0, 100)+ '...' : 
                                                                 listItem.description}</td>
                     <td className='width-150'>
@@ -140,7 +140,7 @@ export default function Grouplist( {
             <tr>
                 <th>#</th>
                 <th>Csoportnév</th>
-                <th className='d-none d-lg-table-cell'>Leírás</th>
+                <th className='d-none d-md-table-cell'>Leírás</th>
                 <th></th>
             </tr>
             </tfoot>

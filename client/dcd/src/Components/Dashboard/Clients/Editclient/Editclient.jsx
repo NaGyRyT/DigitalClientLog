@@ -111,21 +111,24 @@ export default function Editclient( {
         const findedZip = cityList.find((cityListItem) => cityListItem.id === Number(id))
         return findedZip.zip
     }
+
+    const editClientButton = 
+        <Button 
+            size={buttonTitle === undefined ? "sm" : ''}
+            className = "m-1"
+            variant = "info"
+            onClick = {handleShowEditClientForm}>
+            {buttonTitle ? buttonTitle : <>&#x270D;</>}
+        </Button>
 return (
-    <>
-        <OverlayTrigger
+    <>  
+        {buttonTitle === undefined ? <OverlayTrigger
 			placement="top"
 			delay={{ show: 50, hide: 100 }}
 			overlay={renderTooltip}>
-			<Button 
-				size={buttonTitle === undefined ? "sm" : ''}
-				className = "m-1"
-				variant = "info"
-				onClick = {handleShowEditClientForm}>
-				&#x270D;
-                {buttonTitle}
-    		</Button>
-	    </OverlayTrigger>
+			{editClientButton}
+	    </OverlayTrigger>:
+            editClientButton}
         <Modal 
             show={showEditClientForm} 
             onHide={handleCloseEditClientForm}

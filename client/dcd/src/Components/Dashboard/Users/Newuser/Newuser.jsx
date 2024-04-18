@@ -59,42 +59,6 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 		} else setDisableSubmitButton(false);
 	}
     
-	/*async function checkExistUsername() {
-		let existUser;
-		await axios.post(`${API.address}/checkexistusername`, {username : username}, {headers: { 'x-api-key': loggedInUserData.password }})
-		.then((data) => {
-			if (data.data.length === 0) existUser = false;
-			else existUser = true;
-		})
-		return existUser
-		}
-
-	async function validateNewUser() {
-		const newErrorMessage = structuredClone(errorMessage);
-		let error = false;
-		if (username.length < 4 || username.length > 20) {
-			newErrorMessage.username = 'A felhasználónév minimum 4 maximum 20 karakter lehet.';
-			error = true;
-		} else if (await checkExistUsername()) {
-			newErrorMessage.username = 'Ez a felhasználónév foglalt.';
-			error = true;
-		} else newErrorMessage.username = ""; 
-		if (name.length === 0) {
-			newErrorMessage.name = 'A név minimum 1 maximum 100 karakter lehet.';
-			error = true;
-		} else newErrorMessage.name = '';
-		if (password.length < 8) {
-			newErrorMessage.password = 'A jelszó minimum 8 maximum 60 karakter lehet.';
-			error = true;
-		} else newErrorMessage.password = '';
-		if (selectedGroup === 0 ) {
-			newErrorMessage.group = 'Csoport választása kötelező.';
-			error = true;
-		} else newErrorMessage.group = '';
-		if (error) setErrorMessage(newErrorMessage);
-		return error
-	}*/
-
 	return (
 		<>
 			<Button className='mx-3' variant="primary" onClick={handleShowNewUserForm}>
@@ -152,12 +116,12 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 					</Form>
 				</Modal.Body>
 				<Modal.Footer>
-				<Button variant="secondary" onClick={handleCloseNewUserForm}>
-					Mégse
-				</Button>
-				<Button variant="primary" onClick={handleNewUserSubmit} disabled={disableSubmitButton}>
-					Rögzít
-				</Button>
+					<Button variant="secondary" onClick={handleCloseNewUserForm}>
+						Mégse
+					</Button>
+					<Button variant="primary" onClick={handleNewUserSubmit} disabled={disableSubmitButton}>
+						Rögzít
+					</Button>
 				</Modal.Footer>
 			</Modal>
 		</>

@@ -30,7 +30,6 @@ export default function Deleteevent( {selectedEvent, loadEventsFromCalendar, log
                 className='m-1'
                 variant='danger'
                 onClick={handleShowDeleteEventForm}>
-                &#128465;
                 Töröl
             </Button>
             <Modal show={showDeleteEventForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>

@@ -27,21 +27,24 @@ export default function Deletelog( { listItem, loadLogEntries, loggedInUserData,
             Törlés
         </Tooltip>
         );
+
+    const deleteLogButton = 
+        <Button 
+            size={buttonTitle === undefined ? 'sm' : ''}
+            className='m-1'
+            variant='danger'
+            onClick={handleShowDeleteLogForm}>
+            {buttonTitle ? buttonTitle : <>&#128465;</>}
+        </Button>
+
     return (
         <>
-            <OverlayTrigger
+            {buttonTitle === undefined ? <OverlayTrigger
                 placement='top'
                 delay={{ show: 50, hide: 100 }}
                 overlay={renderTooltip}>
-                <Button 
-                    size={buttonTitle === undefined ? 'sm' : ''}
-                    className='m-1'
-                    variant='danger'
-                    onClick={handleShowDeleteLogForm}>
-                    &#128465;
-                    {buttonTitle}
-                </Button>
-            </OverlayTrigger>
+                {deleteLogButton}
+            </OverlayTrigger> : deleteLogButton}
             <Modal show={showDeleteLogForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
                 <Modal.Header >
                     <Modal.Title>Naplóbejegyzés törlése</Modal.Title>

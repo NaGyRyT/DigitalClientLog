@@ -57,7 +57,6 @@ export default function Viewuser( {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={handleCloseViewUserForm} variant='secondary'>
-                            &#128682;
                             Bezár
                         </Button>
                         <Edituser
@@ -73,7 +72,6 @@ export default function Viewuser( {
                             loggedInUserData={loggedInUserData}
                             buttonTitle={'Töröl'}
                       />
-
                     </Modal.Footer>
                 </Modal>
             </>

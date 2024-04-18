@@ -35,28 +35,31 @@ export default function Deletegroup( {listItem, loadGroupList, loggedInUserData,
       });
     return existGroupIdInUsers;
   }    
-    
+  
   const renderTooltip = (props) => (
     <Tooltip id="delete-button-tooltip" {...props}>
       Törlés
     </Tooltip>
     );
 
+  const deleteGroupButton = 
+    <Button 
+      size={buttonTitle === undefined ? "sm" : ''}
+      className="m-1"
+      variant="danger"
+      onClick={handleShowDeleteGroupForm}>
+      {buttonTitle ? buttonTitle : <>&#128465;</>}
+    </Button>
+
   return (
     <>
-      <OverlayTrigger
-        placement="top"
-        delay={{ show: 50, hide: 100 }}
-        overlay={renderTooltip}>
-        <Button 
-            size={buttonTitle === undefined ? "sm" : ''}
-            className="m-1"
-            variant="danger"
-            onClick={handleShowDeleteGroupForm}>
-            &#128465;
-            {buttonTitle}
-        </Button>
-      </OverlayTrigger>
+      {buttonTitle === undefined ? 
+        <OverlayTrigger
+          placement="top"
+          delay={{ show: 50, hide: 100 }}
+          overlay={renderTooltip}>
+          {deleteGroupButton}
+        </OverlayTrigger> : deleteGroupButton}
       <Modal show={showDeleteGroupForm} onHide={handleCloseDeleteGroupForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
         <Modal.Header closeButton>
           <Modal.Title>Csoport törlése</Modal.Title>

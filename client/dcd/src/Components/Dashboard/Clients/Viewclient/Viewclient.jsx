@@ -108,7 +108,7 @@ export default function Viewclient( {
                                     <th>Felhasználó</th>
                                     <th>Dátum, Idő</th>
                                     <th>Perc</th>
-                                    <th className='d-none d-sm-table-cell'>Leírás</th>
+                                    <th className='d-none d-md-table-cell'>Leírás</th>
                                     <th className='d-none d-sm-table-cell'></th>
                                 </tr>
                             </thead>
@@ -161,7 +161,6 @@ export default function Viewclient( {
                 </Modal.Body>
                 <Modal.Footer className="d-flex justify-content-between justify-content-md-end">
                 <Button onClick={handleCloseViewClientForm} variant='secondary'>
-                        &#128682;
                         Bezár
                     </Button>
                     <Newlog

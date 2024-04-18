@@ -59,21 +59,23 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
           Szerkesztés
         </Tooltip>)
 
+    const editLogButton =
+        <Button 
+            size={buttonTitle === undefined ? "sm" : ''}
+            className = "m-1"
+            variant = "info"
+            onClick = {handleShowEditLogForm}>
+            {buttonTitle ? buttonTitle : <>&#x270D;</>}
+        </Button>    
+
   return (
     <>
-        <OverlayTrigger
+        {buttonTitle === undefined ? <OverlayTrigger
 			placement="top"
 			delay={{ show: 50, hide: 100 }}
 			overlay={renderTooltip}>
-            <Button 
-                size={buttonTitle === undefined ? "sm" : ''}
-                className = "m-1"
-                variant = "info"
-                onClick = {handleShowEditLogForm}>
-                &#x270D;
-                {buttonTitle}
-            </Button>    
-        </OverlayTrigger>
+            {editLogButton}
+        </OverlayTrigger> : editLogButton}
         <Modal 
             show={showEditLogForm} 
             dialogClassName='modal-80w'

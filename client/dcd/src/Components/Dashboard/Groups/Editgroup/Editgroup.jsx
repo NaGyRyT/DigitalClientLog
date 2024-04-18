@@ -50,21 +50,24 @@ export default function Editgroup( { loadGroupList, listItem, loggedInUserData, 
           Szerkesztés
         </Tooltip>);
 
+	const editGroupButton =
+		<Button 
+			size={buttonTitle === undefined ? "sm" : ''}
+			className = "m-1"
+			variant = "info"
+			onClick = {handleShowEditGroupForm}>
+			{buttonTitle ? buttonTitle : <>&#x270D;</>}
+		</Button>
+
 	return (
 		<>
-			<OverlayTrigger
-                placement="top"
-                delay={{ show: 50, hide: 100 }}
-                overlay={renderTooltip}>
-                <Button 
-                    size={buttonTitle === undefined ? "sm" : ''}
-                    className = "m-1"
-                    variant = "info"
-                    onClick = {handleShowEditGroupForm}>
-                    &#x270D;
-					{buttonTitle}
-                </Button>
-	        </OverlayTrigger>
+			{buttonTitle === undefined ? 
+				<OverlayTrigger
+					placement="top"
+					delay={{ show: 50, hide: 100 }}
+					overlay={renderTooltip}
+				>{editGroupButton}
+	        	</OverlayTrigger> : editGroupButton}
 			<Modal 
 				show={showEditGroupForm} 
 				onHide={handleCloseEditGroupForm}
@@ -80,8 +83,7 @@ export default function Editgroup( { loadGroupList, listItem, loggedInUserData, 
                             <Form.Group className='mb-3' controlId="formName">
                                 <Form.Label>Név</Form.Label>
                                 {errorMessage.groupName === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.groupName}</Alert>}
-                                <Form.Control 
-                                    autoComplete="groupName"
+                                <Form.Control
                                     maxLength={100}
                                     type='text'
                                     value={groupName}
@@ -95,7 +97,6 @@ export default function Editgroup( { loadGroupList, listItem, loggedInUserData, 
                                 <Form.Label>Leírás</Form.Label>
                                 {errorMessage.description === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.description}</Alert>}
                                 <Form.Control 
-                                    autoComplete="on"
                                     type='text'
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}/>

@@ -161,21 +161,23 @@ export default function Statements( { darkMode, loggedInUserData}) {
       {loggedInUserData.accessgroup === 1 ?
             <Row className='justify-content-center mx-1'>
               <Col className='m-1' xs={12} md={5}>
-                <Form.Select 
-                  onChange={(e) => {
-                    setSelectedUser(e.target.options[e.target.selectedIndex].text)
-                    setUserId(e.target.value)}}
-                  value={userId}
-                >
-                  {userList.map((userListItem) => 
-                  <option 
-                    key={userListItem.id}
-                    value={userListItem.id}
-                    >
-                    {userListItem.name}
-                  </option>)}
-              </Form.Select>	
-              </Col>
+                <Form.Group controlId="formSelectUser">
+                  <Form.Select 
+                    onChange={(e) => {
+                      setSelectedUser(e.target.options[e.target.selectedIndex].text)
+                      setUserId(e.target.value)}}
+                    value={userId}
+                  >
+                    {userList.map((userListItem) => 
+                    <option
+                      key={userListItem.id}
+                      value={userListItem.id}
+                      >
+                      {userListItem.name}
+                    </option>)}
+                </Form.Select>	
+              </Form.Group>
+            </Col>
             </Row> : ''
           }
       <Row className='justify-content-center mx-1'>
