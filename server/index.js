@@ -942,8 +942,8 @@ app.get('/api/geteventsfromcalendar/:accessgroup/:userid', authenticateKey, (req
             calendar.subject,
             calendar.subject as title,
             users.name as author,
-            DATE_FORMAT(calendar.date_time_start, '%Y-%m-%d %H:%i') as start,
-            DATE_FORMAT(calendar.date_time_end, '%Y-%m-%d %H:%i') as end
+            DATE_FORMAT(calendar.date_time_start, '%Y-%m-%dT%H:%i') as start,
+            DATE_FORMAT(calendar.date_time_end, '%Y-%m-%dT%H:%i') as end
         FROM calendar
         INNER JOIN users ON users.id = calendar.user_id
         WHERE calendar.user_id = ? OR calendar.group_id = ?
@@ -973,9 +973,9 @@ app.get('/api/geteventsfromlog/:accessgroup/:userid', authenticateKey, (req,res)
             log.description,
             log.user_id,
             log.duration,
-            DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i') as start,
-            DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i') as date_time,
-            DATE_ADD(DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i'), INTERVAL log.duration MINUTE) as end
+            DATE_FORMAT(log.date_time, '%Y-%m-%dT%H:%i') as start,
+            DATE_FORMAT(log.date_time, '%Y-%m-%dT%H:%i') as date_time,
+            DATE_FORMAT(DATE_ADD(DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i'), INTERVAL log.duration MINUTE), '%Y-%m-%dT%H:%i') as end
         FROM log 
         INNER JOIN clients ON clients.id = log.client_id
         INNER JOIN users ON users.id = log.user_id
@@ -993,9 +993,9 @@ app.get('/api/geteventsfromlog/:accessgroup/:userid', authenticateKey, (req,res)
             log.description,
             log.user_id,
             log.duration,
-            DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i') as start,
-            DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i') as date_time,
-            DATE_ADD(DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i'), INTERVAL log.duration MINUTE) as end
+            DATE_FORMAT(log.date_time, '%Y-%m-%dT%H:%i') as start,
+            DATE_FORMAT(log.date_time, '%Y-%m-%dT%H:%i') as date_time,
+            DATE_FORMAT(DATE_ADD(DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i'), INTERVAL log.duration MINUTE), '%Y-%m-%dT%H:%i') as end
         FROM log 
         INNER JOIN clients ON clients.id = log.client_id
         INNER JOIN users ON users.id = log.user_id
