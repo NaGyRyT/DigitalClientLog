@@ -1,9 +1,22 @@
 .login-form {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 20px auto;
-    border-radius: 20px;
-    width: 300px;
+    height:80vh;
+}
+
+.login-form .container {
+    display: block;
+    border-radius: 0.5rem;
+    padding: 20px;
+    width: 350px;
+    border: 1px solid #dee2e6;
+}
+
+.dark {
+    background-color: #2b3035;
+}
+
+.light {
+    background-color: #f0efef;
 }

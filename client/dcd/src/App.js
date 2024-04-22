@@ -17,12 +17,13 @@ import API from './api';
 axios.defaults.headers.common['subdomain'] = window.location.host.split('.')[0];
 
 function App() {
-    const [token, setToken] = useState(false);
+    const [isToken, setIsToken] = useState(false);
     const [loggedInUserData, setLoggedInUserData] = useState('');
     const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true'? true : false);
     const [activeMenuItem, setActiveMenuItem] = useState('users');
     const [showOffcanvasMenu, setShowOffcanvasMenu] = useState(false);
     const [companyData, setCompanyData] = useState('');
+    const token = sessionStorage.getItem('token') ? sessionStorage.getItem('token') : localStorage.getItem('token');
 
     function loadCompanyData() {
         axios.get(`${API.address}/getcompanydata`, {
@@ -47,27 +48,26 @@ function App() {
             )
             .then (async (data) => {
                 if (data.data.length > 0) {
-                    setToken(true);
+                    setIsToken(true);
                     setLoggedInUserData(data.data[0]);
-                } else setToken(false);
+                } else setIsToken(false);
             });
         } else {
-            setToken(false);
+            setIsToken(false);
             }
     };
 
-    function getLoggedInPassword( ) {
-        let token = sessionStorage.getItem('token')
+    function getLoggedInPassword() {
+        let password = token;
         if (token !== null) {
-            for (let char of token) {
-                if (char !== '$') token = token.slice(1)   
-                else return token
+            for (let char of password) {
+                if (char !== '$') password = password.slice(1)
+                else return password;
             }
         } else return ''
     }
 
-    function getLoggedInUser( ) {
-        let token = sessionStorage.getItem('token');
+    function getLoggedInUser() {
         let username = '';
         if (token !== null) {
             for (let char of token) {
@@ -80,8 +80,9 @@ function App() {
 
     function handleLogOut() {
         sessionStorage.removeItem('token');
-        setToken(false);
-        return <Loginform setToken={setToken} setLoggedInUserData={setLoggedInUserData}/>
+        localStorage.removeItem('token');
+        setIsToken(false);
+        return <Loginform setIsToken={setIsToken} setLoggedInUserData={setLoggedInUserData} darkMode={darkMode}/>
     };
     
     useEffect(() => {
@@ -93,9 +94,9 @@ function App() {
     
     useEffect(() => {if (loggedInUserData !== '') loadCompanyData()}, [loggedInUserData]);
 
-    if (!token && API.subdomains.find((item) => item === window.location.host.split('.')[0])) {    
-        return <Loginform setToken={setToken} setLoggedInUserData={setLoggedInUserData} />
-    } else if (token && API.subdomains.find((item) => item === window.location.host.split('.')[0]))
+    if (!isToken && API.subdomains.find((item) => item === window.location.host.split('.')[0])) {    
+        return <Loginform setIsToken={setIsToken} setLoggedInUserData={setLoggedInUserData} darkMode={darkMode}/>
+    } else if (isToken && API.subdomains.find((item) => item === window.location.host.split('.')[0]))
     return (
         <>
             <BrowserRouter>
@@ -195,9 +196,7 @@ function App() {
                 <Route path='/dashboard/clients' element={<Clients loggedInUserData={loggedInUserData}/>}/>
                 <Route path='/dashboard/log' element={<Log loggedInUserData={loggedInUserData}/>}/>
                 <Route path='/dashboard/statements' element={<Statements darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
-                <Route path='/dashboard/calendar' element={<Usercalendar darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
-                :
-            
+                <Route path='/dashboard/calendar' element={<Usercalendar darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>          
             </Routes>
             </BrowserRouter>
         </>

@@ -1,13 +1,14 @@
 import React,  { useState } from 'react';
 import axios from 'axios';
-import { Button, Form, Container, Alert } from 'react-bootstrap';
+import { Button, Form, Container, Alert, Stack, Row, Col } from 'react-bootstrap';
 import './Loginform.css';
 import API from '../../api';
 
-export default function Loginform( { setToken, setLoggedInUserData }) {
+export default function Loginform( { setIsToken, setLoggedInUserData, darkMode }) {
 	const [username, setUserName] = useState('');
 	const [password, setPassword] = useState('');
 	const [message, setMessage] = useState('');
+	const [rememberMe, setRememberMe] = useState(false);
 
 	async function loginUser(credentials) {
 		await axios.post(`${API.address}/login`, 
@@ -25,9 +26,10 @@ export default function Loginform( { setToken, setLoggedInUserData }) {
 		.then ((data) => {
 			if (data.data.length !== 0) {
 				setMessage('');
-				setToken(true);
+				setIsToken(true);
 				setLoggedInUserData(data.data[0])
-				sessionStorage.setItem("token", data.data[0].username + data.data[0].password);
+				if (rememberMe) localStorage.setItem("token", data.data[0].username + data.data[0].password)
+					else sessionStorage.setItem("token", data.data[0].username + data.data[0].password);
 			} else {
 				setMessage('Rossz felhasználónév vagy jelszó');
 			}
@@ -45,7 +47,7 @@ export default function Loginform( { setToken, setLoggedInUserData }) {
 
 return (
     <div className='login-form'>
-		<Container>
+		<Container className={darkMode ? 'dark' : 'light'}>
 			<h1>Kérlek lépj be</h1>
 			{(message === '') ? 
 					'' :
@@ -57,7 +59,7 @@ return (
 					<Form.Control 
 						required
 						type="text" 
-						placeholder="Írd be a felhasználó nevedet!"
+						placeholder="Írd be a felhasználónevedet!"
 						autoComplete="username"
 						onChange={e => setUserName(e.target.value)}/>
 				</Form.Group>
@@ -70,9 +72,17 @@ return (
 						autoComplete="new-password"
 						onChange={e => setPassword(e.target.value)}/>
 				</Form.Group>
-				<Button variant="primary" type="submit">
-					Belépés
-				</Button>
+				<Form.Check
+					type='checkbox'
+					id='rememberMe'
+            		label='Emlékezz rám'
+					className='mb-3'
+					onChange={() => setRememberMe(!rememberMe) }/>
+					<Stack className='col-5 mx-auto'>
+						<Button variant="primary" type="submit" className='auto'>
+							Belépés
+						</Button>
+					</Stack>
 			</Form>
 		</Container>
     </div>
