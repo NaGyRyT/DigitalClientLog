@@ -84,7 +84,8 @@ export default function AddEvent( {
     return (
     <Modal
         show={showAddEventForm}
-        onHide={handleCloseAddEventForm}>
+        onHide={handleCloseAddEventForm}
+        backdrop='static'>
         <Modal.Header closeButton>
             <Modal.Title>Új naptárbejegyzés</Modal.Title>
         </Modal.Header>
