@@ -203,16 +203,6 @@ app.post('/api/checkexistusername', authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/getcompanydata', authenticateKey, (req,res) => {
-    database.db.query(`SELECT * FROM company`, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        };
-    });
-});
-
 app.get('/api/getuserlist', authenticateKey, (req,res) => {
     const sqlSelect = `SELECT 
                         users.id, 
@@ -461,7 +451,7 @@ app.post('/api/checkexistclientid', authenticateKey, (req,res) => {
             console.log(err);
         } else {
             res.send(result);
-        }
+        };
     });
 });
 
@@ -867,6 +857,42 @@ app.get('/api/getnotemptyloguserlist', authenticateKey, (req,res) => {
             console.log(err);
         } else {
             res.send(result);
+        }
+    });
+});
+
+
+/*------------------------------Company--------------------------*/
+
+app.get('/api/getcompanydata', authenticateKey, (req,res) => {
+    database.db.query(`SELECT * FROM company`, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        };
+    });
+});
+
+app.post('/api/editcompany', authenticateKey, (req,res) => {
+    const id = req.body.id;
+    const name = req.body.name;
+    const shortname = req.body.shortname;
+    const address = req.body.address;
+    const sqlUpdate = `
+        UPDATE
+            company
+        SET
+            name = ?,
+            shortname = ?,
+            address = ?
+        WHERE id = ?`
+    database.db.query(sqlUpdate, [name, shortname, address, id], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send({id : id});
+            console.log(shortname, 'company modified in the database');
         }
     });
 });

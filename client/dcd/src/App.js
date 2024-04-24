@@ -14,6 +14,7 @@ import * as Icon from 'react-bootstrap-icons';
 import './App.css';
 import Edituser from './Components/Dashboard/Users/Edituser/Edituser';
 import API from './api';
+import Company from './Components/Dashboard/Company/Company';
 axios.defaults.headers.common['subdomain'] = window.location.host.split('.')[0];
 
 function App() {
@@ -104,7 +105,10 @@ function App() {
                     <Container fluid>
                         <Navbar.Brand className='fs-4 p-0 d-flex flex-column'>
                                 <span>D<span className="fs-6">igital</span>C<span className="fs-6">lient</span>L<span className="fs-6">og</span></span>
-                                <span className='m-0 p-0 menu-company-name'>{companyData.shortname}</span>
+                                <Company
+                                    companyData={companyData}
+                                    loggedInUserData={loggedInUserData}
+                                    loadCompanyData={loadCompanyData}/>
                         </Navbar.Brand>
                         <Navbar.Toggle 
                             onClick={()=> setShowOffcanvasMenu(true)}
