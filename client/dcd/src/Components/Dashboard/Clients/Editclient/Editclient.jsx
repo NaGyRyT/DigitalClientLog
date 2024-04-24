@@ -23,6 +23,7 @@ export default function Editclient( {
     const [houseNumber, setHouseNumber] = useState(listItem.house_number);
     const [floor, setFloor] = useState(listItem.floor);
     const [door, setDoor] = useState(listItem.door);
+    const [disableSubmitButton, setDisableSubmitButton] = useState(false);
     const [errorMessage, setErrorMessage] = useState({
         name : '',
         clientId : '',
@@ -71,6 +72,7 @@ export default function Editclient( {
     }
 
     const handleEditClientSubmit = async (e) => {
+        setDisableSubmitButton(true);
 		e.preventDefault();
 		const tempErrorMessage = await validateClient(name, clientId, listItem.client_id, birthDate, gender, email, phone, zip, cityId, listItem.id, loggedInUserData);
 		setErrorMessage(tempErrorMessage);
@@ -92,8 +94,9 @@ export default function Editclient( {
 		    .then(() => {
                 setShowEditClientForm(false);
                 loadClientList();
-		    })
-		}
+                setDisableSubmitButton(false);
+		    });
+		} else setDisableSubmitButton(false);
 	}
 
     const renderTooltip = (props) => (
@@ -305,7 +308,7 @@ return (
             <Button variant="secondary" onClick={handleCloseEditClientForm}>
                 Mégse
             </Button>
-            <Button variant="primary" onClick={handleEditClientSubmit}>
+            <Button variant="primary" onClick={handleEditClientSubmit} disabled={disableSubmitButton}>
                 Rögzít
             </Button>
             </Modal.Footer>

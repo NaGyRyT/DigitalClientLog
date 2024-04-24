@@ -9,6 +9,7 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
     const [date, setDate] = useState(logEntry.date_time.slice(0,10));
     const [duration, setDuration] = useState(logEntry.duration);
     const [description, setDescription] = useState(logEntry.description);
+    const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 	const [errorMessage, setErrorMessage] = useState({
         time : '',
         date : '',
@@ -39,6 +40,7 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
     }
 
     const handleEditLogSubmit = async () => {
+        setDisableSubmitButton(true);
 		const tempErrorMessage = await validateLog(date, time, duration, description);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
@@ -51,7 +53,8 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
 		    .then(() => {
                 setShowEditLogForm(false);
                 loadLogEntries();
-		    })}
+                setDisableSubmitButton(false);
+		    })} else setDisableSubmitButton(false);
     };
 
     const renderTooltip = (props) => (
@@ -149,14 +152,11 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
         <Button variant="secondary" onClick={handleCloseEditLogForm}>
             Mégse
         </Button>
-        <Button variant="primary" onClick={handleEditLogSubmit}>
+        <Button variant="primary" onClick={handleEditLogSubmit} disabled={disableSubmitButton}>
             Rögzít
         </Button>
         </Modal.Footer>
     </Modal>
-
     </>
-    
-
   )
-}
+};

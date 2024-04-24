@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react';
 import { Form, Button, Row, Col, Modal, Alert} from 'react-bootstrap';
 import moment from 'moment';
 import axios from 'axios';
@@ -52,7 +52,6 @@ export default function EditEvent( {
             error : false
           });
     };
-  /*   console.log(selectedEvent) */
 
     const handleEditEventSubmit = async (e) => {
         setDisableSubmitButton(true);
@@ -216,4 +215,4 @@ return (
             </Modal.Footer>
     </Modal> 
   )
-}
+};

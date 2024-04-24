@@ -7,6 +7,7 @@ import API from '../../../../api';
 export default function Editgroup( { loadGroupList, listItem, loggedInUserData, buttonTitle} ) {
 	const [groupName, setGroupName] = useState(listItem.group_name);
 	const [description, setDescription] = useState(listItem.description);
+	const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 	const [errorMessage, setErrorMessage] = useState({
 		groupName : '',
 		description : '',
@@ -29,6 +30,7 @@ export default function Editgroup( { loadGroupList, listItem, loggedInUserData, 
 		setShowEditGroupForm(true);
 	}
   	const handleEditGroupSubmit = async (e) => {
+		setDisableSubmitButton(true);
 		e.preventDefault();
 		const tempErrorMessage = await validateGroup(groupName, description, listItem.group_name, loggedInUserData);
 		setErrorMessage(tempErrorMessage);
@@ -41,8 +43,9 @@ export default function Editgroup( { loadGroupList, listItem, loggedInUserData, 
 		.then(() => {
 			setShowEditGroupForm(false);
 			loadGroupList();
+			setDisableSubmitButton(false);
 		});
-		};
+		} else setDisableSubmitButton(false);
 	};
 
     const renderTooltip = (props) => (
@@ -110,11 +113,11 @@ export default function Editgroup( { loadGroupList, listItem, loggedInUserData, 
                     <Button variant="secondary" onClick={handleCloseEditGroupForm}>
                         Mégse
                     </Button>
-                    <Button variant="primary" onClick={handleEditGroupSubmit}>
+                    <Button variant="primary" onClick={handleEditGroupSubmit} disabled={disableSubmitButton}>
                         Rögzít
                     </Button>
 				</Modal.Footer>
 			</Modal>
 		</>
 	)
-}
+};

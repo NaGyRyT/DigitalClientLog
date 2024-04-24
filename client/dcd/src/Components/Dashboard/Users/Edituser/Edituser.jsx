@@ -37,12 +37,12 @@ export default function Edituser( {
 			group : '',
 			error : false,
 		});
-  	}
+  	};
 
 	const handleShowEditUserForm = (e) => {
 		e.stopPropagation();
 		setShowEditUserForm(true);
-  	}
+  	};
 
 	const handleEditUserSubmit = async () => {
 		const tempErrorMessage = await validateUser(listItem.username, name, password, selectedGroup, loggedInUserData, true, password === '' ? false : true);
@@ -65,8 +65,8 @@ export default function Edituser( {
 			}
 			setShowEditUserForm(false);
 		})
-		}
-	}
+		};
+	};
 
 	const renderTooltip = (props) => (
 		<Tooltip id="edit-button-tooltip" {...props}>
@@ -113,11 +113,11 @@ export default function Edituser( {
 				</Modal.Header>
 				<Modal.Body>
 					<Form onSubmit={handleEditUserSubmit}>
-            	<Form.Group controlId="formUsername">
-						<Form.Label>Felhasználónév</Form.Label>
-							<Form.Control 
-								disabled
-								value={listItem.username}/>
+            			<Form.Group controlId="formUsername">
+							<Form.Label>Felhasználónév</Form.Label>
+								<Form.Control 
+									disabled
+									value={listItem.username}/>
 						</Form.Group>
 						<Form.Group controlId="formName">
 							<Form.Label>Név</Form.Label>
@@ -162,14 +162,14 @@ export default function Edituser( {
 					</Form>
 				</Modal.Body>
 				<Modal.Footer>
-				<Button variant="secondary" onClick={handleCloseEditUserForm}>
-					Mégse
-				</Button>
-				<Button variant="primary" onClick={handleEditUserSubmit}>
-					Rögzít
-				</Button>
+					<Button variant="secondary" onClick={handleCloseEditUserForm}>
+						Mégse
+					</Button>
+					<Button variant="primary" onClick={handleEditUserSubmit}>
+						Rögzít
+					</Button>
 				</Modal.Footer>
 			</Modal>
         </>
   )
-}
+};
