@@ -12,7 +12,8 @@ export async function validateLog(
         duration : '',
         description : '',
         error : false,
-        }
+        };
+    
     if (!validator.isTime(time)) {
             errorMessage.time = 'Időpont megadása kötelező.';
             errorMessage.error = true;
@@ -28,9 +29,9 @@ export async function validateLog(
         errorMessage.duration = 'Időtartam megadása kötelező.';
         errorMessage.error = true;
     } else errorMessage.duration = '';       
-    if (description === '') {
+    if (description.trim() === '') {
         errorMessage.description = 'Ügyféltalálkozás leírása kötelező';
         errorMessage.error = true;
     } else errorMessage.description = '';
     return errorMessage
-}
+};

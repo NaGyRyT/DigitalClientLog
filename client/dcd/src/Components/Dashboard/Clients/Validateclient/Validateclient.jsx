@@ -27,17 +27,18 @@ export async function validateClient(
         email : '',
         error : false,
         };
-    if (name.length === 0) {
+
+    if (name.trim().length === 0) {
         errorMessage.name = 'Név megadása kötelező.';
         errorMessage.error = true;
-    } else if (name.length > 100) {
+    } else if (name.trim().length > 100) {
         errorMessage.name = 'Név maximális hossza 100 karakter lehet.';
         errorMessage.error = true;
     } else errorMessage.name = '';
-    if (clientId.length < 9) { 
+    if (clientId.trim().length < 9) { 
         errorMessage.clientId = 'Azonosító megadása kötelező 9 karakter lehet.';
         errorMessage.error = true;
-    } else if (clientId !== origClientId && await checkExistClientId(clientId, accessgroup, loggedInUserData)) {
+    } else if (clientId.trim() !== origClientId && await checkExistClientId(clientId, accessgroup, loggedInUserData)) {
         errorMessage.clientId = 'Ezzel az azonosítóval már van regisztrált ügyfél.';
         errorMessage.error = true;
     } else errorMessage.id = "";
@@ -83,4 +84,4 @@ async function checkExistClientId(clientId, accessgroup, loggedInUserData) {
         else existClientId = true;
     });
     return existClientId;
-}
+};

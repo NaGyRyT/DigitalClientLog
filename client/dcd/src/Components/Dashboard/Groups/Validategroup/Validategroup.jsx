@@ -12,14 +12,15 @@ export async function validateGroup(
         description : '',
         error : false,
         }
-    if (groupName.length < 5) {
+
+    if (groupName.trim().length < 5) {
         errorMessage.groupName = 'Csoportnév minimum 5 karakter.';
         errorMessage.error = true;
-    } else if (groupName.toLowerCase() !== origGroupName.toLowerCase() && await checkExistGroupName(groupName, loggedInUserData)) {
+    } else if (groupName.trim().toLowerCase() !== origGroupName.toLowerCase() && await checkExistGroupName(groupName.trim(), loggedInUserData)) {
         errorMessage.groupName = 'Ilyen nevű csoport már létezik.';
         errorMessage.error = true;
     } else errorMessage.groupName = '';
-    if (description === '') {
+    if (description.trim() === '') {
         errorMessage.description = 'Csoport leírás kötelező.';
         errorMessage.error = true;
     } else errorMessage.description = '';

@@ -18,16 +18,17 @@ export async function validateUser (
         group : '',
         error : false,
     };
+
     if (!isEdited) {
-        if (username.length < 4 || username.length > 20) {
+        if (username.trim().length < 4 || username.trim().length > 20) {
             errorMessage.username = 'A felhasználónév minimum 4 maximum 20 karakter lehet.';
             errorMessage.error = true;
-        } else if (await checkExistUsername(username, loggedInUserData)) {
+        } else if (await checkExistUsername(username.trim(), loggedInUserData)) {
             errorMessage.username = 'Ez a felhasználónév foglalt.';
             errorMessage.error= true;
         } else errorMessage.username = ""; 
     };
-    if (name.length === 0) {
+    if (name.trim().length === 0) {
         errorMessage.name = 'A név minimum 1 maximum 100 karakter lehet.';
         errorMessage.error = true;
     } else errorMessage.name = '';
@@ -52,5 +53,4 @@ async function checkExistUsername(username, loggedInUserData) {
         else existUsername = true;
     })
     return existUsername
-    };
-
+};
