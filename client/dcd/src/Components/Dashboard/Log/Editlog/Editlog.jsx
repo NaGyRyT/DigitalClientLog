@@ -4,7 +4,8 @@ import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col, ListGrou
 import { validateLog } from '../Validatelog/Validatelog'
 import API from '../../../../api';
 
-export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, buttonTitle }) {
+export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, buttonTitle,     showLogFormOnCalendar,
+    setShowLogFormOnCalendar }) {
     const [time, setTime] = useState(logEntry.date_time.slice(11,16));
     const [date, setDate] = useState(logEntry.date_time.slice(0,10));
     const [duration, setDuration] = useState(logEntry.duration);
@@ -54,6 +55,7 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
                 setShowEditLogForm(false);
                 loadLogEntries();
                 setDisableSubmitButton(false);
+                showLogFormOnCalendar === true && setShowLogFormOnCalendar(false);
 		    })} else setDisableSubmitButton(false);
     };
 

@@ -1,6 +1,6 @@
 import React,  { useState } from 'react';
 import axios from 'axios';
-import { Button, Form, Container, Alert, Stack, Row, Col } from 'react-bootstrap';
+import { Button, Form, Container, Alert, Stack } from 'react-bootstrap';
 import './Loginform.css';
 import API from '../../api';
 
@@ -30,9 +30,7 @@ export default function Loginform( { setIsToken, setLoggedInUserData, darkMode }
 				setLoggedInUserData(data.data[0])
 				if (rememberMe) localStorage.setItem("token", data.data[0].username + data.data[0].password)
 					else sessionStorage.setItem("token", data.data[0].username + data.data[0].password);
-			} else {
-				setMessage('Rossz felhasználónév vagy jelszó');
-			}
+			} else setMessage('Rossz felhasználónév vagy jelszó');
 		})
 	};
 
@@ -87,4 +85,4 @@ return (
 		</Container>
     </div>
   )
-}
+};

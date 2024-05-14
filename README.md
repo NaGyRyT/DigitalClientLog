@@ -144,6 +144,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 - létrehozható saját illetve csoport naptárbejegyzés
 - megejeleníthetőek a csoport naptárbejegyzések, a sajátok szerkeszthetőek és törölhetőek
 - megjeleníthetőek a naplóbejegyzések, a sajátok szerkeszthetőek, törölhetőek
+- keresés funkció a tárgy mezőben
 
 ### Cég adatok
  A cég rövid nevére kattintva az adminisztrátor csoport tagjaként módosíthatóak a cég adatok (név, rövid név, cím). Egyik mező sem lehet üres.

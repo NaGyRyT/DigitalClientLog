@@ -93,7 +93,7 @@ useEffect(() => {
         setGroupEvent(selectedEvent.group_id);
         setOnlyView(selectedEvent.user_id === loggedInUserData.id ? false : true);
     }}, [showEditEventForm, selectedEvent]);
-
+    
 return (
     <Modal
         show={showEditEventForm}

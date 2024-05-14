@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import { Form, Row, Col } from 'react-bootstrap';
-import moment from 'moment';
+import moment, { lang } from 'moment';
 import hu from 'moment/locale/hu';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './Usercalendar.css';
@@ -10,7 +10,9 @@ import API from '../../../api';
 import Viewlog from '../Log/Viewlog/Viewlog';
 import Addevent from './Addevent/Addevent';
 import Editevent from './Editevent/Editevent';
-
+import Customtoolbar from './Customtoolbar/Customtoolbar';
+import { language } from './Language/Language';
+import { Views } from 'react-big-calendar';
 
 export default function Usercalendar({ darkMode, loggedInUserData }) {
   const [logList, setLogList] = useState([]);
@@ -27,39 +29,30 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
   });
   const [showAddEventForm, setShowAddEventForm] = useState(false);
   const [showEditEventForm, setShowEditEventForm] = useState(false);
-
+  
   moment.locale('hu');
   const eventFetchInterval = 60000;
   const views = ['day', 'week', 'month', 'agenda'];
   const logBackgroundColor = '#ead2ac';
   const logColor = '#363636';
   const groupCalendarEventBackgroundColor = '#5b5d58';
+  const calendarEventBackgroudColor = '#265985';
+  const calendarEventColor = '#dee2e6';
   const localizer = momentLocalizer(moment);
   const min = '2024-03-14T07:00:00+01:00';
   const max = '2024-03-14T19:00:00+01:00';
-  const lang = {
-    hu: {
-      week: 'Hét',
-      work_week: 'Munkahét',
-      day: 'Nap',
-      month: 'Hónap',
-      previous: 'Előző',
-      next: 'Következő',
-      today: `Ma`,
-      agenda: 'Napirend',
-      date: 'Dátum',
-      time: 'Idő',
-      event: 'Esemény',
-      allDay: 'Egész nap',
-      noEventsInRange : 'Nincs esemény ebben az intervallumban.',
-      showMore: (total) => `+${total} plus`,
-    }
-  };
+  
+  const [date, setDate] = useState(moment().toDate());
+  const [view, setView] = useState(Views.WEEK);
+
 
   const loadEventsFromLog = () => {
     axios.get(`${API.address}/geteventsfromlog/${loggedInUserData.accessgroup}/${loggedInUserData.id}`,
       {headers: { 'x-api-key': loggedInUserData.password }})
-        .then (({data}) => setLogList(data));
+        .then (({data}) => {
+          setLogList(data);
+          selectedEvent.id !== undefined && setSelectedEvent(data.find((item) => item.id === selectedEvent.id ));
+        });
     };
 
   const loadEventsFromCalendar = () => {
@@ -69,7 +62,6 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
           setUserEventList(data.filter((event) => event.group_id === 0));
           setGroupEventList(data.filter((event) => event.group_id > 0));
         });
-
     };
   
   const addEvent = (e) => {
@@ -96,11 +88,17 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
   const eventPropGetter = (e) => {
     let backgroundColor;
     let color;
-    if (e.group_id > 0) backgroundColor = groupCalendarEventBackgroundColor;
+    if (e.group_id > 0) {
+      backgroundColor = groupCalendarEventBackgroundColor;
+      color = calendarEventColor;
+    }
     else if (e.group_id === undefined) {
       backgroundColor = logBackgroundColor;
       color = logColor;
-    };
+    } else {
+        backgroundColor = calendarEventBackgroudColor;
+        color = calendarEventColor;
+    }
     return { style: { backgroundColor, color} }
   };
 
@@ -109,24 +107,26 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
     loadEventsFromCalendar();
   }, []);
 
-  const [scheduler, setScheduler] = useState(0);
   const mergeLists = () => {
-    if (viewLogChecked && viewGroupChecked) setMergedList([...userEventList, ...logList, ...groupEventList]);
-      else if (!viewLogChecked && !viewGroupChecked) setMergedList(userEventList);
-      else if (viewLogChecked && !viewGroupChecked) setMergedList([...userEventList, ...logList]);
-      else if (!viewLogChecked && viewGroupChecked) setMergedList([...userEventList, ...groupEventList]);
+    let tempMergedList = [];
+    if (viewLogChecked && viewGroupChecked) tempMergedList = [...userEventList, ...logList, ...groupEventList];
+      else if (!viewLogChecked && !viewGroupChecked) tempMergedList = userEventList;
+      else if (viewLogChecked && !viewGroupChecked) tempMergedList=[...userEventList, ...logList];
+      else if (!viewLogChecked && viewGroupChecked) tempMergedList=[...userEventList, ...groupEventList];
+      tempMergedList.map((item, index) => {item.key = index});
+      setMergedList(tempMergedList)
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setScheduler(scheduler + 1);
-      }, eventFetchInterval);
-      if (!(showEditEventForm || showAddEventForm || selectedEvent.duration !== undefined)) {
-        loadEventsFromCalendar();
-        if (viewLogChecked) loadEventsFromLog();
-      }
-      setScheduler(0)
-      return () => clearInterval(interval);
+  const [scheduler, setScheduler] = useState(false);
+  
+useEffect(() => {
+    const interval = setInterval(() => setScheduler(true), eventFetchInterval);
+    if (!(showEditEventForm || showAddEventForm || selectedEvent.duration !== undefined)) {
+      loadEventsFromCalendar();
+      if (viewLogChecked) loadEventsFromLog();
+    };
+    setScheduler(false);
+    return () => clearInterval(interval);
   }, [scheduler]);
 
   useEffect(()=> {
@@ -135,28 +135,33 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
   }, [logList.length]);
 
   useEffect(()=> {
-    setMergedList([...userEventList, ...logList, ...groupEventList]);
-    mergedList.map((item, index)=>{item.key = index});
     mergeLists();
-  }, [logList, groupEventList, userEventList]);
-
-
-  useEffect(()=> {
-    mergeLists();
-  }, [viewGroupChecked, viewLogChecked]);
-
+  }, [viewGroupChecked, viewLogChecked, logList, groupEventList, userEventList]);
 
   return (
     <div>
+      <Customtoolbar
+        views={views}
+        Views={Views}
+        date={date}
+        setDate={setDate}
+        view={view}
+        setView={setView}
+        mergedList={mergedList}
+        darkMode={darkMode}
+        loggedInUserData={loggedInUserData}
+        loadEventsFromCalendar={loadEventsFromCalendar}
+        loadEventsFromLog={loadEventsFromLog}
+      />
       <Calendar
         className={darkMode ? 'dark-calendar' : ''}
         views={views}      
-        messages={lang.hu}
+        messages={language.hu}
         formats={{dayHeaderFormat:(date => moment(date).format('yyyy. MMMM DD. dddd'))}}
-        step={15} timeslots={4}
+        step={15}
+        timeslots={4}
         min={min}
         max={max}
-        defaultView="week"
         popup
         showMultiDayTimes
         localizer={localizer}
@@ -167,8 +172,13 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
         onSelectEvent={handleShowLogOrEventForm}
         selectable
         onSelectSlot={addEvent}
+        toolbar={false}
+        date={date}
+        view={view}
+        onView={setView}
+        onNavigate={setDate}
       />
-        {showLogFormOnCalendar && <Viewlog
+        {showLogFormOnCalendar ? <Viewlog
           showLogDetailsButton={false}
           logEntry={selectedEvent}
           setClickedRowIndex={setSelectedEvent}
@@ -177,7 +187,8 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
           showLogFormOnCalendar={showLogFormOnCalendar}
           setShowLogFormOnCalendar={setShowLogFormOnCalendar}
           clickedRowIndex={selectedEvent === undefined ? selectedEvent : selectedEvent.id}
-        />}
+        /> :
+        <>
         <Addevent
           showAddEventForm={showAddEventForm}
           setShowAddEventForm={setShowAddEventForm}
@@ -185,14 +196,17 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
           loggedInUserData={loggedInUserData}
           loadEventsFromCalendar={loadEventsFromCalendar}
         />
-        <Editevent
+        {selectedEvent !== undefined && <Editevent
           showEditEventForm={showEditEventForm}
           setShowEditEventForm={setShowEditEventForm}
           selectedEvent={selectedEvent}
           setSelectedEvent={setSelectedEvent}
           loggedInUserData={loggedInUserData}
           loadEventsFromCalendar={loadEventsFromCalendar}
-        />
+        />}
+        </>
+        }
+        
         <Row className='mx-0 my-2 mx-sm-3'>
           <Col>
             <Form.Check

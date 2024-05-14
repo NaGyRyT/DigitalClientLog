@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { Button, Modal, ListGroup, Tooltip, OverlayTrigger, CloseButton  } from 'react-bootstrap';
 import Deletelog from '../Deletelog/Deletelog';
 import Editlog from '../Editlog/Editlog';
+import moment from 'moment';
 
 export default function Viewlog( {
     showLogDetailsButton,
@@ -14,6 +15,7 @@ export default function Viewlog( {
     setShowLogFormOnCalendar,
     }) {
     const [showViewLogForm, setShowViewLogForm] = useState(false);
+    const [editLog, setEditLog] = useState(logEntry);
 
     const handleCloseViewLogForm = (e) => {
         e.stopPropagation();
@@ -38,7 +40,6 @@ export default function Viewlog( {
             if (!showLogDetailsButton && logEntry.duration !== undefined) setShowLogFormOnCalendar(true)
                 else if (logEntry.duration !== undefined) setShowViewLogForm(true);
     },[clickedRowIndex]);
-
 
 return (
     <>
@@ -67,7 +68,7 @@ return (
                     <ListGroup.Item>Napló sorszám: {logEntry.id}</ListGroup.Item>
                     <ListGroup.Item>Felhasználó neve: {logEntry.user_name}</ListGroup.Item>
                     <ListGroup.Item>Ügyfél neve: {logEntry.client_name}</ListGroup.Item>
-                    <ListGroup.Item>Ügyféltalálkozás dátuma, ideje: {logEntry.date_time}</ListGroup.Item>
+                    <ListGroup.Item>Ügyféltalálkozás dátuma, ideje: {moment(logEntry.date_time).format('YYYY-MM-DD HH:MM')}</ListGroup.Item>
                     <ListGroup.Item>Ügyféltalálkozás időtartama: {logEntry.duration}</ListGroup.Item>
                 </ListGroup>
                 <h5 className='mt-3'>Ügyféltalálkozás leírása</h5>
@@ -79,19 +80,24 @@ return (
                 variant='secondary'>
                 Bezár
             </Button>
-            { loggedInUserData.id === logEntry.user_id ?
+            { loggedInUserData.id === logEntry.user_id &&
                 <>
                     <Editlog
-                        logEntry={logEntry}
+                        setShowLogFormOnCalendar={setShowLogFormOnCalendar}
+                        showLogFormOnCalendar={showLogFormOnCalendar}
+                        logEntry={editLog}
+                        setLogEntry={setEditLog}
                         loadLogEntries={loadLogEntries}
                         loggedInUserData={loggedInUserData}
                         buttonTitle={'Szerkeszt'}/>
                     <Deletelog
+                        setShowLogFormOnCalendar={setShowLogFormOnCalendar}
+                        showLogFormOnCalendar={showLogFormOnCalendar}
                         listItem={logEntry}
                         loadLogEntries={loadLogEntries}
                         loggedInUserData={loggedInUserData}
                         buttonTitle={'Töröl'}/>
-                </> : ''}
+                </>}
             </Modal.Footer>
         </Modal>
     </>

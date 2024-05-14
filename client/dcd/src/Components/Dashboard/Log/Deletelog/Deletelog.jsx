@@ -3,7 +3,13 @@ import { OverlayTrigger, Tooltip, Button, Modal, CloseButton } from 'react-boots
 import axios from 'axios';
 import API from '../../../../api';
 
-export default function Deletelog( { listItem, loadLogEntries, loggedInUserData, buttonTitle } ) {
+export default function Deletelog( {
+    listItem,
+    loadLogEntries,
+    loggedInUserData,
+    buttonTitle,
+    showLogFormOnCalendar,
+    setShowLogFormOnCalendar } ) {
     const [showDeleteLogForm, setShowDeleteLogForm] = useState(false);
     const handleCloseDeleteLogForm = () => {
         setShowDeleteLogForm(false);
@@ -19,6 +25,7 @@ export default function Deletelog( { listItem, loadLogEntries, loggedInUserData,
             .then(() => {
                 loadLogEntries(false);
                 setShowDeleteLogForm(false);
+                showLogFormOnCalendar === true && setShowLogFormOnCalendar(false);
             })
     };
     

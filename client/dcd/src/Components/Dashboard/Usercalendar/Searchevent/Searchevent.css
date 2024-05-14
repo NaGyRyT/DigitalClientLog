@@ -1,0 +1,14 @@
+.calendar-event td {
+    background-color: #265985 !important;
+    color: #dee2e6 !important;
+}
+
+.group-calendar-event td {
+    background-color: #5b5d58 !important;
+    color: #dee2e6 !important;
+}
+
+.calendar-event-from-log td {
+    background-color: #ead2ac !important;
+    color: #363636 !important;
+}
