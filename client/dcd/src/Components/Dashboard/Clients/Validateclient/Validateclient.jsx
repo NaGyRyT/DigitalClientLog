@@ -48,6 +48,9 @@ export async function validateClient(
     } else if (birthDate > new Date().toJSON().slice(0,10)) {
         errorMessage.birthDate = 'Jövőbeni dátum nem lehetséges.';
         errorMessage.error = true;
+    } else if (birthDate < '1900-01-01') {
+            errorMessage.birthDate = '1900.01.01 előtti dátum nem lehetséges.';
+            errorMessage.error = true;
     } else errorMessage.birthDate = '';
     if (zip.length !== 4) {
         errorMessage.zip = 'Nem megfelelő irányítószám.';
