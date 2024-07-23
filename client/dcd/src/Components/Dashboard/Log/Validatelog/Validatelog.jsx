@@ -5,12 +5,16 @@ export async function validateLog(
     time = '',
     duration = '',
     description = '',
+    shapeOfActivities = '',
+    activities = '',
     ) {
     const errorMessage = {
         date : '',
         time : '',
         duration : '',
         description : '',
+        shapeOfActivities : '',
+        activities : '',
         error : false,
         };
     
@@ -28,7 +32,15 @@ export async function validateLog(
     if (duration === '') {
         errorMessage.duration = 'Időtartam megadása kötelező.';
         errorMessage.error = true;
-    } else errorMessage.duration = '';       
+    } else errorMessage.duration = '';
+    if (shapeOfActivities === '') {
+        errorMessage.shapeOfActivities = 'Tevékenység formájának megadása kötelező.';
+        errorMessage.error = true;
+    } else errorMessage.shapeOfActivities = '';
+    if (activities === '') {
+        errorMessage.activities = 'Tevékenység megadása kötelező.';
+        errorMessage.error = true;
+    } else errorMessage.activities = '';
     if (description.trim() === '') {
         errorMessage.description = 'Ügyféltalálkozás leírása kötelező';
         errorMessage.error = true;

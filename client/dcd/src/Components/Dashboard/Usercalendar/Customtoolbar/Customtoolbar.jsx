@@ -101,6 +101,7 @@ export default function Customtoolbar( {
             loggedInUserData={loggedInUserData}
             loadEventsFromCalendar={loadEventsFromCalendar}
             loadEventsFromLog={loadEventsFromLog}
+            darkMode={darkMode}
         />
     <div className='rbc-btn-group'>
         {views.map((item) => (

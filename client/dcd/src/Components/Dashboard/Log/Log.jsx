@@ -4,7 +4,7 @@ import axios from 'axios';
 import { handleSort } from '../Tablesort/Tablesort';
 import API from '../../../api';
 
-export default function Log( { loggedInUserData } ) {
+export default function Log( { loggedInUserData, darkMode } ) {
   const [logEntries, setLogEntries] = useState([]);
   const [sortDirection, setSortDirection] = useState(
       sessionStorage.getItem('logTableSortDirection') ? 
@@ -26,14 +26,15 @@ export default function Log( { loggedInUserData } ) {
   return (
     <>
       <Logentries
-        loggedInUserData = {loggedInUserData}
-        logEntries = {logEntries}
-        loadLogEntries = {loadLogEntries}
-        sortDirection = {sortDirection}
-        sortedColumn = {sortedColumn}
-        setSortDirection = {setSortDirection}
-        setSortedColumn = {setSortedColumn}
-        handleSort = {handleSort}>
+        loggedInUserData={loggedInUserData}
+        logEntries={logEntries}
+        loadLogEntries={loadLogEntries}
+        sortDirection={sortDirection}
+        sortedColumn={sortedColumn}
+        setSortDirection={setSortDirection}
+        setSortedColumn={setSortedColumn}
+        handleSort={handleSort}
+        darkMode={darkMode}>
       </Logentries>
     </>
   )

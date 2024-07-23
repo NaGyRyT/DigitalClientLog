@@ -12,6 +12,7 @@ export default function Searchevent( {
     loggedInUserData,
     loadEventsFromCalendar,
     loadEventsFromLog,
+    darkMode
 } ) {
     const [calendarSearch, setCalendarSearch] = useState('');
     const [showSearchModal, setShowSearchModal] = useState(false);
@@ -115,6 +116,7 @@ return (
                     showLogFormOnCalendar={showLogFormOnCalendar}
                     setShowLogFormOnCalendar={setShowLogFormOnCalendar}
                     clickedRowIndex={selectedEvent.id}
+                    darkMode={darkMode}
                 />}
                 <Editevent
                     showEditEventForm={showEditEventForm}

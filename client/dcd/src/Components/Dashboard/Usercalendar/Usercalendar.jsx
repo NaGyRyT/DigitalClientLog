@@ -186,6 +186,7 @@ useEffect(() => {
           loadLogEntries={loadEventsFromLog}
           showLogFormOnCalendar={showLogFormOnCalendar}
           setShowLogFormOnCalendar={setShowLogFormOnCalendar}
+          darkMode={darkMode}
           clickedRowIndex={selectedEvent === undefined ? selectedEvent : selectedEvent.id}
         /> :
         <>
