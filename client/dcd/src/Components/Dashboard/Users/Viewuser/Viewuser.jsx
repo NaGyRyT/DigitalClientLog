@@ -54,6 +54,9 @@ export default function Viewuser( {
                         <p className='border-bottom'>Felhasználónév: {listItem.username}</p>
                         <p className='border-bottom'>Név: {listItem.name}</p>
                         <p className='border-bottom'>Csoport: {listItem.group_name}</p>
+                        <ul>
+                            {listItem.auditpermission ? <li>Ellenőrzési jog aktív</li> : ''}
+                        </ul>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={handleCloseViewUserForm} variant='secondary'>
