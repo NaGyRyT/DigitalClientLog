@@ -6,7 +6,7 @@ import Newclient from './Newclient/Newclient';
 import { handleSort } from '../Tablesort/Tablesort';
 import API from '../../../api';
 
-export default function Clients( { loggedInUserData }) {
+export default function Clients( { loggedInUserData, darkMode }) {
   const [clientList, setClientList] = useState([]);
   const [cityList, setCityList] = useState([]);
   const [sortDirection, setSortDirection] = useState(
@@ -51,6 +51,7 @@ export default function Clients( { loggedInUserData }) {
         handleSort={handleSort}
         loadClientList={loadClientList}
         loggedInUserData={loggedInUserData}
+        darkMode={darkMode}
       />
     </>
   )

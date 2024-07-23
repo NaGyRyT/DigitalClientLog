@@ -14,7 +14,9 @@ export async function validateClient(
     zip = '',
     cityId = 0,
     accessgroup,
-    loggedInUserData
+    loggedInUserData,
+    registrationDate ='',
+    endOfService = '',
     ) {
     const errorMessage = {
         name : '',
@@ -26,6 +28,8 @@ export async function validateClient(
         phone : '',
         email : '',
         error : false,
+        registrationDate: '',
+        endOfService : '',
         };
 
     if (name.trim().length === 0) {
@@ -35,13 +39,14 @@ export async function validateClient(
         errorMessage.name = 'Név maximális hossza 100 karakter lehet.';
         errorMessage.error = true;
     } else errorMessage.name = '';
-    if (clientId.trim().length < 9) { 
+    //azonosító validálása
+/*     if (clientId.trim().length < 9) { 
         errorMessage.clientId = 'Azonosító megadása kötelező 9 karakter lehet.';
         errorMessage.error = true;
     } else if (clientId.trim() !== origClientId && await checkExistClientId(clientId, accessgroup, loggedInUserData)) {
         errorMessage.clientId = 'Ezzel az azonosítóval már van regisztrált ügyfél.';
         errorMessage.error = true;
-    } else errorMessage.id = "";
+    } else errorMessage.id = ""; */
     if (!validator.isDate(birthDate)) {
         errorMessage.birthDate = 'Születési dátum megadása kötelező.';
         errorMessage.error = true;
@@ -68,14 +73,24 @@ export async function validateClient(
         errorMessage.gender = 'Nem megadása kötelező.';
         errorMessage.error = true;
     } else errorMessage.gender = '';       
-    if (!validator.isEmail(email)) {
+    if (email !== '' && !validator.isEmail(email)) {
         errorMessage.email = 'Nem megfelelő e-mail. xxxxx@xxx.xx';
         errorMessage.error = true;
-    } else errorMessage.email = ''
-    if (!validator.isMobilePhone(phone, 'hu-HU')) {
-        errorMessage.phone = 'Elvárt formátum 06305555555 +36301111111';
+    } else errorMessage.email = '';
+    /* if (phone !== '' && !validator.isMobilePhone(phone, 'hu-HU')) {
+        errorMessage.phone = 'Elvárt formátum 06305555555 vagy +36301111111';
         errorMessage.error = true;
-    } else errorMessage.phone = '';
+    } else errorMessage.phone = ''; */
+    if (!validator.isDate(registrationDate)) {
+        errorMessage.registrationDate = 'Szolgáltatás kezdetének megadása kötelező';
+        errorMessage.error = true;
+    } else if (registrationDate > new Date().toJSON().slice(0,10)) {
+        errorMessage.registrationDate = 'Jövőbeni dátum nem lehetséges.';
+        errorMessage.error = true;
+    } else if (registrationDate < '1900-01-01') {
+            errorMessage.registrationDate = '1900.01.01 előtti dátum nem lehetséges.';
+            errorMessage.error = true;
+    } else errorMessage.registrationDate = '';
     return errorMessage
 };
 

@@ -197,8 +197,8 @@ function App() {
                     </> :
                     ''
                 }
-                <Route path='/dashboard/clients' element={<Clients loggedInUserData={loggedInUserData}/>}/>
-                <Route path='/dashboard/log' element={<Log loggedInUserData={loggedInUserData}/>}/>
+                <Route path='/dashboard/clients' element={<Clients darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
+                <Route path='/dashboard/log' element={<Log darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
                 <Route path='/dashboard/statements' element={<Statements darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
                 <Route path='/dashboard/calendar' element={<Usercalendar darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>          
             </Routes>
