@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useState} from 'react';
 import bcrypt from "bcryptjs-react";
-import { Form, Alert, Button, Modal } from 'react-bootstrap';
+import { Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
 import { validateUser } from '../Validateuser/Validateuser';
 import API from '../../../../api';
 
@@ -21,6 +21,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 	const [showNewUserForm, setShowNewUserForm] = useState(false);
 	const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 	const [auditPermission, setAuditPermission] = useState(0);
+	const [statementPermission, setStatementPermission] = useState(0);
 
 	const handleCloseNewUserForm = () => {
 		setShowNewUserForm(false);
@@ -29,6 +30,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 		setPassword('');
 		setSelectedGroup(0);
 		setAuditPermission(0);
+		setStatementPermission(0);
 		setErrorMessage({
 			name : '',
 			username : '',
@@ -52,6 +54,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 														name : name.trim(),
 														group : selectedGroup,
 														auditpermission : auditPermission,
+														statementpermission : statementPermission,
 													}, {headers: { 'x-api-key': loggedInUserData.password }})
 			.then(() => {
 				handleCloseNewUserForm();
@@ -106,14 +109,25 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 								maxLength={60}
 								onChange={(e) => setPassword(e.target.value)}/>
 						</Form.Group>
-						<Form.Group md="4" controlId="formPermission">
-							<Form.Label>Jogosultság</Form.Label>
-							<Form.Check
-								type='switch'
-								label='Ellenőrzés'
-								defaultChecked={auditPermission ? true : false}
-                          		onChange={(e) => setAuditPermission(e.target.checked ? 1 : 0)}/>
-						</Form.Group>
+						<Row>
+							<p className='my-1'>Jogosultság</p>
+							<Col xs={12} sm={4}>
+								<Form.Check
+									type='switch'
+									label='Ellenőrzés'
+									id='formAuditPermission'
+									defaultChecked={auditPermission ? true : false}
+									onChange={(e) => setAuditPermission(e.target.checked ? 1 : 0)}/>
+								</Col>
+							<Col xs={12} sm={4}>
+								<Form.Check
+									type='switch'
+									label='Kimutatás'
+									id='formStatementPermission'
+									defaultChecked={statementPermission ? true : false}
+									onChange={(e) => setStatementPermission(e.target.checked ? 1 : 0)}/>
+							</Col>
+						</Row>
 						<Form.Group md="4" controlId="formSelectFromGroup">
 							<Form.Label>Csoport</Form.Label>
 							{errorMessage.group === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.group}</Alert>}

@@ -56,6 +56,7 @@ export default function Viewuser( {
                         <p className='border-bottom'>Csoport: {listItem.group_name}</p>
                         <ul>
                             {listItem.auditpermission ? <li>Ellenőrzési jog aktív</li> : ''}
+                            {listItem.statementpermission ? <li>Kimutatási jog aktív</li> : ''}
                         </ul>
                     </Modal.Body>
                     <Modal.Footer>

@@ -1,6 +1,6 @@
 import React, { useState} from 'react';
 import axios from 'axios';
-import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
 import bcrypt from "bcryptjs-react";
 import { validateUser } from '../Validateuser/Validateuser';
 import API from '../../../../api';
@@ -26,11 +26,13 @@ export default function Edituser( {
 	const [selectedGroup, setSelectedGroup] = useState(listItem.accessgroup);
 	const [showEditUserForm, setShowEditUserForm] = useState(false);
 	const [auditPermission, setAuditPermission] = useState(listItem.auditpermission);
+	const [statementPermission, setStatementPermission] = useState(listItem.statementpermission);
 
 	const handleCloseEditUserForm = () => {
 		setShowEditUserForm(false);
 		setName(listItem.name);
 		setAuditPermission(listItem.auditpermission);
+		setStatementPermission(listItem.statementpermission)
 		setPassword('');
 		setErrorMessage({
 			name : '',
@@ -56,6 +58,7 @@ export default function Edituser( {
 				name : name.trim(),
 				group : selectedGroup,
 				auditpermission : auditPermission,
+				statementpermission : statementPermission,
 				id : listItem.id
 			}, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
@@ -85,7 +88,7 @@ export default function Edituser( {
 		onClick = {handleShowEditUserForm}>
 		{buttonTitle ? buttonTitle : <>&#x270D;</>}
 	</Button>
-  
+
   return (
     <> 
  		{loggedInUser === undefined ? 
@@ -143,15 +146,27 @@ export default function Edituser( {
 								onChange={(e) => setPassword(e.target.value)}/>
 							<Form.Text>Ha nem írsz jelszót, akkor a jelszó nem fog módosulni.</Form.Text>
 						</Form.Group>
-						<Form.Group md="4" controlId="formPermission">
-							<Form.Label>Jogosultság</Form.Label>
-							<Form.Check
-								disabled={loggedInUser !== undefined ? true : false}
-								type='switch'
-								label='Ellenőrzés'
-								defaultChecked={auditPermission ? true : false}
-                          		onChange={(e) => setAuditPermission(e.target.checked ? 1 : 0)}/>
-						</Form.Group>
+						<Row>
+							<p className='my-1'>Jogosultság</p>
+							<Col xs={12} sm={4}>
+								<Form.Check
+									disabled={loggedInUser !== undefined ? true : false}
+									type='switch'
+									label='Ellenőrzés'
+									id='formAuditPermission'
+									defaultChecked={auditPermission ? true : false}
+									onChange={(e) => setAuditPermission(e.target.checked ? 1 : 0)}/>
+								</Col>
+							<Col xs={12} sm={4}>
+								<Form.Check
+									disabled={loggedInUser !== undefined ? true : false}
+									type='switch'
+									label='Kimutatás'
+									id='formStatementPermission'
+									defaultChecked={statementPermission ? true : false}
+									onChange={(e) => setStatementPermission(e.target.checked ? 1 : 0)}/>
+							</Col>
+						</Row>
 						<Form.Group className={listItem.username === "admin" ? "d-none" : ""} controlId="formSelectFromGroup">
 							<Form.Label>Csoport</Form.Label>
 							<Form.Select 

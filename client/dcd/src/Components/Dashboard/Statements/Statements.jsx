@@ -228,7 +228,7 @@ export default function Statements( { darkMode, loggedInUserData}) {
       if (testsPerUser.length === 0) loadTestsPerUser();
       if (shapeOfActivities.length === 0) loadShapeOfActivities();
       if (shapeOfActivitiesPerUser.length === 0) loadShapeOfActivitiesPerUser();
-      if (userList.length === 0 && loggedInUserData.accessgroup === 1) loadNotEmptyLogUserList();
+      if (userList.length === 0 && (loggedInUserData.accessgroup === 1 || loggedInUserData.statementpermission === 1)) loadNotEmptyLogUserList();
   },[]);
 
   useEffect(()=> {
@@ -245,10 +245,10 @@ export default function Statements( { darkMode, loggedInUserData}) {
     if (userList.length > 0 && userList.find((item) => item.id === loggedInUserData.id) === undefined) {
       setSelectedUser(userList[0].name);
       setUserId(userList[0].id);
+      
     }
   }, [userList.length]);
-
-  // 
+   
   function availableYears(logData) {
     let yearOptions = ['összes'];
     let previousItem = '';
@@ -271,7 +271,7 @@ export default function Statements( { darkMode, loggedInUserData}) {
     setTestsPerUser(e.target.value === 'összes' ? allTestsPerUser : allTestsPerUser.filter((i)=> i.log_date.slice(0,4) === e.target.value));
     setShapeOfActivitiesPerUser(e.target.value === 'összes' ? allShapeOfActivitiesPerUser : allShapeOfActivitiesPerUser.filter((i)=> i.log_date.slice(0,4) === e.target.value));
   };
- 
+
   return (
     <>
       <p className='text-center'>{loggedInUserData.accessgroup === 1 ? 'Az összes csoportra vonatkozó kimutatás' : loggedInUserData.group_name +' csoportra vonatkozó kimutatás'}</p>
@@ -334,17 +334,17 @@ export default function Statements( { darkMode, loggedInUserData}) {
       </Row>
       <hr></hr>
       <p className='text-center'>{selectedUser} felhasználóra vonatkozó kimutatás</p>
-      {loggedInUserData.accessgroup === 1 ?
+      {(loggedInUserData.accessgroup === 1 || loggedInUserData.statementpermission === 1) ?
             <Row className='justify-content-center mx-1'>
-              <Col className='m-1' xs={12} md={5}>
+              <Col className='m-1' xs={8} md={2}>
                 <Form.Group controlId="formSelectUser">
                   <Form.Select 
                     onChange={(e) => {
                       setSelectedUser(e.target.options[e.target.selectedIndex].text);
                       setUserId(e.target.value);
                     }}
-                    /* value={userId} */
-                    defaultValue={userId}
+                    value={userId}
+                    /* defaultValue={userId} */
                   >
                     {userList.map((userListItem) => 
                     <option

@@ -61,6 +61,7 @@ app.use('/api/login', authenticateKey, (req, res) => {
                         users.inactive,
                         users.id,
                         users.auditpermission,
+                        users.statementpermission,
                         accessgroups.group_name 
                        FROM users 
                        INNER JOIN accessgroups 
@@ -100,6 +101,7 @@ app.use('/api/checkloggedinuser', authenticateKey, (req, res) => {
                         users.password,
                         users.id,
                         users.auditpermission,
+                        users.statementpermission,
                         accessgroups.group_name 
                        FROM users 
                        INNER JOIN accessgroups 
@@ -128,7 +130,8 @@ app.post('/api/newuser', authenticateKey, (req,res) => {
     const name = req.body.name;
     const group = req.body.group;
     const auditpermission = req.body.auditpermission;
-    database.db.query('INSERT INTO users (username, password, name, auditpermission, accessgroup, inactive) VALUES (?, ?, ?, ?, ?, 0)', [username, password, name, auditpermission, group], (err, result) => {
+    const statementpermission = req.body.statementpermission;
+    database.db.query('INSERT INTO users (username, password, name, auditpermission, statementpermission, accessgroup, inactive) VALUES (?, ?, ?, ?, ?, ?, 0)', [username, password, name, auditpermission, statementpermission, group], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -176,8 +179,9 @@ app.post('/api/edituser', authenticateKey, (req,res) => {
     const name = req.body.name;
     const group = req.body.group;
     const auditpermission = req.body.auditpermission;
+    const statementpermission = req.body.statementpermission;
     if (password === '') {
-        database.db.query('UPDATE users SET name = ?, accessgroup = ?, auditpermission = ? WHERE id = ?', [name, group, auditpermission, id], (err, result) => {
+        database.db.query('UPDATE users SET name = ?, accessgroup = ?, auditpermission = ?, statementpermission = ? WHERE id = ?', [name, group, auditpermission, statementpermission, id], (err, result) => {
             if (err) {
                 console.log(err);
             } else {                
@@ -185,7 +189,7 @@ app.post('/api/edituser', authenticateKey, (req,res) => {
             };
         });
     } else {
-        database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ?, auditpermission = ? WHERE id = ?', [name, group, password, auditpermission, id], (err, result) => {
+        database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ?, auditpermission = ?, statementpermission = ? WHERE id = ?', [name, group, password, auditpermission, statementpermission,id], (err, result) => {
             if (err) {
                 console.log(err);
             } else {
@@ -214,6 +218,7 @@ app.get('/api/getuserlist', authenticateKey, (req,res) => {
                         users.inactive, 
                         users.accessgroup, 
                         users.auditpermission, 
+                        users.statementpermission,
                         accessgroups.group_name 
                        FROM users 
                        INNER JOIN accessgroups 
