@@ -5,6 +5,7 @@ import Tablepagination from '../../Tablepagination/Tablepagination';
 import Viewlog from '../Viewlog/Viewlog';
 import Editlog from '../Editlog/Editlog';
 import Deletelog from '../Deletelog/Deletelog';
+import Auditlog from '../Auditlog/Auditlog';
 
 
 export default function Logentries( {
@@ -15,7 +16,8 @@ export default function Logentries( {
   sortedColumn,
   setSortedColumn,
   setSortDirection,
-  loggedInUserData
+  loggedInUserData,
+  darkMode
   } ) {
 
   const [clickedRowIndex, setClickedRowIndex] = useState(null);
@@ -36,7 +38,8 @@ export default function Logentries( {
   const filteredList = logEntries
                         .filter((listItem) => loggedInUserData.accessgroup === 1 ? listItem : loggedInUserData.accessgroup === listItem.accessgroup_id)
                         .filter((listItem) => hideForeignlog ? listItem.user_id === loggedInUserData.id : listItem)
-                        .filter((listItem) => usernameSearch.toLowerCase() === '' ? listItem 
+                        .filter((listItem) => usernameSearch.toLowerCase() === '' 
+                          ? listItem 
                           : listItem.user_name.toLowerCase().includes(usernameSearch.toLowerCase()))
                         .filter((listItem) => clientnameSearch.toLowerCase() === '' 
                           ? listItem 
@@ -48,9 +51,9 @@ export default function Logentries( {
                           ? listItem 
                           : listItem.duration === durationSearch)
                         .filter((listItem) => descriptionSearch.toLowerCase() === '' 
-                        ? listItem 
-                        : listItem.description.toLowerCase().includes(descriptionSearch.toLowerCase()));
-  
+                          ? listItem 
+                          : listItem.description.toLowerCase().includes(descriptionSearch.toLowerCase()));
+
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowPerPage] = useState(10);
   
@@ -84,6 +87,7 @@ export default function Logentries( {
     <Tooltip id="hide-foreign-log-tooltip"  {...props}>
       Összes/csak saját naplóbejegyzés
     </Tooltip>)
+
  
   return (
     <div className='m-1 m-sm-3'>
@@ -102,6 +106,7 @@ export default function Logentries( {
                 {chooseOrderSign('id')}
               </span>
             </th>
+            <th>Ell.</th>
             <th>Felhasználónév
               <span 
                 className="cursor-pointer mx-2"
@@ -151,6 +156,7 @@ export default function Logentries( {
           </tr>
           <tr>
             <th className='d-none d-sm-table-cell'>{filteredList.length}</th>
+            <th></th>
             <th>
               <InputGroup>
                 <Form.Control
@@ -204,23 +210,23 @@ export default function Logentries( {
                   {descriptionSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setDescriptionSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
-              <th className='d-none d-sm-table-cell'>            
-                <OverlayTrigger
-              			placement="top"
-                    delay={{ show: 50, hide: 100 }}
-                    overlay={renderTooltip}> 
-                  <Form.Check
-                    role="button"
-                    type='switch'
-                    id='own-log-switcher'
-                    defaultChecked={hideForeignlog}
-                    onChange={(e) => {
-                      sessionStorage.setItem('logTableHideForeignLog', e.target.checked)
-                      setHideForeignLog(e.target.checked)
-                    }}
-                    />
-                </OverlayTrigger>
-              </th>
+            <th className='d-none d-sm-table-cell'>            
+              <OverlayTrigger
+                  placement="top"
+                  delay={{ show: 50, hide: 100 }}
+                  overlay={renderTooltip}> 
+                <Form.Check
+                  role="button"
+                  type='switch'
+                  id='own-log-switcher'
+                  defaultChecked={hideForeignlog}
+                  onChange={(e) => {
+                    sessionStorage.setItem('logTableHideForeignLog', e.target.checked)
+                    setHideForeignLog(e.target.checked)
+                  }}
+                  />
+              </OverlayTrigger>
+            </th>
             </tr>
         </thead>
         <tbody>
@@ -236,14 +242,16 @@ export default function Logentries( {
                   if (e.target.role === 'dialog') setClickedRowIndex(null);
               }}>
                 <td className='d-none d-sm-table-cell'>{listItem.id}</td>
+                {listItem.auditor !== null ? <td>&#x2714;</td> : <td></td>}
+
                 <td>{listItem.user_name}</td>
                 <td>{listItem.client_name}</td>
                 <td className='max-width-115'>{listItem.date_time}</td>
                 <td className='max-width-65 d-none d-md-table-cell'>{listItem.duration}</td>                    
-                <td className='d-none d-lg-table-cell'>{listItem.description.length > 100 ? 
+                <td className='d-none d-lg-table-cell'>{listItem.description !== null && listItem.description.length > 100 ? 
                                                           listItem.description.slice(0, 100)+ '...' : 
                                                           listItem.description}</td>
-                <td className='d-none d-sm-table-cell width-150'>
+                <td className='d-none d-sm-table-cell fit'>
                 <>
                   <Viewlog
                     showLogDetailsButton={true}
@@ -251,19 +259,25 @@ export default function Logentries( {
                     loggedInUserData={loggedInUserData}
                     loadLogEntries={loadLogEntries}
                     clickedRowIndex={clickedRowIndex}
-                    setClickedRowIndex={setClickedRowIndex}/>
+                    setClickedRowIndex={setClickedRowIndex}
+                    darkMode={darkMode}/>
                   { loggedInUserData.id === listItem.user_id ?
                   <> 
                   <Editlog
                     logEntry={listItem}
                     loadLogEntries={loadLogEntries}
-                    loggedInUserData={loggedInUserData}/>
+                    loggedInUserData={loggedInUserData}
+                    darkMode={darkMode}/>
                   <Deletelog
                     listItem={listItem}
                     loadLogEntries={loadLogEntries}
                     loggedInUserData={loggedInUserData}/></> : 
                     ''
                   }
+                  <Auditlog
+                    listItem={listItem}
+                    loadLogEntries={loadLogEntries}
+                    loggedInUserData={loggedInUserData}/>
                   </>    
                 </td>
               </tr>
@@ -272,6 +286,7 @@ export default function Logentries( {
         <tfoot>
         <tr>
             <th className='d-none d-sm-table-cell'>#</th>
+            <th></th>
             <th>Felhasználónév</th>
             <th className='max-width-115'>Ügyfélnév</th>
             <th className='max-width-115'>Időpont</th>

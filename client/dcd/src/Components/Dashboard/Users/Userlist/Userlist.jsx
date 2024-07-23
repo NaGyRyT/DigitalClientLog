@@ -174,7 +174,7 @@ export default function Userlist({
                 <td>{listItem.username}</td>
                 <td>{listItem.name}</td>
                 <td>{listItem.group_name}</td>
-                <td className='width-150 d-none d-sm-table-cell'>
+                <td className='fit d-none d-sm-table-cell'>
                   {listItem.inactive === 1 ? 
                     <Activateuser
                       listItem={listItem}

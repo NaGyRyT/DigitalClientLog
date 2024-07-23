@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Form, CloseButton, InputGroup } from 'react-bootstrap';
+import { Table, Form, CloseButton, InputGroup, Tooltip, OverlayTrigger, Row, Col } from 'react-bootstrap';
 import Editclient from '../Editclient/Editclient';
 import Deleteclient from '../Deleteclient/Deleteclient';
 import Viewclient from '../Viewclient/Viewclient';
@@ -16,7 +16,8 @@ export default function Clientlist({
     sortedColumn,
     setSortedColumn,
     setSortDirection,
-    loggedInUserData
+    loggedInUserData,
+    darkMode
 }) {
   const [clickedRowIndex, setClickedRowIndex] = useState(null);
   const [clientnameSearch, setClientnameSearch] = useState('');
@@ -27,10 +28,26 @@ export default function Clientlist({
   const [phoneSearch, setPhoneSearch] = useState('');
   const [addressSearch, setAddressSearch] = useState('');
 
+  const [hideForeignClient, setHideForeignClient] = useState(
+    sessionStorage.getItem('clientTableHideForeignClient') === null ? 
+    true : 
+    sessionStorage.getItem('clientTableHideForeignClient') === "false" ? 
+    false : 
+    true);
+
+  const [hidePassiveClient, setHidePassiveClient] = useState(
+    sessionStorage.getItem('clientTableHidePassiveClient') === null ? 
+    true : 
+    sessionStorage.getItem('clientTableHidePassiveClient') === "false" ? 
+    false : 
+    true);
+
   const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>
-  
+
   const filteredList = clientList
                         .filter((listItem) => loggedInUserData.accessgroup === 1 ? listItem : loggedInUserData.accessgroup === listItem.accessgroup)
+                        .filter((listItem) => hideForeignClient ? listItem.user_id === loggedInUserData.id : listItem)
+                        .filter((listItem) => hidePassiveClient ? listItem.end_of_service === '3000-01-01' : listItem)
                         .filter((listItem) => clientnameSearch.toLowerCase() === '' ? listItem 
                           : listItem.name.toLowerCase().includes(clientnameSearch.toLowerCase()))
                         .filter((listItem) => clientIdSearch === '' 
@@ -54,7 +71,7 @@ export default function Clientlist({
   
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowPerPage] = useState(10);
-  
+
   useEffect ( () => {
     if (clientList.length > filteredList.length) {
       setCurrentPage(1);
@@ -76,6 +93,11 @@ export default function Clientlist({
         birthDateSearch.slice(0,-2) : 
         birthDateSearch.slice(0,-1));
   }
+
+  const renderTooltip = (props) => (
+    <Tooltip id="hide-foreign-client-tooltip"  {...props}>
+      Összes/csak saját ügyfél
+    </Tooltip>)
 
   return (
     <div className='m-1 m-sm-3'>
@@ -105,7 +127,7 @@ export default function Clientlist({
                 {chooseOrderSign('name')}
               </span>
             </th>
-            <th className='max-width-115'>Azonosító
+            <th className='max-width-115'>Iktatószám
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
@@ -163,7 +185,7 @@ export default function Clientlist({
                   id="clientIdSearch"
                   maxLength={9}
                   onChange={(e) => setClientIdSearch(e.target.value)}
-                  placeholder="Azonosító..."
+                  placeholder="Iktatószám..."
                   value={clientIdSearch}/>
                 {clientIdSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setClientIdSearch('')}/></InputGroupText> : ''}
               </InputGroup>
@@ -221,7 +243,46 @@ export default function Clientlist({
                     {addressSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setAddressSearch('')}/></InputGroupText> : ''}
                 </InputGroup>
                 </th>
-                <th className='d-none d-sm-table-cell'></th>
+                <th className='d-none d-sm-table-cell'>
+                  <div className='d-flex justify-content-around m-0 p-0'>
+                    <div>
+                      <OverlayTrigger
+                          placement="top"
+                          delay={{ show: 50, hide: 100 }}
+                          overlay={renderTooltip}> 
+                        <Form.Check
+                          role="button"
+                          type='switch'
+                          id='own-client-switcher'
+                          defaultChecked={hideForeignClient}
+                          onChange={(e) => {
+                            sessionStorage.setItem('clientTableHideForeignClient', e.target.checked)
+                            setHideForeignClient(e.target.checked)
+                          }}
+                          />
+                      </OverlayTrigger>
+                    </div>
+                    <div>
+                      <OverlayTrigger
+                          placement="top"
+                          delay={{ show: 50, hide: 100 }}
+                          overlay={ (props)=> (<Tooltip id="hide-foreign-client-tooltip"  {...props}>
+                          Passzivált ügyfelek elrejtése
+                        </Tooltip>)}> 
+                        <Form.Check
+                          role="button"
+                          type='switch'
+                          id='passive-client-switcher'
+                          defaultChecked={hidePassiveClient}
+                          onChange={(e) => {
+                            sessionStorage.setItem('clientTableHidePassiveClient', e.target.checked)
+                            setHidePassiveClient(e.target.checked)
+                          }}
+                          />
+                      </OverlayTrigger>
+                    </div>
+                  </div>
+            </th>
             </tr>
         </thead>
         <tbody>
@@ -245,7 +306,7 @@ export default function Clientlist({
                 <td className='d-none d-lg-table-cell'>{listItem.email}</td>
                 <td className='max-width-115 d-none d-lg-table-cell'>{listItem.phone}</td>
                 <td className='d-none d-xl-table-cell'>{listItem.address}</td>
-                <td className='width-200 d-none d-sm-table-cell'>
+                <td className='fit d-none d-sm-table-cell'>
                     <>
                       <Viewclient
                         className='m-1'
@@ -255,25 +316,30 @@ export default function Clientlist({
                         setClickedRowIndex={setClickedRowIndex}
                         loadClientList={loadClientList}
                         cityList={cityList}
+                        darkMode={darkMode}
                       />
                       <Newlog
                         selectedClient={listItem}
                         loggedInUserData={loggedInUserData}
                         fromClientList={true}
+                        darkMode={darkMode}
                       />
+                      {(listItem.user_id === loggedInUserData.id || loggedInUserData.id === 1) &&
+                      <>
                       <Editclient
                         listItem={listItem}
                         loadClientList={loadClientList}
                         cityList={cityList}
                         loggedInUserData={loggedInUserData}
                       />
-                      {listItem.username === "admin" ? "" : 
                       <Deleteclient
                         listItem={listItem}
                         loadClientList={loadClientList}
                         loggedInUserData={loggedInUserData}
                       />
+                      </>
                       }
+
                     </>
                 </td>
               </tr>
@@ -283,7 +349,7 @@ export default function Clientlist({
         <tr>
             <th className='d-none d-sm-table-cell'>#</th>
             <th>Név</th>
-            <th className='max-width-115'>Azonosító</th>
+            <th className='max-width-115'>Iktatószám</th>
             <th className='max-width-115'>Születés</th>
             <th className='max-width-65 d-none d-md-table-cell'>Kor</th>
             <th className='d-none d-md-table-cell'>Nem</th>

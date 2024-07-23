@@ -113,7 +113,7 @@ export default function Grouplist( {
                     <td className='d-none d-md-table-cell'>{listItem.description.length > 100 ? 
                                                                 listItem.description.slice(0, 100)+ '...' : 
                                                                 listItem.description}</td>
-                    <td className='width-150'>
+                    <td className='fit'>
                         <Viewgroup
                         listItem={listItem}
                         clickedRowIndex={clickedRowIndex}

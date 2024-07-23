@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { Button, Modal, ListGroup, Tooltip, OverlayTrigger, CloseButton  } from 'react-bootstrap';
+import { Button, Modal, ListGroup, Tooltip, OverlayTrigger, CloseButton, Row, Col, Form  } from 'react-bootstrap';
 import Deletelog from '../Deletelog/Deletelog';
 import Editlog from '../Editlog/Editlog';
+import Auditlog from '../Auditlog/Auditlog';
 import moment from 'moment';
 
 export default function Viewlog( {
@@ -13,10 +14,10 @@ export default function Viewlog( {
     setClickedRowIndex,
     showLogFormOnCalendar,
     setShowLogFormOnCalendar,
+    darkMode
     }) {
     const [showViewLogForm, setShowViewLogForm] = useState(false);
-    const [editLog, setEditLog] = useState(logEntry);
-
+    
     const handleCloseViewLogForm = (e) => {
         e.stopPropagation();
         if (!showLogDetailsButton) {
@@ -68,11 +69,32 @@ return (
                     <ListGroup.Item>Napló sorszám: {logEntry.id}</ListGroup.Item>
                     <ListGroup.Item>Felhasználó neve: {logEntry.user_name}</ListGroup.Item>
                     <ListGroup.Item>Ügyfél neve: {logEntry.client_name}</ListGroup.Item>
-                    <ListGroup.Item>Ügyféltalálkozás dátuma, ideje: {moment(logEntry.date_time).format('YYYY-MM-DD HH:MM')}</ListGroup.Item>
-                    <ListGroup.Item>Ügyféltalálkozás időtartama: {logEntry.duration}</ListGroup.Item>
+                    <ListGroup.Item>
+                        <Row>Ügyféltalálkozás</Row>
+                        <Row>
+                            <Col xs={12} sm={4}>dátuma: {moment(logEntry.date_time).format('YYYY.MM.DD.')}</Col>
+                            <Col xs={12} sm={4}>kezdete: {moment(logEntry.date_time).format('HH:MM')}</Col>
+                            <Col xs={12} sm={4}>időtartama: {logEntry.duration} perc</Col>
+                        </Row>
+                    </ListGroup.Item>
+                    {(logEntry.test_ora !== '3000-01-01' || logEntry.test_mmse !== '3000-01-01' || logEntry.test_tym_hun !== '3000-01-01') &&
+                    <ListGroup.Item>
+                        <Row>Tesztek: </Row>
+                        <Row>                            
+                            <Col xs={12} sm={4}>Óra: {logEntry.test_ora !== '3000-01-01' ?  <span>&#x2705;</span> : <span>&#x274C;</span>}</Col>
+                            <Col xs={12} sm={4}>MMSE: {logEntry.test_mmse !== '3000-01-01' ?  <span>&#x2705;</span> : <span>&#x274C;</span>}</Col>
+                            <Col xs={12} sm={4}>TYM-HUN: {logEntry.test_tym_hun !== '3000-01-01' ?  <span>&#x2705;</span> : <span>&#x274C;</span>}</Col>
+                        </Row>
+                    </ListGroup.Item>}
+                    <ListGroup.Item>Tevékenység formája: {logEntry.shape_of_activities}</ListGroup.Item>
+                    <ListGroup.Item>Tevékenység: {logEntry.activities}</ListGroup.Item>
                 </ListGroup>
                 <h5 className='mt-3'>Ügyféltalálkozás leírása</h5>
                 <p>{logEntry.description}</p>
+                {logEntry.auditor !==null &&  
+                <Form.Text className='d-flex justify-content-end m-0 p-0'>
+                    <span>&#x2714;</span> {logEntry.auditor} által ellenőrizve. {moment(logEntry.audit_date).format('YYYY.MM.DD.')}
+                </Form.Text>}
             </Modal.Body>
             <Modal.Footer>
             <Button 
@@ -80,16 +102,22 @@ return (
                 variant='secondary'>
                 Bezár
             </Button>
+            <Auditlog
+                    listItem={logEntry}
+                    loadLogEntries={loadLogEntries}
+                    loggedInUserData={loggedInUserData}
+                    buttonTitle={'Ellenőrzés'}/>
             { loggedInUserData.id === logEntry.user_id &&
                 <>
                     <Editlog
                         setShowLogFormOnCalendar={setShowLogFormOnCalendar}
                         showLogFormOnCalendar={showLogFormOnCalendar}
-                        logEntry={editLog}
-                        setLogEntry={setEditLog}
+                        logEntry={logEntry}
+                        /* setLogEntry={setEditLog} */
                         loadLogEntries={loadLogEntries}
                         loggedInUserData={loggedInUserData}
-                        buttonTitle={'Szerkeszt'}/>
+                        buttonTitle={'Szerkeszt'}
+                        darkMode={darkMode}/>
                     <Deletelog
                         setShowLogFormOnCalendar={setShowLogFormOnCalendar}
                         showLogFormOnCalendar={showLogFormOnCalendar}

@@ -25,10 +25,12 @@ export default function Edituser( {
   	});
 	const [selectedGroup, setSelectedGroup] = useState(listItem.accessgroup);
 	const [showEditUserForm, setShowEditUserForm] = useState(false);
+	const [auditPermission, setAuditPermission] = useState(listItem.auditpermission);
 
 	const handleCloseEditUserForm = () => {
 		setShowEditUserForm(false);
 		setName(listItem.name);
+		setAuditPermission(listItem.auditpermission);
 		setPassword('');
 		setErrorMessage({
 			name : '',
@@ -53,6 +55,7 @@ export default function Edituser( {
 				password : trimmedHashedPassword,
 				name : name.trim(),
 				group : selectedGroup,
+				auditpermission : auditPermission,
 				id : listItem.id
 			}, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
@@ -139,6 +142,15 @@ export default function Edituser( {
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}/>
 							<Form.Text>Ha nem írsz jelszót, akkor a jelszó nem fog módosulni.</Form.Text>
+						</Form.Group>
+						<Form.Group md="4" controlId="formPermission">
+							<Form.Label>Jogosultság</Form.Label>
+							<Form.Check
+								disabled={loggedInUser !== undefined ? true : false}
+								type='switch'
+								label='Ellenőrzés'
+								defaultChecked={auditPermission ? true : false}
+                          		onChange={(e) => setAuditPermission(e.target.checked ? 1 : 0)}/>
 						</Form.Group>
 						<Form.Group className={listItem.username === "admin" ? "d-none" : ""} controlId="formSelectFromGroup">
 							<Form.Label>Csoport</Form.Label>

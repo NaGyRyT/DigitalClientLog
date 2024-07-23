@@ -37,12 +37,9 @@ html {
   cursor: pointer;
 }
 
-.width-150 {
-  width: 150px;
-}
-
-.width-200 {
-  width: 200px;
+.fit {
+  white-space: nowrap;
+  width: 1%;
 }
 
 .max-width-115 {

@@ -60,6 +60,7 @@ app.use('/api/login', authenticateKey, (req, res) => {
                         users.password,
                         users.inactive,
                         users.id,
+                        users.auditpermission,
                         accessgroups.group_name 
                        FROM users 
                        INNER JOIN accessgroups 
@@ -98,6 +99,7 @@ app.use('/api/checkloggedinuser', authenticateKey, (req, res) => {
                         users.accessgroup,
                         users.password,
                         users.id,
+                        users.auditpermission,
                         accessgroups.group_name 
                        FROM users 
                        INNER JOIN accessgroups 
@@ -125,14 +127,14 @@ app.post('/api/newuser', authenticateKey, (req,res) => {
     const password = req.body.password;
     const name = req.body.name;
     const group = req.body.group;
-    database.db.query('INSERT INTO users (username, password, name, accessgroup, inactive) VALUES (?, ?, ?, ?, 0)', [username, password, name, group], (err, result) => {
+    const auditpermission = req.body.auditpermission;
+    database.db.query('INSERT INTO users (username, password, name, auditpermission, accessgroup, inactive) VALUES (?, ?, ?, ?, ?, 0)', [username, password, name, auditpermission, group], (err, result) => {
         if (err) {
             console.log(err);
         } else {
             res.send({username : username});
         }
     });
-
 });
 
 app.post('/api/deleteuser', authenticateKey, (req,res) => {
@@ -173,16 +175,17 @@ app.post('/api/edituser', authenticateKey, (req,res) => {
     const id = req.body.id;
     const name = req.body.name;
     const group = req.body.group;
+    const auditpermission = req.body.auditpermission;
     if (password === '') {
-        database.db.query('UPDATE users SET name = ?, accessgroup = ? WHERE id = ?', [name, group, id], (err, result) => {
+        database.db.query('UPDATE users SET name = ?, accessgroup = ?, auditpermission = ? WHERE id = ?', [name, group, auditpermission, id], (err, result) => {
             if (err) {
                 console.log(err);
             } else {                
-                res.send({result});
+                res.send(result);
             };
         });
     } else {
-        database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ? WHERE id = ?', [name, group, password, id], (err, result) => {
+        database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ?, auditpermission = ? WHERE id = ?', [name, group, password, auditpermission, id], (err, result) => {
             if (err) {
                 console.log(err);
             } else {
@@ -210,6 +213,7 @@ app.get('/api/getuserlist', authenticateKey, (req,res) => {
                         users.name, 
                         users.inactive, 
                         users.accessgroup, 
+                        users.auditpermission, 
                         accessgroups.group_name 
                        FROM users 
                        INNER JOIN accessgroups 
@@ -343,17 +347,31 @@ app.get('/api/getcities', authenticateKey, (req,res) => {
 
 app.post('/api/newclient', authenticateKey, (req,res) => {
     const name = req.body.name;
-    const clientid = req.body.clientid;
+    const client_id = req.body.client_id;
     const accessgroup = req.body.accessgroup;
     const gender = req.body.gender;
-    const cityid = req.body.cityid;
+    const city_id = req.body.city_id;
     const street = req.body.street;
-    const housenumber = req.body.housenumber;
+    const house_number = req.body.house_number;
     const floor = req.body.floor;
     const door = req.body.door;
-    const birthdate = req.body.birthdate;
+    const birth_date = req.body.birth_date;
     const email = req.body.email;
     const phone = req.body.phone;
+    
+    const user_id = req.body.user_id;
+    const petition = req.body.petition;
+    const affected = req.body.affected;
+    const relative = req.body.relative;
+    const legal_representative = req.body.legal_representative;
+    const agreement = req.body.agreement;
+    const self_care = req.body.self_care;
+    const social_skills = req.body.social_skills;
+    const registration_date = req.body.registration_date;
+    const end_of_service = req.body.end_of_service;
+    const interested = req.body.interested;
+    const other_data = req.body.other_data;
+
     const sqlInsert = `INSERT INTO 
                         clients (
                             name, 
@@ -367,21 +385,46 @@ app.post('/api/newclient', authenticateKey, (req,res) => {
                             door, 
                             birth_date, 
                             email, 
-                            phone) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+                            phone,
+                            user_id,
+                            petition,
+                            affected,
+                            relative,
+                            legal_representative,
+                            agreement,
+                            self_care,
+                            social_skills,
+                            registration_date,
+                            end_of_service,
+                            interested,
+                            other_data
+                            ) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     database.db.query(sqlInsert, [
         name, 
-        clientid,
+        client_id,
         accessgroup,
         gender, 
-        cityid, 
+        city_id, 
         street, 
-        housenumber, 
+        house_number, 
         floor, 
         door, 
-        birthdate, 
+        birth_date, 
         email, 
-        phone
+        phone,
+        user_id,
+        petition,
+        affected,
+        relative,
+        legal_representative,
+        agreement,
+        self_care,
+        social_skills,
+        registration_date,
+        end_of_service,
+        interested,
+        other_data
     ], (err, result) => {
         if (err) {
             console.log(err);
@@ -405,6 +448,18 @@ app.post('/api/editclient', authenticateKey, (req,res) => {
     const birthdate = req.body.birthdate;
     const email = req.body.email;
     const phone = req.body.phone;
+    const user_id = req.body.user_id;
+    const petition = req.body.petition;
+    const affected = req.body.affected;
+    const relative = req.body.relative;
+    const legal_representative = req.body.legal_representative;
+    const agreement = req.body.agreement;
+    const self_care = req.body.self_care;
+    const social_skills = req.body.social_skills;
+    const registration_date = req.body.registration_date;
+    const interested = req.body.interested;
+    const end_of_service = req.body.end_of_service;
+    const other_data = req.body.other_data;
     const sqlUpdate = `UPDATE
                         clients
                        SET
@@ -418,7 +473,19 @@ app.post('/api/editclient', authenticateKey, (req,res) => {
                         door = ?,
                         birth_date = ?,
                         email = ?,
-                        phone = ?
+                        phone = ?,
+                        user_id = ?,
+                        petition = ?,
+                        affected = ?,
+                        relative = ?,
+                        legal_representative = ?,
+                        agreement = ?,
+                        self_care = ?,
+                        social_skills = ?,
+                        registration_date = ?,
+                        interested = ?,
+                        end_of_service = ?,
+                        other_data = ?
                        WHERE id = ?`
     database.db.query(sqlUpdate, [
         name, 
@@ -431,7 +498,19 @@ app.post('/api/editclient', authenticateKey, (req,res) => {
         door, 
         birthdate, 
         email, 
-        phone, 
+        phone,
+        user_id,
+        petition,
+        affected,
+        relative,
+        legal_representative,
+        agreement,
+        self_care,
+        social_skills,
+        registration_date,
+        interested,
+        end_of_service,
+        other_data,
         id
     ], (err, result) => {
         if (err) {
@@ -481,8 +560,20 @@ app.get('/api/getclientlist', authenticateKey, (req,res) => {
                         city_id,
                         street,
                         house_number,
+                        other_data,
                         floor,
                         door,
+                        user_id,
+                        petition,
+                        affected,
+                        relative,
+                        legal_representative,
+                        agreement,
+                        self_care,
+                        social_skills,
+                        IF (registration_date, DATE_FORMAT(registration_date, '%Y-%m-%d'), NULL) AS registration_date,
+                        IF (end_of_service, DATE_FORMAT(end_of_service, '%Y-%m-%d'), NULL) AS end_of_service,
+                        interested,
                         CONCAT(
                             cities.city,
                             CONCAT_WS(', ', '', NULLIF(street, '')),
@@ -506,17 +597,25 @@ app.get('/api/getclientlist', authenticateKey, (req,res) => {
 
 /*------------------------------Logs--------------------------*/
 app.get('/api/getlog', authenticateKey, (req,res) => {
-    const sqlSelect = `SELECT 
+    const sqlSelect = `SELECT
                         log.id,
-                        users.name AS user_name,
+                        user_in_users.name AS user_name,
                         accessgroups.id AS accessgroup_id,
-                        users.id AS user_id,
+                        user_in_users.id AS user_id,
                         clients.name As client_name,
                         DATE_FORMAT(date_time, '%Y-%m-%d %H:%i') AS date_time,
                         log.duration,
-                        log.description
+                        log.description,
+                        log.activities,
+                        log.shape_of_activities,
+                        IF(log.auditor_id is not null, auditor_in_users.name, null) as auditor,
+                        log.audit_date,
+                        DATE_FORMAT(log.test_ora, '%Y-%m-%d') AS test_ora,
+                        DATE_FORMAT(log.test_mmse, '%Y-%m-%d') AS test_mmse,
+                        DATE_FORMAT(log.test_tym_hun, '%Y-%m-%d') AS test_tym_hun
                        FROM log
-                       INNER JOIN users ON users.id = log.user_id
+                       INNER JOIN users user_in_users ON user_in_users.id = log.user_id
+                       LEFT JOIN users auditor_in_users ON auditor_in_users.id = log.auditor_id
                        INNER JOIN clients ON clients.id = log.client_id
                        INNER JOIN accessgroups ON clients.accessgroup = accessgroups.id
                        ORDER By log.id`;
@@ -533,17 +632,25 @@ app.get('/api/getlog/:clientid', authenticateKey, (req,res) => {
     const clientId = req.params.clientid;
     const sqlSelect = `SELECT 
                         log.id,
-                        users.name AS user_name,
-                        users.id AS user_id,
+                        user_in_users.name AS user_name,
+                        user_in_users.id AS user_id,
                         clients.name As client_name,
                         DATE_FORMAT(date_time, '%Y-%m-%d %H:%i') AS date_time,
                         duration,
-                        description
+                        description,
+                        log.activities,
+                        log.shape_of_activities,
+                        IF(log.auditor_id is not null, auditor_in_users.name, null) as auditor,
+                        log.audit_date,
+                        DATE_FORMAT(log.test_ora, '%Y-%m-%d') AS test_ora,
+                        DATE_FORMAT(log.test_mmse, '%Y-%m-%d') AS test_mmse,
+                        DATE_FORMAT(log.test_tym_hun, '%Y-%m-%d') AS test_tym_hun
                        FROM log
-                       INNER JOIN users ON users.id = log.user_id
+                       INNER JOIN users user_in_users ON user_in_users.id = log.user_id
+                       LEFT JOIN users auditor_in_users ON auditor_in_users.id = log.auditor_id
                        INNER JOIN clients ON clients.id = log.client_id
                        WHERE ? = log.client_id
-                       ORDER By log.id`;
+                       ORDER By log.date_time`;
     database.db.query(sqlSelect, [clientId], (err, result) => {
         if (err) {
             console.log(err);
@@ -581,7 +688,12 @@ app.post('/api/newlog', authenticateKey, (req,res) => {
     const date_time = req.body.datetime;
     const duration = req.body.duration; 
     const description = req.body.description;
-    database.db.query('INSERT INTO log (user_id, client_id, date_time, duration, description) VALUES (?, ?, ?, ?, ?)', [user_id, client_id, date_time, duration, description], (err, result) => {
+    const activities = req.body.activities;
+    const shape_of_activities = req.body.shapeofactivities;
+    const test_ora = req.body.test_ora
+    const test_mmse = req.body.test_mmse
+    const test_tym_hun = req.body.test_tym_hun
+    database.db.query('INSERT INTO log (user_id, client_id, date_time, duration, description, activities, shape_of_activities, test_ora, test_mmse, test_tym_hun) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [user_id, client_id, date_time, duration, description, activities, shape_of_activities, test_ora, test_mmse, test_tym_hun], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -595,14 +707,24 @@ app.post('/api/editlog', authenticateKey, (req,res) => {
     const date_time = req.body.datetime;
     const duration = req.body.duration;
     const description = req.body.description;
+    const activities = req.body.activities;
+    const shape_of_activities = req.body.shapeofactivities;
+    const test_ora = req.body.test_ora
+    const test_mmse = req.body.test_mmse
+    const test_tym_hun = req.body.test_tym_hun
     const sqlUpdate = `UPDATE
                         log
                        SET
                        date_time = ?,
                        duration = ? ,
-                       description = ?
+                       description = ?,
+                       activities = ?,
+                       shape_of_activities = ?,
+                       test_ora = ?,
+                       test_mmse = ?,
+                       test_tym_hun = ?
                     WHERE id = ?`
-    database.db.query(sqlUpdate, [date_time, duration, description, id], (err, result) => {
+    database.db.query(sqlUpdate, [date_time, duration, description, activities, shape_of_activities, test_ora, test_mmse, test_tym_hun, id], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -623,6 +745,46 @@ app.post('/api/deletelog', authenticateKey, (req,res) => {
     });
 });
 
+app.post('/api/auditlog', authenticateKey, (req,res) => {
+    const id = req.body.id;
+    const auditor_id = req.body.auditor_id;
+    const audit_date = req.body.audit_date;
+    const sqlUpdate = ` UPDATE
+                        log
+                        SET
+                        auditor_id = ?,
+                        audit_date = ?
+                        WHERE id = ?`
+    database.db.query(sqlUpdate, [auditor_id, audit_date, id], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send({id : id});
+            console.log(id,'. log audited');
+        }
+    });
+});
+
+app.post('/api/auditalllog', authenticateKey, (req,res) => {
+    const selectedclientid = req.body.selectedclientid;
+    const auditor_id = req.body.auditor_id;
+    const audit_date = req.body.audit_date;
+    const sqlUpdate = ` UPDATE
+                        log
+                        SET
+                        auditor_id = ?,
+                        audit_date = ?
+                        WHERE client_id = ? AND auditor_id IS null`
+    database.db.query(sqlUpdate, [auditor_id, audit_date, selectedclientid], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send({selected_client_id : selectedclientid});
+            console.log('All logs of client', selectedclientid, 'have been audited.');
+        }
+    });
+});
+
 
 /*------------------------------Statements--------------------------*/
 app.get('/api/getgendernumber/:accessgroup', authenticateKey, (req,res) => {
@@ -633,17 +795,42 @@ app.get('/api/getgendernumber/:accessgroup', authenticateKey, (req,res) => {
         gender,
     COUNT(id) AS piece 
     FROM clients
+    WHERE end_of_service = '3000-01-01'
     GROUP BY gender
+    ORDER BY gender
     ` :
     `
     SELECT 
         gender,
     COUNT(id) AS piece 
     FROM clients
-    WHERE accessgroup = ?
+    WHERE accessgroup = ? AND end_of_service = '3000-01-01'
     GROUP BY gender
+    ORDER BY gender
     `
     database.db.query(sqlSelectCount, [accessgroup],(err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+
+app.get('/api/getgendernumberperuser/:userid', authenticateKey, (req,res) => {
+    const userid = req.params.userid;
+    const sqlSelectCount =
+    `
+    SELECT 
+        gender,
+    COUNT(id) AS piece 
+    FROM clients
+    WHERE user_id = ? AND end_of_service = '3000-01-01'
+    GROUP BY gender
+    ORDER BY gender
+    `
+    database.db.query(sqlSelectCount, [userid],(err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -656,56 +843,206 @@ app.get('/api/getagesnumber/:accessgroup', authenticateKey, (req,res) => {
     const accessgroup = req.params.accessgroup;
     const sqlSelectCount = accessgroup === '1' ?
         `
-        SELECT '< 18' as ages, 
-            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) < 18 
+        SELECT '< 60' as ages, 
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) < 60 
             THEN 1 ELSE 0 END) as piece
         FROM clients
+        WHERE end_of_service = '3000-01-01'
         UNION ALL
-        SELECT '18 - 40',
+        SELECT '60 - 64',
             SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
-            BETWEEN 18 AND 40 
+            BETWEEN 60 AND 64 
             THEN 1 ELSE 0 END)
         FROM clients
+        WHERE end_of_service = '3000-01-01'
         UNION ALL
-        SELECT '41 - 65',
+        SELECT '65 - 69',
             SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
-            BETWEEN 41 AND 65 
+            BETWEEN 65 AND 69 
             THEN 1 ELSE 0 END)
         FROM clients
+        WHERE end_of_service = '3000-01-01'
         UNION ALL
-        SELECT '65 <',
-            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) > 65 
+        SELECT '70 - 74',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 70 AND 74 
             THEN 1 ELSE 0 END)
         FROM clients
+        WHERE end_of_service = '3000-01-01'
+        UNION ALL
+        SELECT '75 - 79',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 75 AND 79
+            THEN 1 ELSE 0 END)
+        FROM clients
+        WHERE end_of_service = '3000-01-01'
+        UNION ALL
+        SELECT '80 - 84',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 80 AND 84
+            THEN 1 ELSE 0 END)
+        FROM clients
+        WHERE end_of_service = '3000-01-01'
+        UNION ALL
+        SELECT '85 - 89',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 85 AND 89
+            THEN 1 ELSE 0 END)
+        FROM clients
+        WHERE end_of_service = '3000-01-01'
+        UNION ALL
+        SELECT '90 - 94',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 90 AND 94
+            THEN 1 ELSE 0 END)
+        FROM clients
+        WHERE end_of_service = '3000-01-01'
+        UNION ALL
+        SELECT '95 - 99',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 95 AND 99
+            THEN 1 ELSE 0 END)
+        FROM clients
+        WHERE end_of_service = '3000-01-01'
+        UNION ALL
+        SELECT '99 <',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) > 99 
+            THEN 1 ELSE 0 END)
+        FROM clients
+        WHERE end_of_service = '3000-01-01'
         ` :
         `
-        SELECT '< 18' as ages, 
-            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) < 18 
+        SELECT '< 60' as ages, 
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) < 60 
             THEN 1 ELSE 0 END) as piece
-        FROM clients
-        WHERE accessgroup = ? 
+        FROM clients WHERE accessgroup = ? AND end_of_service = '3000-01-01'
         UNION ALL
-        SELECT '18 - 40',
+        SELECT '60 - 64',
             SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
-            BETWEEN 18 AND 40 
+            BETWEEN 60 AND 64 
             THEN 1 ELSE 0 END)
-        FROM clients
-        WHERE accessgroup = ?
+        FROM clients WHERE accessgroup = ? AND end_of_service = '3000-01-01'
         UNION ALL
-        SELECT '41 - 65',
+        SELECT '65 - 69',
             SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
-            BETWEEN 41 AND 65 
+            BETWEEN 65 AND 69 
             THEN 1 ELSE 0 END)
-        FROM clients
-        WHERE accessgroup = ?
+        FROM clients WHERE accessgroup = ? AND end_of_service = '3000-01-01'
         UNION ALL
-        SELECT '65 <',
-            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) > 65 
+        SELECT '70 - 74',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 70 AND 74 
             THEN 1 ELSE 0 END)
-        FROM clients
-        WHERE accessgroup = ?
+        FROM clients WHERE accessgroup = ? AND end_of_service = '3000-01-01'
+        UNION ALL
+        SELECT '75 - 79',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 75 AND 79
+            THEN 1 ELSE 0 END)
+        FROM clients WHERE accessgroup = ? AND end_of_service = '3000-01-01'
+        UNION ALL
+        SELECT '80 - 84',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 80 AND 84
+            THEN 1 ELSE 0 END)
+        FROM clients WHERE accessgroup = ? AND end_of_service = '3000-01-01'
+        UNION ALL
+        SELECT '85 - 89',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 85 AND 89
+            THEN 1 ELSE 0 END)
+        FROM clients WHERE accessgroup = ? AND end_of_service = '3000-01-01'
+        UNION ALL
+        SELECT '90 - 94',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 90 AND 94
+            THEN 1 ELSE 0 END)
+        FROM clients WHERE accessgroup = ? AND end_of_service = '3000-01-01'
+        UNION ALL
+        SELECT '95 - 99',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+            BETWEEN 95 AND 99
+            THEN 1 ELSE 0 END)
+        FROM clients WHERE accessgroup = ? AND end_of_service = '3000-01-01'
+        UNION ALL
+        SELECT '99 <',
+            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) > 99 
+            THEN 1 ELSE 0 END)
+        FROM clients WHERE accessgroup = ? AND end_of_service = '3000-01-01'
         `;
-    database.db.query(sqlSelectCount, [accessgroup, accessgroup, accessgroup, accessgroup],(err, result) => {
+    database.db.query(sqlSelectCount, [accessgroup, accessgroup, accessgroup, accessgroup, accessgroup, accessgroup, accessgroup, accessgroup, accessgroup, accessgroup, ],(err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+
+app.get('/api/getagesnumberperuser/:userid', authenticateKey, (req,res) => {
+    const userid = req.params.userid;
+    const sqlSelectCount = 
+        `
+        SELECT '< 60' as ages, 
+        SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) < 60 
+        THEN 1 ELSE 0 END) as piece
+    FROM clients WHERE user_id = ? AND end_of_service = '3000-01-01'
+    UNION ALL
+    SELECT '60 - 64',
+        SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+        BETWEEN 60 AND 64 
+        THEN 1 ELSE 0 END)
+    FROM clients WHERE user_id = ? AND end_of_service = '3000-01-01'
+    UNION ALL
+    SELECT '65 - 69',
+        SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+        BETWEEN 65 AND 69 
+        THEN 1 ELSE 0 END)
+    FROM clients WHERE user_id = ? AND end_of_service = '3000-01-01'
+    UNION ALL
+    SELECT '70 - 74',
+        SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+        BETWEEN 70 AND 74 
+        THEN 1 ELSE 0 END)
+    FROM clients WHERE user_id = ? AND end_of_service = '3000-01-01'
+    UNION ALL
+    SELECT '75 - 79',
+        SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+        BETWEEN 75 AND 79
+        THEN 1 ELSE 0 END)
+        FROM clients WHERE user_id = ? AND end_of_service = '3000-01-01'
+    UNION ALL
+    SELECT '80 - 84',
+        SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+        BETWEEN 80 AND 84
+        THEN 1 ELSE 0 END)
+        FROM clients WHERE user_id = ? AND end_of_service = '3000-01-01'
+    UNION ALL
+    SELECT '85 - 89',
+        SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+        BETWEEN 85 AND 89
+        THEN 1 ELSE 0 END)
+        FROM clients WHERE user_id = ? AND end_of_service = '3000-01-01'
+    UNION ALL
+    SELECT '90 - 94',
+        SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+        BETWEEN 90 AND 94
+        THEN 1 ELSE 0 END)
+        FROM clients WHERE user_id = ? AND end_of_service = '3000-01-01'
+    UNION ALL
+    SELECT '95 - 99',
+        SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW())
+        BETWEEN 95 AND 99
+        THEN 1 ELSE 0 END)
+        FROM clients WHERE user_id = ? AND end_of_service = '3000-01-01'
+    UNION ALL
+    SELECT '99 <',
+        SUM(CASE WHEN TIMESTAMPDIFF(YEAR, birth_date, NOW()) > 99 
+        THEN 1 ELSE 0 END)
+        FROM clients WHERE user_id = ? AND end_of_service = '3000-01-01'
+        `;
+    database.db.query(sqlSelectCount, [userid, userid, userid, userid, userid, userid, userid, userid, userid, userid], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -794,7 +1131,7 @@ app.get('/api/getdurationnumber/:accessgroup', authenticateKey, (req,res) => {
         `
         SELECT 
             duration,
-        COUNT(id) AS piece FROM log GROUP BY duration
+        COUNT(id) AS piece FROM log GROUP BY duration ORDER BY duration
         `:
         `
         SELECT 
@@ -804,8 +1141,31 @@ app.get('/api/getdurationnumber/:accessgroup', authenticateKey, (req,res) => {
         INNER JOIN clients ON clients.id = log.client_id
         WHERE clients.accessgroup = ? 
         GROUP BY duration
+        ORDER BY cast(duration as unsigned)
         `;
     database.db.query(sqlSelectCount, [accessgroup], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.get('/api/getdurationnumberperuser/:userid', authenticateKey, (req,res) => {
+    const userid = req.params.userid;
+    const sqlSelectCount =
+        `
+        SELECT 
+            duration,
+        COUNT(log.id) AS piece 
+        FROM log
+        INNER JOIN clients ON clients.id = log.client_id
+        WHERE clients.user_id = ? 
+        GROUP BY duration
+        ORDER BY cast(duration as unsigned)
+        `;
+    database.db.query(sqlSelectCount, [userid], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -853,6 +1213,120 @@ app.get('/api/getnotemptyloguserlist', authenticateKey, (req,res) => {
                        GROUP BY users.id
                        ORDER By users.id`
     database.db.query(sqlSelect, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.get('/api/getgroupevents', authenticateKey, (req,res) => {
+    const sqlSelect = ` SELECT 
+                            DATE_FORMAT(date_time, '%Y-%m') as log_date, 
+                            COUNT(if  (activities like  '%dpp%', 1, null)) as dpp,
+                            COUNT(if (activities like '%ginko klub%', 1, null)) as ginko_klub,
+                            COUNT(if (activities like '%mem%ria kuck%', 1, null)) as memoria_kucko
+                            FROM log
+                            GROUP BY DATE_FORMAT(date_time, '%Y-%m')
+                            ORDER BY log_date`
+    database.db.query(sqlSelect, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.get('/api/getgroupeventsperuser/:userid', authenticateKey, (req,res) => {
+    const userid = req.params.userid;
+    const sqlSelect = ` SELECT 
+                            DATE_FORMAT(date_time, '%Y-%m') as log_date, 
+                            COUNT(if  (activities like  '%dpp%', 1, null)) as dpp,
+                            COUNT(if (activities like '%ginko klub%', 1, null)) as ginko_klub,
+                            COUNT(if (activities like '%mem%ria kuck%', 1, null)) as memoria_kucko
+                            FROM log
+                            WHERE user_id = ?
+                            GROUP BY DATE_FORMAT(date_time, '%Y-%m')
+                            ORDER BY log_date`
+    database.db.query(sqlSelect, [userid], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.get('/api/gettests', authenticateKey, (req,res) => {
+    const sqlSelect = ` SELECT 
+                            DATE_FORMAT(date_time, '%Y-%m') as log_date, 
+                            COUNT(if  (test_ora != '3000-01-01', 1, null)) as test_ora,
+                            COUNT(if (test_mmse != '3000-01-01', 1, null)) as test_mmse,
+                            COUNT(if (test_tym_hun != '3000-01-01', 1, null)) as test_tym_hun
+                            FROM log
+                            GROUP BY DATE_FORMAT(date_time, '%Y-%m')
+                            ORDER BY log_date`
+    database.db.query(sqlSelect, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.get('/api/gettestsperuser/:userid', authenticateKey, (req,res) => {
+    const userid = req.params.userid;
+    const sqlSelect = ` SELECT 
+                            DATE_FORMAT(date_time, '%Y-%m') as log_date, 
+                            COUNT(if  (test_ora != '3000-01-01', 1, null)) as test_ora,
+                            COUNT(if (test_mmse != '3000-01-01', 1, null)) as test_mmse,
+                            COUNT(if (test_tym_hun != '3000-01-01', 1, null)) as test_tym_hun
+                            FROM log
+                            WHERE user_id = ?
+                            GROUP BY DATE_FORMAT(date_time, '%Y-%m')
+                            ORDER BY log_date`
+    database.db.query(sqlSelect, [userid], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.get('/api/getshapeofactivities', authenticateKey, (req,res) => {
+    const sqlSelect = ` SELECT 
+                            DATE_FORMAT(date_time, '%Y-%m') as log_date, 
+                            COUNT(if  (shape_of_activities like 'szem%', 1, null)) as personal,
+                            COUNT(if (shape_of_activities = 'telefonos', 1, null)) as phone,
+                            COUNT(if (shape_of_activities = 'online', 1, null)) as online
+                            FROM log
+                            GROUP BY DATE_FORMAT(date_time, '%Y-%m')
+                            ORDER BY log_date`
+    database.db.query(sqlSelect, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.get('/api/getshapeofactivitiesperuser/:userid', authenticateKey, (req,res) => {
+    const userid = req.params.userid;
+    const sqlSelect = ` SELECT 
+                            DATE_FORMAT(date_time, '%Y-%m') as log_date, 
+                            COUNT(if  (shape_of_activities like 'szem%', 1, null)) as personal,
+                            COUNT(if (shape_of_activities = 'telefonos', 1, null)) as phone,
+                            COUNT(if (shape_of_activities = 'online', 1, null)) as online
+                            FROM log
+                            WHERE user_id = ?
+                            GROUP BY DATE_FORMAT(date_time, '%Y-%m')
+                            ORDER BY log_date`
+    database.db.query(sqlSelect, [userid], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -989,9 +1463,9 @@ app.get('/api/geteventsfromlog/:accessgroup/:userid', authenticateKey, (req,res)
     const sqlSelect = accessgroup === '1' ?
         `
         SELECT
-            users.name AS user_name,
+            user_in_users.name AS user_name,
             accessgroups.id AS accessgroup_id,
-            users.id AS user_id,
+            user_in_users.id AS user_id,
             clients.name As client_name,
             log.id as id,
             clients.name as title,
@@ -999,19 +1473,27 @@ app.get('/api/geteventsfromlog/:accessgroup/:userid', authenticateKey, (req,res)
             log.description,
             log.user_id,
             log.duration,
+            log.activities,
+            log.shape_of_activities,
+            IF(log.auditor_id is not null, auditor_in_users.name, null) as auditor,
+            log.audit_date,
+            DATE_FORMAT(log.test_ora, '%Y-%m-%d') AS test_ora,
+            DATE_FORMAT(log.test_mmse, '%Y-%m-%d') AS test_mmse,
+            DATE_FORMAT(log.test_tym_hun, '%Y-%m-%d') AS test_tym_hun,
             DATE_FORMAT(log.date_time, '%Y-%m-%dT%H:%i') as start,
             DATE_FORMAT(log.date_time, '%Y-%m-%dT%H:%i') as date_time,
             DATE_FORMAT(DATE_ADD(DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i'), INTERVAL log.duration MINUTE), '%Y-%m-%dT%H:%i') as end
         FROM log 
         INNER JOIN clients ON clients.id = log.client_id
-        INNER JOIN users ON users.id = log.user_id
+        INNER JOIN users user_in_users ON user_in_users.id = log.user_id
+        LEFT JOIN users auditor_in_users ON auditor_in_users.id = log.auditor_id
         INNER JOIN accessgroups ON clients.accessgroup = accessgroups.id
         ` :
         `
         SELECT
-            users.name AS user_name,
+            user_in_users.name AS user_name,
             accessgroups.id AS accessgroup_id,
-            users.id AS user_id,
+            user_in_users.id AS user_id,
             clients.name As client_name,
             log.id as id,
             clients.name as title,
@@ -1019,12 +1501,20 @@ app.get('/api/geteventsfromlog/:accessgroup/:userid', authenticateKey, (req,res)
             log.description,
             log.user_id,
             log.duration,
+            log.activities,
+            log.shape_of_activities,
+            IF(log.auditor_id is not null, auditor_in_users.name, null) as auditor,
+            log.audit_date,
+            DATE_FORMAT(log.test_ora, '%Y-%m-%d') AS test_ora,
+            DATE_FORMAT(log.test_mmse, '%Y-%m-%d') AS test_mmse,
+            DATE_FORMAT(log.test_tym_hun, '%Y-%m-%d') AS test_tym_hun,
             DATE_FORMAT(log.date_time, '%Y-%m-%dT%H:%i') as start,
             DATE_FORMAT(log.date_time, '%Y-%m-%dT%H:%i') as date_time,
             DATE_FORMAT(DATE_ADD(DATE_FORMAT(log.date_time, '%Y-%m-%d %H:%i'), INTERVAL log.duration MINUTE), '%Y-%m-%dT%H:%i') as end
         FROM log 
         INNER JOIN clients ON clients.id = log.client_id
-        INNER JOIN users ON users.id = log.user_id
+        INNER JOIN users user_in_users ON user_in_users.id = log.user_id
+        LEFT JOIN users auditor_in_users ON auditor_in_users.id = log.auditor_id
         INNER JOIN accessgroups ON clients.accessgroup = accessgroups.id
         WHERE clients.accessgroup = ? AND log.user_id = ?
         `;

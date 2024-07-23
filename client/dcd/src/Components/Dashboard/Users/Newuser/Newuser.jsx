@@ -20,6 +20,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
   	const [selectedGroup, setSelectedGroup] = useState(0);
 	const [showNewUserForm, setShowNewUserForm] = useState(false);
 	const [disableSubmitButton, setDisableSubmitButton] = useState(false);
+	const [auditPermission, setAuditPermission] = useState(0);
 
 	const handleCloseNewUserForm = () => {
 		setShowNewUserForm(false);
@@ -27,6 +28,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 		setName('');
 		setPassword('');
 		setSelectedGroup(0);
+		setAuditPermission(0);
 		setErrorMessage({
 			name : '',
 			username : '',
@@ -49,6 +51,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 														password : trimmedHashedPassword,
 														name : name.trim(),
 														group : selectedGroup,
+														auditpermission : auditPermission,
 													}, {headers: { 'x-api-key': loggedInUserData.password }})
 			.then(() => {
 				handleCloseNewUserForm();
@@ -102,6 +105,14 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 								value={password}
 								maxLength={60}
 								onChange={(e) => setPassword(e.target.value)}/>
+						</Form.Group>
+						<Form.Group md="4" controlId="formPermission">
+							<Form.Label>Jogosultság</Form.Label>
+							<Form.Check
+								type='switch'
+								label='Ellenőrzés'
+								defaultChecked={auditPermission ? true : false}
+                          		onChange={(e) => setAuditPermission(e.target.checked ? 1 : 0)}/>
 						</Form.Group>
 						<Form.Group md="4" controlId="formSelectFromGroup">
 							<Form.Label>Csoport</Form.Label>
