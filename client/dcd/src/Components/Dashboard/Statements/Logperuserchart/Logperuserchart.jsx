@@ -7,7 +7,7 @@ export default function Logperuserchart( {logPerUserData, options} ) {
     const barData = {
         labels: logPerUserData.map((data)=> data.name),
         datasets: [{
-            label: 'Az ügyféltalálkozások száma felhasználónként',
+            label: 'Az ügyfélkapcsolatok száma felhasználónként',
             data: logPerUserData.map((data)=> data.piece),
             borderRadius: 5,
             backgroundColor: ['#EAD2AC', '#6096BA', '#A3CEF1', '#8B8C89', '#A0A083', '#C9ADA1', '#EAE0CC'],
