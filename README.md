@@ -59,6 +59,10 @@ Ezt a menüpontotot csak az admin csoport tagjai láthatják/kezelhetik.
 - a név mező nem lehet üres, maximum 100 karakter lehet
 - A jelszónak minimum 1 kisbetűt, 1 nagybetűt, 1 számot és 1 speciális karaktert kell tartalmaznia. A hossza minimum 8 maximum 60 karakter lehet. 
 - csoportot választani kötelező a legördülő listából
+- jogosultság:
+    - ellenőrzési jog (ellenőrizheti a naplókat egyesével vagy akár egy ügyfél összes naplóját)
+    - kimutatási jog (a csoportjában lévő többi felhasználó kimutatását is megnézheti)
+    - olvasási jog (ha ez aktív akkor csak lekérdezheti az adatokat)
 
 ### Felhasználók listája
 - keresés/rendezés
@@ -95,11 +99,11 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 
 ### Új ügyfél felvétele
 - a név mező nem lehet üres
-- ügyfél azonosító 9 karakter lehet (pl.: TAJ)
+- *(ügyfél azonosító 9 karakter lehet (pl.: TAJ))*
 - két azonos azonosítójú űgyfél egy csoporton belül nem lehet
 - jövőbeni születési dátum nem engedélyezett
 - nem választás kötelező
-- e-mail kötelező validálva van a @ és a .
+- e-mail nem  kötelező validálva van a @ és a .
 - irányítószám, város kötelező, egymástól függő mezők
 - utca, házszám, emelet nem kötelező
 
@@ -118,6 +122,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 #### Ügyfél adatainak szerkesztése
 - minden mező módosítható
 - ugyanaz a validáció, mint az új ügyfél felvitelénél
+- csak a saját ügyfelek adatai módosíthatóak kivéve az admin felhasználót aki minden ügyfél adatát módosíthatja
 
 #### Ügyfél törlése
 - csak az az ügyfél törölhető amelyiknek nincs naplóbejegyzése
@@ -133,12 +138,15 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 ## Kimutatások
 - csak a saját csoportban lévő adatokból készül kimutatás kivéve az admin csoport tagjait ahol az összes csoport adataiból
 - nem (férfi/nő)
-- korosztály (0-18, 18-40, 41-65, 65 felett)
+- korosztály (<60, 60-64, 65-69, 70-74, 75-79, 80-84, 85-90, 90-94, 95-99, 99 felett)
 - ügyféltalálkozások időtartama
-- ügyfelek települések szerinti eloszlása
+(*- ügyfelek települések szerinti eloszlása*)
 - felhasználókhoz tartozó naplóbejegyzések száma (havi lebontásban)
 - felhasználók naplóbejegyzéseinek száma
-- admin csoport tagjai azoknak felhasználóknak a kimutatásait is lekérdezhetik akiknek van naplóbejegyzésük, egyéb csoport tagjai csak a saját kimutatásaikat láthatják
+- klubbok kimutatásia (Ginko, DPP, Memória Kuckó)
+- tesztek kimutatása (Óra, MMSE, TYM-HUn)
+- ügyfélkapcsoalt módjának kimutatása (Személyes, telefonos, Online)
+- admin csoport tagjai vaalmint a lekérdezési joggal rendelkező felhasználók azoknak felhasználóknak a kimutatásait is lekérdezhetik akiknek van naplóbejegyzésük, egyéb csoport tagjai csak a saját kimutatásaikat láthatják
 
 ## Naptár
 - létrehozható saját illetve csoport naptárbejegyzés
@@ -166,8 +174,21 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 |          | city_id(int)       |
 |          | street(vc100)      |
 |          | house_number(vc5)  |
-|          | floor(vc3)         |
+|          | floor(vc4)         |
 |          | door(vc4)          |
+|          | user_id(int)       |
+|          | petition(tinyint)  |
+|          | affected(tinyint)  |
+|          | relative(tinyint)  |
+|          | legal_representative(tinyint)|
+|          | agreement(tinyint) |
+|          | self_care(tinyint) |
+|          | social_skills(tinyint)|
+|          | registration_date(date)|
+|          | end_of_service(date)|
+|          | interested(tinyint)|
+|          | other_data(text)   |
+
 
 | Táblanév | log                |
 |----------|--------------------|
@@ -175,8 +196,16 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 |          | user_id(int)       |
 |          | client_id(int)     |
 |          | date_time(datetime)|
-|          | duration(vc3)      |
+|          | shape_of_activities(vc20)|
+|          | activities(vc255)  |
 |          | description(text)  |
+|          | duration(vc3)      |
+|          | test_tym_hun(date) |
+|          | test_mmse(date)    |
+|          | test_ora(date)     |
+|          | auditor_id(int)    |
+|          | audit_date(date)   |
+
 
 | Táblanév | calendar           |
 |----------|--------------------|
@@ -195,7 +224,8 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 |          | password(vc60)     |
 |          | name(vc100)        |
 |          | accessgroup(int)   |
-|          | inactive(tinyint1) |
+|          | inactive(tinyint)  |
+|          | auditpermission(tinyint)  |
 
 | Táblanév | company            |
 |----------|--------------------|
@@ -242,6 +272,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 - https://www.npmjs.com/package/react-bootstrap-pagination-control
 - https://www.npmjs.com/package/react-chartjs-2
 - https://www.npmjs.com/package/react-router
+- https://www.npmjs.com/package/react-select
 - https://www.npmjs.com/package/react-markdown
 - https://www.npmjs.com/package/rehype-raw
 - https://www.npmjs.com/package/remark-gfm
