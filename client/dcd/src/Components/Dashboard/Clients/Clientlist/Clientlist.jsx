@@ -318,6 +318,7 @@ export default function Clientlist({
                         cityList={cityList}
                         darkMode={darkMode}
                       />
+                      
                       <Newlog
                         selectedClient={listItem}
                         loggedInUserData={loggedInUserData}

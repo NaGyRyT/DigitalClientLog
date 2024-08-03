@@ -22,6 +22,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 	const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 	const [auditPermission, setAuditPermission] = useState(0);
 	const [statementPermission, setStatementPermission] = useState(0);
+	const [readOnlyPermission, setReadOnlyPermission] = useState(0);
 
 	const handleCloseNewUserForm = () => {
 		setShowNewUserForm(false);
@@ -31,6 +32,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 		setSelectedGroup(0);
 		setAuditPermission(0);
 		setStatementPermission(0);
+		setReadOnlyPermission(0);
 		setErrorMessage({
 			name : '',
 			username : '',
@@ -55,6 +57,8 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 														group : selectedGroup,
 														auditpermission : auditPermission,
 														statementpermission : statementPermission,
+														readonlypermission : readOnlyPermission,
+
 													}, {headers: { 'x-api-key': loggedInUserData.password }})
 			.then(() => {
 				handleCloseNewUserForm();
@@ -110,7 +114,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 								onChange={(e) => setPassword(e.target.value)}/>
 						</Form.Group>
 						<Row>
-							<p className='my-1'>Jogosultság</p>
+							<p className='my-1'>Jogosultságok</p>
 							<Col xs={12} sm={4}>
 								<Form.Check
 									type='switch'
@@ -126,6 +130,14 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 									id='formStatementPermission'
 									defaultChecked={statementPermission ? true : false}
 									onChange={(e) => setStatementPermission(e.target.checked ? 1 : 0)}/>
+							</Col>
+							<Col xs={12} sm={4}>
+								<Form.Check
+									type='switch'
+									label='Csak olvasás'
+									id='formReadOnlyPermission'
+									defaultChecked={readOnlyPermission ? true : false}
+									onChange={(e) => setReadOnlyPermission(e.target.checked ? 1 : 0)}/>
 							</Col>
 						</Row>
 						<Form.Group md="4" controlId="formSelectFromGroup">

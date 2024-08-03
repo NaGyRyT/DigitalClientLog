@@ -107,13 +107,14 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
         </Button>
 
   return (
-    <>
-        {buttonTitle === undefined ? <OverlayTrigger
+    <>  
+        {loggedInUserData.readonlypermission === 0 ?
+        buttonTitle === undefined ? <OverlayTrigger
 			placement="top"
 			delay={{ show: 50, hide: 100 }}
 			overlay={renderTooltip}>
             {editLogButton}
-        </OverlayTrigger> : editLogButton}
+        </OverlayTrigger> : editLogButton : ''}
         <Modal 
             show={showEditLogForm} 
             dialogClassName='modal-80w'
@@ -225,6 +226,7 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
                             {errorMessage.activities === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.activities}</Alert>}
                             <Select
                                 placeholder='Válassz tevékenységet!'
+                                noOptionsMessage={() => 'Nincs találat!'}
                                 onChange={(e) => setActivities(e.value)}
                                 value={[{value : activities, label : activities}]}
                                 styles={{
@@ -232,12 +234,13 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
                                         ...baseStyles,
                                         background: darkMode ? '#212529' : '#fff',
                                         borderColor: '#495057',
-                                        color: 'red',
                                         borderWidth: '1px',
                                         '&:hover': {
                                         borderColor: '#495057',
-                                    }
-
+                                    }}),
+                                    input: (baseStyles) => ({
+                                        ...baseStyles,
+                                        color : darkMode ? '#dee2e6' : '#212529',
                                     }),
                                     menu: (baseStyles) => ({
                                         ...baseStyles,
@@ -246,7 +249,7 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
                                         border: '1px solid #495057',
                                         
                                     }),
-                                        option: (provided) => ({
+                                    option: (provided) => ({
                                         ...provided,
                                         background: darkMode ? '#212529' : 'white',
                                         color : darkMode ? '#dee2e6' : '#212529',

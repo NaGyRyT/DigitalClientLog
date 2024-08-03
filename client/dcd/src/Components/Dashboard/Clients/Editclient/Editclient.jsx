@@ -164,14 +164,16 @@ export default function Editclient( {
             {buttonTitle ? buttonTitle : <>&#x270D;</>}
         </Button>
 return (
-    <>  
-        {buttonTitle === undefined ? <OverlayTrigger
-			placement="top"
-			delay={{ show: 50, hide: 100 }}
-			overlay={renderTooltip}>
-			{editClientButton}
-	    </OverlayTrigger>:
-            editClientButton}
+    <>  {loggedInUserData.readonlypermission === 0 ?
+			buttonTitle === undefined ? <OverlayTrigger
+				placement="top"
+				delay={{ show: 50, hide: 100 }}
+				overlay={renderTooltip}>
+				{editClientButton}
+			</OverlayTrigger>:
+				editClientButton
+				: ''
+		}
         <Modal 
             show={showEditClientForm} 
             onHide={handleCloseEditClientForm}

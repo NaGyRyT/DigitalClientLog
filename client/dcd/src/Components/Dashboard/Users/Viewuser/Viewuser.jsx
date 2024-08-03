@@ -54,9 +54,11 @@ export default function Viewuser( {
                         <p className='border-bottom'>Felhasználónév: {listItem.username}</p>
                         <p className='border-bottom'>Név: {listItem.name}</p>
                         <p className='border-bottom'>Csoport: {listItem.group_name}</p>
+                        {listItem.auditpermission === 1 || listItem.statementpermission === 1 || listItem.readonlypermission === 1 ? <p className='my-0'>Jogosultságok</p> : ''}
                         <ul>
                             {listItem.auditpermission ? <li>Ellenőrzési jog aktív</li> : ''}
                             {listItem.statementpermission ? <li>Kimutatási jog aktív</li> : ''}
+                            {listItem.readonlypermission ? <li>Csak olvasási jog aktív</li> : ''}
                         </ul>
                     </Modal.Body>
                     <Modal.Footer>

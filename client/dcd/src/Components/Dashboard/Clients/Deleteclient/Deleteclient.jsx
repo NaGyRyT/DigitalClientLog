@@ -49,14 +49,15 @@ export default function Deleteclient( { listItem, loadClientList, loggedInUserDa
     
       return (
         <>
-            {buttonTitle === undefined ?
+            {loggedInUserData.readonlypermission === 0 ?
+            buttonTitle === undefined ?
                 <OverlayTrigger
                     placement="top"
                     delay={{ show: 50, hide: 100 }}
                     overlay={renderTooltip}>
                         {deleteClientButton}
                 </OverlayTrigger> : 
-                deleteClientButton}
+                deleteClientButton : ''} 
             <Modal show={showDeleteClientForm} onHide={handleCloseDeleteClientForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
                 <Modal.Header closeButton>
                         <Modal.Title>Ügyfél törlése</Modal.Title>

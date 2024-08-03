@@ -153,10 +153,10 @@ export default function Newclient( {
 	}
 
 	return (
-		<>
+		<>{loggedInUserData.readonlypermission === 0 &&
 			<Button className='mx-3' variant='primary' onClick={handleShowNewClientForm}>
 				+ Új ügyfél
-			</Button>
+			</Button>}
 			<Modal 
 				show={showNewClientForm} 
 				onHide={handleCloseNewClientForm}

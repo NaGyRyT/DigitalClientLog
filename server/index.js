@@ -62,6 +62,7 @@ app.use('/api/login', authenticateKey, (req, res) => {
                         users.id,
                         users.auditpermission,
                         users.statementpermission,
+                        users.readonlypermission,
                         accessgroups.group_name 
                        FROM users 
                        INNER JOIN accessgroups 
@@ -102,6 +103,7 @@ app.use('/api/checkloggedinuser', authenticateKey, (req, res) => {
                         users.id,
                         users.auditpermission,
                         users.statementpermission,
+                        users.readonlypermission,
                         accessgroups.group_name 
                        FROM users 
                        INNER JOIN accessgroups 
@@ -131,7 +133,8 @@ app.post('/api/newuser', authenticateKey, (req,res) => {
     const group = req.body.group;
     const auditpermission = req.body.auditpermission;
     const statementpermission = req.body.statementpermission;
-    database.db.query('INSERT INTO users (username, password, name, auditpermission, statementpermission, accessgroup, inactive) VALUES (?, ?, ?, ?, ?, ?, 0)', [username, password, name, auditpermission, statementpermission, group], (err, result) => {
+    const readonlypermission = req.body.readonlypermission;
+    database.db.query('INSERT INTO users (username, password, name, auditpermission, statementpermission, readonlypermission, accessgroup, inactive) VALUES (?, ?, ?, ?, ?, ?, ?, 0)', [username, password, name, auditpermission, statementpermission, readonlypermission, group], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -180,16 +183,17 @@ app.post('/api/edituser', authenticateKey, (req,res) => {
     const group = req.body.group;
     const auditpermission = req.body.auditpermission;
     const statementpermission = req.body.statementpermission;
+    const readonlypermission = req.body.readonlypermission;
     if (password === '') {
-        database.db.query('UPDATE users SET name = ?, accessgroup = ?, auditpermission = ?, statementpermission = ? WHERE id = ?', [name, group, auditpermission, statementpermission, id], (err, result) => {
+        database.db.query('UPDATE users SET name = ?, accessgroup = ?, auditpermission = ?, statementpermission = ?, readonlypermission = ? WHERE id = ?', [name, group, auditpermission, statementpermission, readonlypermission, id], (err, result) => {
             if (err) {
                 console.log(err);
-            } else {                
+            } else {
                 res.send(result);
             };
         });
     } else {
-        database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ?, auditpermission = ?, statementpermission = ? WHERE id = ?', [name, group, password, auditpermission, statementpermission,id], (err, result) => {
+        database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ?, auditpermission = ?, statementpermission = ?, readonlypermission = ? WHERE id = ?', [name, group, password, auditpermission, statementpermission, readonlypermission, id], (err, result) => {
             if (err) {
                 console.log(err);
             } else {
@@ -219,6 +223,7 @@ app.get('/api/getuserlist', authenticateKey, (req,res) => {
                         users.accessgroup, 
                         users.auditpermission, 
                         users.statementpermission,
+                        users.readonlypermission,
                         accessgroups.group_name 
                        FROM users 
                        INNER JOIN accessgroups 
@@ -1136,7 +1141,7 @@ app.get('/api/getdurationnumber/:accessgroup', authenticateKey, (req,res) => {
         `
         SELECT 
             duration,
-        COUNT(id) AS piece FROM log GROUP BY duration ORDER BY duration
+        COUNT(id) AS piece FROM log GROUP BY duration ORDER BY cast(duration as unsigned INTEGER)
         `:
         `
         SELECT 
@@ -1146,7 +1151,7 @@ app.get('/api/getdurationnumber/:accessgroup', authenticateKey, (req,res) => {
         INNER JOIN clients ON clients.id = log.client_id
         WHERE clients.accessgroup = ? 
         GROUP BY duration
-        ORDER BY cast(duration as unsigned)
+        ORDER BY cast(duration as unsigned INTEGER)
         `;
     database.db.query(sqlSelectCount, [accessgroup], (err, result) => {
         if (err) {
@@ -1168,7 +1173,7 @@ app.get('/api/getdurationnumberperuser/:userid', authenticateKey, (req,res) => {
         INNER JOIN clients ON clients.id = log.client_id
         WHERE clients.user_id = ? 
         GROUP BY duration
-        ORDER BY cast(duration as unsigned)
+        ORDER BY cast(duration as unsigned INTEGER)
         `;
     database.db.query(sqlSelectCount, [userid], (err, result) => {
         if (err) {
@@ -1189,6 +1194,7 @@ app.get('/api/getlogperusernumber/:accessgroup', authenticateKey, (req,res) => {
         FROM log
         INNER JOIN users ON users.id = log.user_id
         GROUP BY users.name
+        ORDER BY users.name
         ` :
         `
         SELECT 
@@ -1199,6 +1205,7 @@ app.get('/api/getlogperusernumber/:accessgroup', authenticateKey, (req,res) => {
         INNER JOIN clients ON clients.id = log.client_id
         WHERE clients.accessgroup = ? 
         GROUP BY users.name
+        ORDER BY users.name
         `;
     database.db.query(sqlSelectCount, [accessgroup], (err, result) => {
         if (err) {

@@ -46,12 +46,13 @@ export default function Deletelog( {
 
     return (
         <>
-            {buttonTitle === undefined ? <OverlayTrigger
+            {loggedInUserData.readonlypermission === 0 ?
+            buttonTitle === undefined ? <OverlayTrigger
                 placement='top'
                 delay={{ show: 50, hide: 100 }}
                 overlay={renderTooltip}>
-                {deleteLogButton}
-            </OverlayTrigger> : deleteLogButton}
+                {deleteLogButton} 
+            </OverlayTrigger> : deleteLogButton : ''}
             <Modal show={showDeleteLogForm} backdrop='static' onClick={(e)=>e.stopPropagation()}>
                 <Modal.Header >
                     <Modal.Title>Naplóbejegyzés törlése</Modal.Title>

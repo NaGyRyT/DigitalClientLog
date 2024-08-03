@@ -93,7 +93,8 @@ export default function Newlog( {
         );
 
 	return (
-		<>{fromClientList ? 
+		<>{loggedInUserData.readonlypermission === 0 ?
+            fromClientList ? 
             <>
             <OverlayTrigger
                 placement="top"
@@ -110,7 +111,7 @@ export default function Newlog( {
             </> : 		
             <Button variant="primary" onClick={handleShowNewLogForm}>
                 + Új napló
-            </Button>}
+            </Button> : ''}
 
 			<Modal 
 				show={showNewLogForm} 
@@ -227,33 +228,37 @@ export default function Newlog( {
                                     {errorMessage.activities === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.activities}</Alert>}
                                     <Select
                                         placeholder='Válassz tevékenységet!'
+                                        noOptionsMessage={() => 'Nincs találat!'}
                                         onChange={(e) => setActivities(e.value)}
                                         styles={{
                                             control: (baseStyles) => ({
                                               ...baseStyles,
                                               background: darkMode ? '#212529' : '#fff',
                                               borderColor: '#495057',
-                                              color: 'red',
                                               borderWidth: '1px',
+                                              cursor: 'pointer',
                                               '&:hover': {
                                                 borderColor: '#495057',
                                             }
-
+                                            }),
+                                            input: (baseStyles) => ({
+                                                ...baseStyles,
+                                                color : darkMode ? '#dee2e6' : '#212529',
                                             }),
                                             menu: (baseStyles) => ({
                                                 ...baseStyles,
                                                 background: darkMode ? '#212529' : 'white',
                                                 color : darkMode ? '#dee2e6' : '#212529',
                                                 border: '1px solid #495057',
-                                                
                                             }),
-                                             option: (provided) => ({
+                                            option: (provided) => ({
                                                 ...provided,
                                                 background: darkMode ? '#212529' : 'white',
                                                 color : darkMode ? '#dee2e6' : '#212529',
                                                 '&:hover': {
                                                     color: darkMode ? '#212529' : '#fff',
                                                     backgroundColor: darkMode ? '#8bb9fe' : '#0d6efd',
+                                                    cursor: 'pointer',
                                                 }
                                                   
                                               }),
