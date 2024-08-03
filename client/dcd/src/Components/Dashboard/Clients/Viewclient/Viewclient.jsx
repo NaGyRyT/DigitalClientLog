@@ -344,7 +344,7 @@ export default function Viewclient( {
                             <hr className='mt-1 mb-1'/>
                             {(newestTestOra !== '3000-01-01' || newestTestMmse !== '3000-01-01' || newestTestTymHun !== '3000-01-01') && 
                             <>
-                            <Row>Legutóbbi tesztek: </Row> 
+                            <Row><Col>Legutóbbi tesztek: </Col></Row> 
                             <Row>
                                 {newestTestOra !== '3000-01-01' &&
                                     <Col>Óra: {newestTestOra}</Col>
@@ -356,7 +356,48 @@ export default function Viewclient( {
                                     <Col>TYM-HUN: {newestTestTymHun}</Col>
                                 }
 							</Row>
+                            <hr className='mt-1 mb-1'/>
                             </>}
+                            { listItem.disease_severity > 0 &&
+                            <>
+							<Row><Col>Betegség foka</Col></Row>
+							<Row>
+								<Col xs={4}>
+									<Form.Check
+										label='enyhe'
+										name='diseaseSeverity'
+										value={1}
+										checked={listItem.disease_severity === 1}
+										type='radio'
+										id='newUserRadio17'
+                                        disabled
+										/>
+								</Col>
+								<Col xs={4}>
+									<Form.Check
+										label='középsúlyos'
+										name='diseaseSeverity'
+										value={2}
+										checked={listItem.disease_severity === 2}
+										type='radio'
+										id='newUserRadio18'
+                                        disabled
+									/>
+								</Col>
+								<Col xs={4}>
+									<Form.Check
+										label='súlyos'
+										name='diseaseSeverity'
+										value={3}
+										checked={listItem.disease_severity === 3}
+										type='radio'
+										id='newUserRadio19'
+                                        disabled
+									/>
+								</Col>
+							</Row>
+                            </>
+                            }
                         </Stack>
                     </Stack>
                     {logEntries.length > 0 ?

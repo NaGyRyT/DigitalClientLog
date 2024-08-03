@@ -50,6 +50,7 @@ export default function Editclient( {
 	const [interested, setInterested] = useState(listItem.interested);
     const [endOfService, setEndOfService] = useState(listItem.end_of_service);
 	const [otherData, setOtherData] = useState(listItem.other_data);
+	const [diseaseSeverity, setDiseaseSeverity] = useState(listItem.disease_severity);
 
     const [showEditClientForm, setShowEditClientForm] = useState(false);
 
@@ -78,6 +79,7 @@ export default function Editclient( {
 		setInterested(listItem.interested);
         setEndOfService(listItem.end_of_service);
 		setOtherData(listItem.other_data);
+		setDiseaseSeverity(listItem.disease_severity);
  	 	setErrorMessage({
             name : '',
 			clientId : '',
@@ -128,6 +130,7 @@ export default function Editclient( {
                 registration_date : registrationDate,
                 interested : interested,
                 end_of_service : endOfService,
+				disease_severity : diseaseSeverity,
 				other_data : otherData.trim()
             },
                 {headers: { 'x-api-key': loggedInUserData.password }})
@@ -612,6 +615,45 @@ return (
 										type='radio'
 										id='editUserRadio16'
 										onChange={()=> setInterested(0)}
+									/>
+								</Col>
+							</Row>
+							<hr className='mt-1 mb-1'/>
+							<Row>
+								<Col>Betegség foka</Col>
+							</Row>
+							<Row>
+								<Col xs={4}>
+									<Form.Check
+										label='enyhe'
+										name='diseaseSeverity'
+										value={1}
+										checked={diseaseSeverity === 1}
+										type='radio'
+										id='newUserRadio17'
+										onChange={()=> setDiseaseSeverity(1)}
+										/>
+								</Col>
+								<Col xs={4}>
+									<Form.Check
+										label='középsúlyos'
+										name='diseaseSeverity'
+										value={2}
+										checked={diseaseSeverity === 2}
+										type='radio'
+										id='newUserRadio18'
+										onChange={()=> setDiseaseSeverity(2)}
+									/>
+								</Col>
+								<Col xs={4}>
+									<Form.Check
+										label='súlyos'
+										name='diseaseSeverity'
+										value={3}
+										checked={diseaseSeverity === 3}
+										type='radio'
+										id='newUserRadio19'
+										onChange={()=> setDiseaseSeverity(3)}
 									/>
 								</Col>
 							</Row>

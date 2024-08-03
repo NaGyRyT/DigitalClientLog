@@ -46,7 +46,8 @@ export default function Newclient( {
 	const [socialSkills, setSocialSkills] = useState(0);
 	const [registrationDate, setRegistrationDate] = useState(moment().format('YYYY-MM-DD'));
 	const [interested, setInterested] = useState(0);
-
+	const [diseaseSeverity, setDiseaseSeverity] = useState(0);
+	
     const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 	const [showNewClientForm, setShowNewClientForm] = useState(false);
 	const handleCloseNewClientForm = async () => {
@@ -73,6 +74,7 @@ export default function Newclient( {
 		setSocialSkills(0);
 		setInterested(0);
 		setOtherData('');
+		setDiseaseSeverity(0);
  	 	setErrorMessage({
             name : '',
 			clientId : '',
@@ -129,6 +131,7 @@ export default function Newclient( {
 														registration_date : registrationDate,
 														end_of_service : '3000-01-01',
 														interested : interested,
+														disease_severity : diseaseSeverity,
 														other_data : otherData.trim()
 													}, 
 													{headers: { 'x-api-key': loggedInUserData.password }})
@@ -569,6 +572,45 @@ export default function Newclient( {
 										type='radio'
 										id='newUserRadio16'
 										onChange={()=> setInterested(0)}
+									/>
+								</Col>
+							</Row>
+							<hr className='mt-1 mb-1'/>
+							<Row>
+								<Col>Betegség foka</Col>
+							</Row>
+							<Row>
+								<Col xs={4}>
+									<Form.Check
+										label='enyhe'
+										name='diseaseSeverity'
+										value={1}
+										checked={diseaseSeverity === 1}
+										type='radio'
+										id='newUserRadio17'
+										onChange={()=> setDiseaseSeverity(1)}
+										/>
+								</Col>
+								<Col xs={4}>
+									<Form.Check
+										label='középsúlyos'
+										name='diseaseSeverity'
+										value={2}
+										checked={diseaseSeverity === 2}
+										type='radio'
+										id='newUserRadio18'
+										onChange={()=> setDiseaseSeverity(2)}
+									/>
+								</Col>
+								<Col xs={4}>
+									<Form.Check
+										label='súlyos'
+										name='diseaseSeverity'
+										value={3}
+										checked={diseaseSeverity === 3}
+										type='radio'
+										id='newUserRadio19'
+										onChange={()=> setDiseaseSeverity(3)}
 									/>
 								</Col>
 							</Row>

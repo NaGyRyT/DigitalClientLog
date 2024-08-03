@@ -381,6 +381,7 @@ app.post('/api/newclient', authenticateKey, (req,res) => {
     const end_of_service = req.body.end_of_service;
     const interested = req.body.interested;
     const other_data = req.body.other_data;
+    const disease_severity = req.body.disease_severity;
 
     const sqlInsert = `INSERT INTO 
                         clients (
@@ -407,9 +408,10 @@ app.post('/api/newclient', authenticateKey, (req,res) => {
                             registration_date,
                             end_of_service,
                             interested,
-                            other_data
+                            other_data,
+                            disease_severity
                             ) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     database.db.query(sqlInsert, [
         name, 
         client_id,
@@ -434,7 +436,8 @@ app.post('/api/newclient', authenticateKey, (req,res) => {
         registration_date,
         end_of_service,
         interested,
-        other_data
+        other_data,
+        disease_severity
     ], (err, result) => {
         if (err) {
             console.log(err);
@@ -470,6 +473,7 @@ app.post('/api/editclient', authenticateKey, (req,res) => {
     const interested = req.body.interested;
     const end_of_service = req.body.end_of_service;
     const other_data = req.body.other_data;
+    const disease_severity = req.body.disease_severity;
     const sqlUpdate = `UPDATE
                         clients
                        SET
@@ -495,7 +499,8 @@ app.post('/api/editclient', authenticateKey, (req,res) => {
                         registration_date = ?,
                         interested = ?,
                         end_of_service = ?,
-                        other_data = ?
+                        other_data = ?,
+                        disease_severity = ?
                        WHERE id = ?`
     database.db.query(sqlUpdate, [
         name, 
@@ -521,6 +526,7 @@ app.post('/api/editclient', authenticateKey, (req,res) => {
         interested,
         end_of_service,
         other_data,
+        disease_severity,
         id
     ], (err, result) => {
         if (err) {
@@ -584,6 +590,7 @@ app.get('/api/getclientlist', authenticateKey, (req,res) => {
                         IF (registration_date, DATE_FORMAT(registration_date, '%Y-%m-%d'), NULL) AS registration_date,
                         IF (end_of_service, DATE_FORMAT(end_of_service, '%Y-%m-%d'), NULL) AS end_of_service,
                         interested,
+                        disease_severity,
                         CONCAT(
                             cities.city,
                             CONCAT_WS(', ', '', NULLIF(street, '')),

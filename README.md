@@ -188,6 +188,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 |          | end_of_service(date)|
 |          | interested(tinyint)|
 |          | other_data(text)   |
+|          | disease_severity(tinyint)|
 
 
 | Táblanév | log                |
