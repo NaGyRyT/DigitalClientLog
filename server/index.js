@@ -1354,6 +1354,66 @@ app.get('/api/getshapeofactivitiesperuser/:userid', authenticateKey, (req,res) =
     });
 });
 
+app.get('/api/getdiseaseseverity/:accessgroup', authenticateKey, (req,res) => {
+    const accessgroup = req.params.accessgroup;
+    const sqlSelectCount = accessgroup === '1' ?
+    `
+    SELECT
+        users.name,
+        COUNT(if (disease_severity = 1 , 1, null)) as early,
+        COUNT(if (disease_severity = 2 , 1, null)) as middle,
+        COUNT(if (disease_severity = 3 , 1, null)) as late
+    FROM clients
+    INNER JOIN users ON clients.user_id = users.id
+    WHERE disease_severity is not null AND end_of_service = '3000-01-01'
+    GROUP BY users.name
+    ` :
+    `
+    SELECT
+        users.name,
+        COUNT(if (disease_severity = 1 , 1, null)) as early,
+        COUNT(if (disease_severity = 2 , 1, null)) as middle,
+        COUNT(if (disease_severity = 3 , 1, null)) as late
+    FROM clients
+    INNER JOIN users ON clients.user_id = users.id
+    WHERE clients.accessgroup = ? AND disease_severity is not null AND end_of_service = '3000-01-01'
+    GROUP BY users.name
+    `
+    database.db.query(sqlSelectCount, [accessgroup],(err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+
+/* app.get('/api/getdiseaseseverityperuser/:userid', authenticateKey, (req,res) => {
+    const userid = req.params.userid;
+    const sqlSelectCount =
+    `
+    SELECT 
+    CASE 
+        WHEN disease_severity = 1 THEN "enyhe" 
+        WHEN disease_severity = 2 THEN "középsúlyos"
+        WHEN disease_severity = 3 THEN "súlyos" 
+    END as disease,
+    COUNT(id) as piece 
+    FROM clients
+    WHERE user_id = ? AND disease_severity is not null AND end_of_service = '3000-01-01'
+    GROUP BY disease
+    ORDER BY disease
+    `
+    database.db.query(sqlSelectCount, [userid],(err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+}); */
+
 
 /*------------------------------Company--------------------------*/
 

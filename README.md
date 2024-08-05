@@ -143,8 +143,9 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 (*- ügyfelek települések szerinti eloszlása*)
 - felhasználókhoz tartozó naplóbejegyzések száma (havi lebontásban)
 - felhasználók naplóbejegyzéseinek száma
+- betegség fokának kimutatása
 - klubbok kimutatásia (Ginko, DPP, Memória Kuckó)
-- tesztek kimutatása (Óra, MMSE, TYM-HUn)
+- tesztek kimutatása (Óra, MMSE, TYM-HUN)
 - ügyfélkapcsoalt módjának kimutatása (Személyes, telefonos, Online)
 - admin csoport tagjai vaalmint a lekérdezési joggal rendelkező felhasználók azoknak felhasználóknak a kimutatásait is lekérdezhetik akiknek van naplóbejegyzésük, egyéb csoport tagjai csak a saját kimutatásaikat láthatják
 
