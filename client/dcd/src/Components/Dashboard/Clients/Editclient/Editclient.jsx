@@ -92,7 +92,7 @@ export default function Editclient( {
             registrationDate : '',
             endOfService : '',
 			error : false, 
-		})
+		});
     };
 
     const handleShowEditClientForm = (e) => {
@@ -551,7 +551,7 @@ return (
 							<hr className='mt-1 mb-1'/>
 							<Row className='mb-3'>
 								<Col className='d-flex align-items-center'>Szolgáltatás kezdete</Col>
-								<Col >
+								<Col>
 									<Form.Group controlId='formRegistrationDate'>
 										{errorMessage.registrationDate === '' ? '' : <Alert variant='danger' size='sm'>{errorMessage.registrationDate}</Alert>}
 										<Form.Control
@@ -563,8 +563,10 @@ return (
 									</Form.Group>
 								</Col>
 							</Row>
-                            <Row >
-								<Col className='d-flex align-items-center'>Szolgáltatás vége {endOfService !== '3000-01-01' && endOfService}</Col>
+                            <Row>
+								<Col className='d-flex align-items-center'>
+									Szolgáltatás vége
+								</Col>
                                 <Col xs={3}>
 									<Form.Check
 										label='igen'
@@ -574,7 +576,7 @@ return (
 										type='radio'
 										id='editUserRadio17'
 										onChange={()=> {
-                                            setEndOfService(moment().format('YYYY.MM.DD.'));
+                                            setEndOfService(moment().format('YYYY-MM-DD'));
                                         }}
 										/>
 								</Col>
@@ -590,6 +592,21 @@ return (
                                             setEndOfService('3000-01-01');
                                         }}
 									/>
+								</Col>
+							</Row>
+							<Row>
+							<Col xs={6}></Col>
+								<Col xs={6}>
+									{endOfService !== '3000-01-01' && 
+										<Form.Group controlId='formEndOfServiceDate'>
+											{errorMessage.endOfService === '' ? '' : <Alert variant='danger' size='sm'>{errorMessage.endOfService}</Alert>}
+											<Form.Control
+												min={registrationDate}
+												max={moment().format('YYYY-MM-DD')}
+												type='date'
+												value={endOfService}
+												onChange={(e) => setEndOfService(e.target.value)}/>
+										</Form.Group>}
 								</Col>
 							</Row>
 							<hr className='mt-1 mb-1'/>

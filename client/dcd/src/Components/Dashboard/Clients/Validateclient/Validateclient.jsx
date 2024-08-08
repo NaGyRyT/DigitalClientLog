@@ -57,6 +57,13 @@ export async function validateClient(
             errorMessage.birthDate = '1900.01.01 előtti dátum nem lehetséges.';
             errorMessage.error = true;
     } else errorMessage.birthDate = '';
+    if (endOfService > new Date().toJSON().slice(0,10) && endOfService !=='3000-01-01') {
+        errorMessage.endOfService = 'Jövőbeni dátum nem lehetséges.';
+        errorMessage.error = true;
+    } else if (endOfService < registrationDate) {
+            errorMessage.endOfService = registrationDate +' előtti dátum nem lehetséges.';
+            errorMessage.error = true;
+    } else errorMessage.endOfService = '';
     if (zip.length !== 4) {
         errorMessage.zip = 'Nem megfelelő irányítószám.';
         errorMessage.error = true;
