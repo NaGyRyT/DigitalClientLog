@@ -35,9 +35,9 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
   const views = ['day', 'week', 'month', 'agenda'];
   const logBackgroundColor = '#ead2ac';
   const logColor = '#363636';
-  const groupCalendarEventBackgroundColor = '#5b5d58';
+  const groupCalendarEventBackgroundColor = '#557722';  
   const calendarEventBackgroudColor = '#265985';
-  const calendarEventColor = '#dee2e6';
+  const calendarEventColor = '#ffffff';
   const localizer = momentLocalizer(moment);
   const min = '2024-03-14T07:00:00+01:00';
   const max = '2024-03-14T19:00:00+01:00';
