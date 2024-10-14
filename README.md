@@ -151,7 +151,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 
 ## Naptár
 - létrehozható saját illetve csoport naptárbejegyzés
-- megejeleníthetőek a csoport naptárbejegyzések, a sajátok szerkeszthetőek és törölhetőek
+- megjeleníthetőek a csoport naptárbejegyzések, a sajátok szerkeszthetőek és törölhetőek
 - megjeleníthetőek a naplóbejegyzések, a sajátok szerkeszthetőek, törölhetőek
 - keresés funkció a tárgy mezőben
 

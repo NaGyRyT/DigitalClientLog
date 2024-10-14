@@ -16,7 +16,7 @@ export async function validateClient(
     accessgroup,
     loggedInUserData,
     registrationDate ='',
-    endOfService = '',
+    endOfService = '3000-01-01',
     ) {
     const errorMessage = {
         name : '',
@@ -31,7 +31,6 @@ export async function validateClient(
         registrationDate: '',
         endOfService : '',
         };
-
     if (name.trim().length === 0) {
         errorMessage.name = 'Név megadása kötelező.';
         errorMessage.error = true;
