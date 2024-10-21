@@ -2,6 +2,7 @@ import React, { useState} from 'react';
 import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
 import bcrypt from "bcryptjs-react";
+import { CirclePicker } from 'react-color';
 import { validateUser } from '../Validateuser/Validateuser';
 import API from '../../../../api';
 
@@ -28,6 +29,7 @@ export default function Edituser( {
 	const [auditPermission, setAuditPermission] = useState(listItem.auditpermission);
 	const [statementPermission, setStatementPermission] = useState(listItem.statementpermission);
 	const [readOnlyPermission, setReadOnlyPermission] = useState(listItem.readonlypermission);
+	const [calendarColor, setCalendarColor] = useState(listItem.calendarcolor);
 
 	const handleCloseEditUserForm = () => {
 		setShowEditUserForm(false);
@@ -36,6 +38,7 @@ export default function Edituser( {
 		setStatementPermission(listItem.statementpermission);
 		setReadOnlyPermission(listItem.readonlypermission)
 		setPassword('');
+		setCalendarColor(listItem.calendarcolor)
 		setErrorMessage({
 			name : '',
 			username : '',
@@ -62,6 +65,7 @@ export default function Edituser( {
 				auditpermission : auditPermission,
 				statementpermission : statementPermission,
 				readonlypermission : readOnlyPermission,
+				calendarcolor : calendarColor,
 				id : listItem.id
 			}, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
@@ -69,6 +73,7 @@ export default function Edituser( {
 			else {
 				let newListItem = listItem;
 				newListItem.name = name;
+				newListItem.calendarcolor = calendarColor;
 				if (password !== '') newListItem.password = trimmedHashedPassword;
 				setLoggedInUserData(newListItem);
 			}
@@ -197,6 +202,15 @@ export default function Edituser( {
 									<option>{listItem.group_name}</option>
 								}
 							</Form.Select>
+						</Form.Group>
+						<Form.Group className='pt-2'>
+							<Form.Label>Saját naptárbejegyzés színe</Form.Label>
+							<CirclePicker
+								colors={["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#2196f3", "#03a9f4", "#00bcd4", "#009688", "#4caf50", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc107", "#ff9800", "#ff5722", "#795548", "#607d8b", "#265985"]}
+								width='auto' 
+								color={calendarColor}
+								onChangeComplete={(color) => setCalendarColor(color.hex)}
+							/>
 						</Form.Group>
 					</Form>
 				</Modal.Body>

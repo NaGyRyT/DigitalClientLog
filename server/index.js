@@ -63,6 +63,7 @@ app.use('/api/login', authenticateKey, (req, res) => {
                         users.auditpermission,
                         users.statementpermission,
                         users.readonlypermission,
+                        users.calendarcolor,
                         accessgroups.group_name 
                        FROM users 
                        INNER JOIN accessgroups 
@@ -104,6 +105,7 @@ app.use('/api/checkloggedinuser', authenticateKey, (req, res) => {
                         users.auditpermission,
                         users.statementpermission,
                         users.readonlypermission,
+                        users.calendarcolor,
                         accessgroups.group_name 
                        FROM users 
                        INNER JOIN accessgroups 
@@ -134,7 +136,8 @@ app.post('/api/newuser', authenticateKey, (req,res) => {
     const auditpermission = req.body.auditpermission;
     const statementpermission = req.body.statementpermission;
     const readonlypermission = req.body.readonlypermission;
-    database.db.query('INSERT INTO users (username, password, name, auditpermission, statementpermission, readonlypermission, accessgroup, inactive) VALUES (?, ?, ?, ?, ?, ?, ?, 0)', [username, password, name, auditpermission, statementpermission, readonlypermission, group], (err, result) => {
+    const calendarcolor = req.body.calendarcolor;
+    database.db.query('INSERT INTO users (username, password, name, auditpermission, statementpermission, readonlypermission, calendarcolor, accessgroup, inactive) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)', [username, password, name, auditpermission, statementpermission, readonlypermission, calendarcolor, group], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -184,8 +187,9 @@ app.post('/api/edituser', authenticateKey, (req,res) => {
     const auditpermission = req.body.auditpermission;
     const statementpermission = req.body.statementpermission;
     const readonlypermission = req.body.readonlypermission;
+    const calendarcolor = req.body.calendarcolor;
     if (password === '') {
-        database.db.query('UPDATE users SET name = ?, accessgroup = ?, auditpermission = ?, statementpermission = ?, readonlypermission = ? WHERE id = ?', [name, group, auditpermission, statementpermission, readonlypermission, id], (err, result) => {
+        database.db.query('UPDATE users SET name = ?, accessgroup = ?, auditpermission = ?, statementpermission = ?, readonlypermission = ?, calendarcolor = ? WHERE id = ?', [name, group, auditpermission, statementpermission, readonlypermission, calendarcolor, id], (err, result) => {
             if (err) {
                 console.log(err);
             } else {
@@ -193,7 +197,7 @@ app.post('/api/edituser', authenticateKey, (req,res) => {
             };
         });
     } else {
-        database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ?, auditpermission = ?, statementpermission = ?, readonlypermission = ? WHERE id = ?', [name, group, password, auditpermission, statementpermission, readonlypermission, id], (err, result) => {
+        database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ?, auditpermission = ?, statementpermission = ?, readonlypermission = ?, calendarcolor = ?, WHERE id = ?', [name, group, password, auditpermission, statementpermission, readonlypermission, calendarcolor, id], (err, result) => {
             if (err) {
                 console.log(err);
             } else {
@@ -224,6 +228,7 @@ app.get('/api/getuserlist', authenticateKey, (req,res) => {
                         users.auditpermission, 
                         users.statementpermission,
                         users.readonlypermission,
+                        users.calendarcolor,
                         accessgroups.group_name 
                        FROM users 
                        INNER JOIN accessgroups 

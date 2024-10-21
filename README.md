@@ -63,6 +63,7 @@ Ezt a menüpontotot csak az admin csoport tagjai láthatják/kezelhetik.
     - ellenőrzési jog (ellenőrizheti a naplókat egyesével vagy akár egy ügyfél összes naplóját)
     - kimutatási jog (a csoportjában lévő többi felhasználó kimutatását is megnézheti)
     - olvasási jog (ha ez aktív akkor csak lekérdezheti az adatokat)
+- lehetőség a saját naptárbejegyzés színének beállítására
 
 ### Felhasználók listája
 - keresés/rendezés
@@ -227,7 +228,11 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 |          | name(vc100)        |
 |          | accessgroup(int)   |
 |          | inactive(tinyint)  |
-|          | auditpermission(tinyint)  |
+|          | auditpermission(tinyint)|
+|          | statementpermission(tinyint)
+|          | readonlypermission(tinyint)|
+|          | calendarcolor(vc7) |
+
 
 | Táblanév | company            |
 |----------|--------------------|
@@ -273,6 +278,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 - https://www.npmjs.com/package/react-bootstrap-icons
 - https://www.npmjs.com/package/react-bootstrap-pagination-control
 - https://www.npmjs.com/package/react-chartjs-2
+- https://www.npmjs.com/package/react-color
 - https://www.npmjs.com/package/react-router
 - https://www.npmjs.com/package/react-select
 - https://www.npmjs.com/package/react-markdown

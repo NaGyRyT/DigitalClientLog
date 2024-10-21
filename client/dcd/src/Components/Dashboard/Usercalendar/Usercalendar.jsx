@@ -35,16 +35,38 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
   const views = ['day', 'week', 'month', 'agenda'];
   const logBackgroundColor = '#ead2ac';
   const logColor = '#363636';
-  const groupCalendarEventBackgroundColor = '#557722';  
-  const calendarEventBackgroudColor = '#265985';
-  const calendarEventColor = '#ffffff';
+  const groupCalendarEventBackgroundColor = '#557722'; 
+  const groupCalendarEventColor = '#FFFFFF';
+  const calendarEventBackgroundColor = loggedInUserData.calendarcolor;
+  const calendarEventColor = getTextColorSimple(calendarEventBackgroundColor);
   const localizer = momentLocalizer(moment);
   const min = '2024-03-14T07:00:00+01:00';
   const max = '2024-03-14T19:00:00+01:00';
+
+  function hexToRgb(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) {
+        hex = hex.split('').map(char => char + char).join('');
+    };
+    const bigint = parseInt(hex, 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+  return { r, g, b };
+  };
+
+  function getBrightness({ r, g, b }) {
+    return (r * 299 + g * 587 + b * 114) / 1000;
+  };
+
+  function getTextColorSimple(backgroundHex) {
+    const rgb = hexToRgb(backgroundHex);
+    const brightness = getBrightness(rgb);
+    return brightness > 128 ? '#000000' : '#FFFFFF';
+  };
   
   const [date, setDate] = useState(moment().toDate());
   const [view, setView] = useState(Views.WEEK);
-
 
   const loadEventsFromLog = () => {
     axios.get(`${API.address}/geteventsfromlog/${loggedInUserData.accessgroup}/${loggedInUserData.id}`,
@@ -90,16 +112,16 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
     let color;
     if (e.group_id > 0) {
       backgroundColor = groupCalendarEventBackgroundColor;
-      color = calendarEventColor;
+      color = groupCalendarEventColor;
     }
     else if (e.group_id === undefined) {
       backgroundColor = logBackgroundColor;
       color = logColor;
     } else {
-        backgroundColor = calendarEventBackgroudColor;
+        backgroundColor = calendarEventBackgroundColor;
         color = calendarEventColor;
     }
-    return { style: { backgroundColor, color} }
+    return { style: { backgroundColor, color } }
   };
 
   useEffect(()=> {
