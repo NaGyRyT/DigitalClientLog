@@ -1,6 +1,6 @@
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { OverlayTrigger, Tooltip, Button, Modal, Row, Col, Table, Stack, Form } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Button, Modal, Row, Col, Table, Stack, Form, CloseButton } from 'react-bootstrap';
 import Viewlog from '../../Log/Viewlog/Viewlog'
 import Newlog from '../../Log/Newlog/Newlog';
 import Editlog from '../../Log/Editlog/Editlog';
@@ -8,7 +8,6 @@ import Deletelog from '../../Log/Deletelog/Deletelog';
 import API from '../../../../api';
 import Deleteclient from '../Deleteclient/Deleteclient';
 import Editclient from '../Editclient/Editclient';
-import Logentries from '../../Log/Logentries/Logentries';
 import Auditlog from '../../Log/Auditlog/Auditlog';
 
 
@@ -30,6 +29,7 @@ export default function Viewclient( {
     };
     const handleShowViewClientForm = async() => {
         await getLog();
+        loadClientUserName();
         setShowViewClientForm(true);
     }
 
@@ -43,6 +43,17 @@ export default function Viewclient( {
                 setLogEntries(data.data);
           })
       };
+    const [clientUserName, setClientUserName] = useState('');
+
+    function loadClientUserName() {
+        axios.get(`${API.address}/getuserlist`, {
+            headers: {
+              'x-api-key': loggedInUserData.password
+            }})
+            .then ((data) => {
+                setClientUserName(data.data.filter((item) => item.id === listItem.user_id)[0].name);
+          })
+    };
     
     const renderTooltip = (props) => (
         <Tooltip id="View-button-tooltip" {...props}>
@@ -62,7 +73,6 @@ export default function Viewclient( {
         const tempArrayTymHun = logEntries.filter((item)=> item.test_tym_hun !== '3000-01-01').sort((a, b)=> new Date(b.test_tym_hun) - new Date(a.test_tym_hun));
         tempArrayTymHun.length !== 0 ? setNewestTestTymHun(tempArrayTymHun[0].test_tym_hun) : setNewestTestTymHun('3000-01-01');
     }, [logEntries]);
-
     return (
         <>
             <OverlayTrigger
@@ -85,8 +95,23 @@ export default function Viewclient( {
                 dialogClassName='modal-80w'
                 backdrop='static'
                 onClick={(e)=>e.stopPropagation()}>
-                <Modal.Header closeButton>
-                        <Modal.Title>Ügyfél részletek</Modal.Title>
+                <Modal.Header className='pt-2 pb-1 px-2'>
+                    <Modal.Title>Ügyfél részletek</Modal.Title>
+                    <Row className='d-flex flex-md-column' >
+                        <Col className='d-md-flex justify-content-end'>
+                        <CloseButton onClick={handleCloseViewClientForm}/>
+                        </Col>
+                        <Col>
+                        <Form.Text>
+                            <span className={darkMode ? 'text-warning' : 'text-primary'}>
+                                {loggedInUserData.name === clientUserName ? 'Saját' : clientUserName}
+                            </span>
+                            <span>
+                                {loggedInUserData.name === clientUserName ? ' ügyfél.' : ' ügyfele.'}
+                            </span>
+                        </Form.Text>
+                        </Col>
+                    </Row>
                 </Modal.Header>
                 <Modal.Body>
                     <Stack gap={3} className='d-flex flex-lg-row'>
@@ -405,7 +430,6 @@ export default function Viewclient( {
                             <thead>
                                 <tr><th colSpan={12}>Naplóbejegyzések</th></tr>
                                 <tr>
-                                    {/* <th>#</th> */}
                                     <th>Ell.</th>
                                     <th>Felhasználó</th>
                                     <th>Dátum, Idő</th>
@@ -426,7 +450,6 @@ export default function Viewclient( {
                                             if (e.target.role === 'dialog') setClickedRowIndexOnViewClientForm(null);
                                         }}
                                     >
-                                        {/* <td>{item.id}</td> */}
                                         {item.auditor !== null ? <td>&#x2714;</td> : <td></td>}
                                         <td>{item.user_name}</td>
                                         <td>{item.date_time}</td>
@@ -478,6 +501,9 @@ export default function Viewclient( {
                     </Button>
                     <Newlog
                         selectedClient={listItem}
+                        loadClientList={loadClientList}
+                        setClientUserName={setClientUserName}
+                        clientUserName={clientUserName}
                         loggedInUserData={loggedInUserData}
                         fromClientList={false}
                         getLog={getLog}

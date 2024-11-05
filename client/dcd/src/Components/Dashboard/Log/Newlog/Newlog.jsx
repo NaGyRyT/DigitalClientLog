@@ -8,6 +8,9 @@ import API from '../../../../api';
 
 export default function Newlog( { 
     loggedInUserData,
+    setClientUserName,
+    clientUserName,
+    loadClientList,
     selectedClient,
     getLog,
     fromClientList,
@@ -79,6 +82,17 @@ export default function Newlog( {
                 test_tym_hun : testTymHun ? date : '3000-01-01'
             }, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
+            if (loggedInUserData.id !== selectedClient.user_id) {
+                axios.post(`${API.address}/editclientuserid`, {
+                    id : selectedClient.id,
+                    user_id : loggedInUserData.id
+                },
+                    {headers: { 'x-api-key': loggedInUserData.password }})
+                        .then(()=> {
+                            loadClientList();
+                            clientUserName !==undefined && setClientUserName(loggedInUserData.name);
+                        });
+            };
             handleCloseNewLogForm();
 			if (!fromClientList) getLog();
             setDisableSubmitButton(false);

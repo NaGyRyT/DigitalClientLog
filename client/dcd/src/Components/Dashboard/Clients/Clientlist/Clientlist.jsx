@@ -321,6 +321,7 @@ export default function Clientlist({
                       
                       <Newlog
                         selectedClient={listItem}
+                        loadClientList={loadClientList}
                         loggedInUserData={loggedInUserData}
                         fromClientList={true}
                         darkMode={darkMode}

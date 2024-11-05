@@ -543,6 +543,27 @@ app.post('/api/editclient', authenticateKey, (req,res) => {
     });
 });
 
+app.post('/api/editclientuserid', authenticateKey, (req,res) => {
+    const id = req.body.id;
+    const user_id = req.body.user_id;
+    const sqlUpdate = `UPDATE
+                        clients
+                       SET
+                        user_id = ?
+                       WHERE id = ?`
+    database.db.query(sqlUpdate, [
+        user_id,
+        id
+    ], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+            console.log(id, 'client user_id modified in the database');
+        }
+    });
+});
+
 app.post('/api/checkexistclientid', authenticateKey, (req,res) => {
     const clientid = req.body.clientid;
     const accessgroup = req.body.accessgroup;

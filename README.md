@@ -135,6 +135,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 - részletek
 - szerkesztés
 - törlés
+- az ügyfél mindig ahhoz a felhasználóhoz lesz rendelve aki az utolsó naplóbejegyzést írta hozzá
 
 ## Kimutatások
 - csak a saját csoportban lévő adatokból készül kimutatás kivéve az admin csoport tagjait ahol az összes csoport adataiból
