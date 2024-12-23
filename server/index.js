@@ -197,7 +197,7 @@ app.post('/api/edituser', authenticateKey, (req,res) => {
             };
         });
     } else {
-        database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ?, auditpermission = ?, statementpermission = ?, readonlypermission = ?, calendarcolor = ?, WHERE id = ?', [name, group, password, auditpermission, statementpermission, readonlypermission, calendarcolor, id], (err, result) => {
+        database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ?, auditpermission = ?, statementpermission = ?, readonlypermission = ?, calendarcolor = ? WHERE id = ?', [name, group, password, auditpermission, statementpermission, readonlypermission, calendarcolor, id], (err, result) => {
             if (err) {
                 console.log(err);
             } else {
