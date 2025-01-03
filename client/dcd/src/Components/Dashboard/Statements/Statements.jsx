@@ -44,8 +44,8 @@ export default function Statements( { darkMode, loggedInUserData}) {
   const [userList, setUserList] = useState([]);
   const [userId, setUserId] = useState(loggedInUserData.id);
   const [selectedUser, setSelectedUser] = useState(loggedInUserData.name);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
-  const [availableYearsOptions, setAvailableYearsOptions] = useState([])
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [availableYearsOptions, setAvailableYearsOptions] = useState([]);
 
   const [color, setColor] = useState(darkMode ? '#adb5bd' : '#495057');
   const [gridColor, setGridColor] = useState(darkMode ? '#495057' : '#dee2e6');
@@ -92,135 +92,135 @@ export default function Statements( { darkMode, loggedInUserData}) {
 
   const loadGenderNumber = () => {
     axios.get(`${API.address}/getgendernumber/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
-      .then ((data) => 
-        setGenderData(data.data)
+      .then (({data}) => 
+        setGenderData(data)
       );
   };
 
   const loadGenderNumberPerUser = () => {
     axios.get(`${API.address}/getgendernumberperuser/${userId}`, {headers: { 'x-api-key': loggedInUserData.password }})
-      .then ((data) => 
-        setGenderDataPerUser(data.data)
+      .then (({data}) => 
+        setGenderDataPerUser(data)
       );
   };
 
   const loadAgesNumber = () => {
     axios.get(`${API.address}/getagesnumber/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
-      .then ((data) => 
-        setAgesData(data.data)
+      .then (({data}) => 
+        setAgesData(data)
       );
   };
 
   const loadAgesNumberPerUser = () => {
     axios.get(`${API.address}/getagesnumberperuser/${userId}`, {headers: { 'x-api-key': loggedInUserData.password }})
-      .then ((data) => 
-        setAgesDataPerUser(data.data)
+      .then (({data}) => 
+        setAgesDataPerUser(data)
       );
   };
 
   const loadLogNumber = () => {
     axios.get(`${API.address}/getlognumber/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
-      .then ((data) => {
-        setLogData(data.data.filter((item)=> item.log_date.slice(0,4) === selectedYear.toString()));
-        setAllLogData(data.data);
-        availableYears(data.data);
+      .then (({data}) => {
+        setLogData(data.filter((item)=> item.log_date.slice(0,4) === selectedYear.toString()));
+        setAllLogData(data);
+        availableYears(data);
       });
   };
 
   const loadLogNumberPerUser = () => {
     axios.get(`${API.address}/getlognumberperuser/${userId}`, {headers: { 'x-api-key': loggedInUserData.password }})
-      .then ((data) => {
-        setLogDataPerUser(data.data.filter((item)=> item.log_date.slice(0,4) === selectedYear.toString()))
-        setAllLogDataPerUser(data.data);
+      .then (({data}) => {
+        setLogDataPerUser(selectedYear === 'összes' ? data : data.filter((item)=> item.log_date.slice(0,4) === selectedYear.toString()))
+        setAllLogDataPerUser(data);
       });
   };
 
   const loadDurationNumber = () => {
     axios.get(`${API.address}/getdurationnumber/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
-      .then ((data) => 
-        setDurationData(data.data)
+      .then (({data}) => 
+        setDurationData(data)
       );
   };
 
   const loadDurationNumberPerUser = () => {
     axios.get(`${API.address}/getdurationnumberperuser/${userId}`, {headers: { 'x-api-key': loggedInUserData.password }})
-      .then ((data) => 
-        setDurationDataPerUser(data.data)
+      .then (({data}) => 
+        setDurationDataPerUser(data)
       );
   };
 
 /*   const loadClientsCities = () => {
     axios.get(`${API.address}/getclientscities/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
-      .then ((data) => 
-        setClientsCities(data.data)
+      .then (({data}) => 
+        setClientsCities(data)
       );
   }; */
 
   const loadLogPerUserNumber = () => {
     axios.get(`${API.address}/getlogperusernumber/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
-      .then ((data) => 
-        setLogPerUserData(data.data)
+      .then (({data}) => 
+        setLogPerUserData(data)
       );
   };
 
   function loadNotEmptyLogUserList() {
     axios.get(`${API.address}/getnotemptyloguserlist`, {headers: { 'x-api-key': loggedInUserData.password }})
-      .then ((data) => 
-        setUserList(data.data)
+      .then (({data}) => 
+        setUserList(data)
       );
   };
 
   function loadGroupEvents() {
     axios.get(`${API.address}/getgroupevents`, {headers: { 'x-api-key': loggedInUserData.password }})
-    .then ((data) => {
-      setGroupEvents(data.data.filter((i)=> i.log_date.slice(0,4) === selectedYear.toString()));
-      setAllGroupEvents(data.data);
+    .then (({data}) => {
+      setGroupEvents(data.filter((i)=> i.log_date.slice(0,4) === selectedYear.toString()));
+      setAllGroupEvents(data);
     });
   };
 
   function loadGroupEventsPerUser() {
     axios.get(`${API.address}/getgroupeventsperuser/${userId}`, {headers: { 'x-api-key': loggedInUserData.password }})
-    .then ((data) => {
-      setGroupEventsPerUser(data.data.filter((i)=> i.log_date.slice(0,4) === selectedYear.toString()));
-      setAllGroupEventsPerUser(data.data);
+    .then (({data}) => {
+      setGroupEventsPerUser(selectedYear === 'összes' ? data : data.filter((i)=> i.log_date.slice(0,4) === selectedYear.toString()));
+      setAllGroupEventsPerUser(data);
     });
   };
 
   function loadTests() {
     axios.get(`${API.address}/gettests`, {headers: { 'x-api-key': loggedInUserData.password }})
-    .then ((data) => {
-      setTests(data.data.filter((i)=> i.log_date.slice(0,4) === selectedYear.toString()));
-      setAllTests(data.data);
+    .then (({data}) => {
+      setTests(data.filter((i)=> i.log_date.slice(0,4) === selectedYear.toString()));
+      setAllTests(data);
     });
   };
 
   function loadTestsPerUser() {
     axios.get(`${API.address}/gettestsperuser/${userId}`, {headers: { 'x-api-key': loggedInUserData.password }})
-    .then ((data) => {
-      setTestsPerUser(data.data.filter((i)=> i.log_date.slice(0,4) === selectedYear.toString()));
-      setAllTestsPerUser(data.data);
+    .then (({data}) => {
+      setTestsPerUser(selectedYear === 'összes' ? data : data.filter((i)=> i.log_date.slice(0,4) === selectedYear.toString()));
+      setAllTestsPerUser(data);
     });
   };
 
   function loadShapeOfActivities() {
     axios.get(`${API.address}/getshapeofactivities`, {headers: { 'x-api-key': loggedInUserData.password }})
-    .then ((data) => {
-      setShapeOfActivities(data.data.filter((i)=> i.log_date.slice(0,4) === selectedYear.toString()));
-      setAllShapeOfActivities(data.data);
+    .then (({data}) => {
+      setShapeOfActivities(data.filter((i)=> i.log_date.slice(0,4) === selectedYear.toString()));
+      setAllShapeOfActivities(data);
     });
   };
 
   function loadShapeOfActivitiesPerUser() {
     axios.get(`${API.address}/getshapeofactivitiesperuser/${userId}`, {headers: { 'x-api-key': loggedInUserData.password }})
-    .then ((data) => {
-      setShapeOfActivitiesPerUser(data.data.filter((i)=> i.log_date.slice(0,4) === selectedYear.toString()));
-      setAllShapeOfActivitiesPerUser(data.data);
+    .then (({data}) => {
+      setShapeOfActivitiesPerUser(selectedYear === 'összes' ? data : data.filter((i)=> i.log_date.slice(0,4) === selectedYear.toString()));
+      setAllShapeOfActivitiesPerUser(data);
     });
   };
 
   const loadDiseaseSeverity = () => {
     axios.get(`${API.address}/getdiseaseseverity/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
-      .then (( {data }) => 
+      .then (({data}) => 
         setDiseaseSeverity(data)
       );
   };
@@ -243,7 +243,7 @@ export default function Statements( { darkMode, loggedInUserData}) {
     if (shapeOfActivitiesPerUser.length === 0) loadShapeOfActivitiesPerUser();
     if (diseaseSeverity.length === 0) loadDiseaseSeverity();
     if (userList.length === 0 && (loggedInUserData.accessgroup === 1 || loggedInUserData.statementpermission === 1)) loadNotEmptyLogUserList();
-  },[]);
+  },[selectedYear]);
 
   useEffect(()=> {
     loadLogNumberPerUser();
@@ -270,6 +270,7 @@ export default function Statements( { darkMode, loggedInUserData}) {
       previousItem = item.log_date.slice(0,4);
     });
     setAvailableYearsOptions(yearOptions);
+    setSelectedYear(yearOptions[yearOptions.length-1]);
   };
 
   const handleYearChange = (e) => {
