@@ -23,6 +23,13 @@ export default function Groupeventschart( { groupEvents, options} ) {
             borderRadius: 5,
             backgroundColor: '#A3CEF1',
         }
+        ,
+        {
+            label: 'Múzeum járat',
+            data: groupEvents.map((data)=> data.muzeum_jarat),
+            borderRadius: 5,
+            backgroundColor: '#aac0aa',
+        }
     ]};
   return (
     <>

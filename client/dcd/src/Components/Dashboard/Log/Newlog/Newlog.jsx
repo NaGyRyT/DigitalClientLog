@@ -303,6 +303,7 @@ export default function Newlog( {
                                             {value: 'Csoportos rendezvények szervezése, lebonyolítása - DPP.', label: 'Csoportos rendezvények szervezése, lebonyolítása - DPP.'},
                                             {value: 'Csoportos rendezvények szervezése, lebonyolítása - Ginko Klub.', label: 'Csoportos rendezvények szervezése, lebonyolítása - Ginko Klub.'},
                                             {value: 'Csoportos rendezvények szervezése, lebonyolítása - Memória Kuckó.', label: 'Csoportos rendezvények szervezése, lebonyolítása - Memória Kuckó.'},
+                                            {value: 'Csoportos rendezvények szervezése, lebonyolítása - Múzeum járat.', label: 'Csoportos rendezvények szervezése, lebonyolítása - Múzeum járat.'},
                                             {value: 'Telefonhívás.', label: 'Telefonhívás.'},
                                             {value: 'Ginko Hírlevél küldése negyedévi rendszerességgel.', label: 'Ginko Hírlevél küldése negyedévi rendszerességgel.'}]
                                         }
