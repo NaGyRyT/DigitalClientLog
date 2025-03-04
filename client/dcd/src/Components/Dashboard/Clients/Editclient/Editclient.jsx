@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col, Stack } from 'react-bootstrap';
 import { validateClient } from '../Validateclient/Validateclient';
@@ -166,6 +166,7 @@ export default function Editclient( {
             onClick = {handleShowEditClientForm}>
             {buttonTitle ? buttonTitle : <>&#x270D;</>}
         </Button>
+
 return (
     <>  {loggedInUserData.readonlypermission === 0 ?
 			buttonTitle === undefined ? <OverlayTrigger
@@ -640,6 +641,17 @@ return (
 								<Col>Betegség foka</Col>
 							</Row>
 							<Row>
+								<Col xs={2}>
+									<Form.Check
+										label='nincs'
+										name='diseaseSeverity'
+										value={0}
+										checked={diseaseSeverity === 0}
+										type='radio'
+										id='newUserRadio20'
+										onChange={()=> setDiseaseSeverity(0)}
+										/>
+								</Col>
 								<Col xs={4}>
 									<Form.Check
 										label='enyhe'

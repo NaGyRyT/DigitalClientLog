@@ -73,6 +73,7 @@ export default function Viewclient( {
         const tempArrayTymHun = logEntries.filter((item)=> item.test_tym_hun !== '3000-01-01').sort((a, b)=> new Date(b.test_tym_hun) - new Date(a.test_tym_hun));
         tempArrayTymHun.length !== 0 ? setNewestTestTymHun(tempArrayTymHun[0].test_tym_hun) : setNewestTestTymHun('3000-01-01');
     }, [logEntries]);
+
     return (
         <>
             <OverlayTrigger
@@ -383,11 +384,22 @@ export default function Viewclient( {
 							</Row>
                             <hr className='mt-1 mb-1'/>
                             </>}
-                            { listItem.disease_severity > 0 &&
+                            { listItem.disease_severity >= 0 &&
                             <>
 							<Row><Col>Betegség foka</Col></Row>
 							<Row>
-								<Col xs={4}>
+                                <Col xs={2}>
+									<Form.Check
+										label='nincs'
+										name='diseaseSeverity'
+										value={0}
+										checked={listItem.disease_severity === 0}
+										type='radio'
+										id='newUserRadio20'
+                                        disabled
+										/>
+								</Col>
+								<Col xs={3}>
 									<Form.Check
 										label='enyhe'
 										name='diseaseSeverity'
@@ -409,7 +421,7 @@ export default function Viewclient( {
                                         disabled
 									/>
 								</Col>
-								<Col xs={4}>
+								<Col xs={3}>
 									<Form.Check
 										label='súlyos'
 										name='diseaseSeverity'

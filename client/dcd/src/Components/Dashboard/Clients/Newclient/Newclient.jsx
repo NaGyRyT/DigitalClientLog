@@ -580,7 +580,18 @@ export default function Newclient( {
 								<Col>Betegség foka</Col>
 							</Row>
 							<Row>
-								<Col xs={4}>
+								<Col xs={2}>
+									<Form.Check
+										label='nincs'
+										name='diseaseSeverity'
+										value={0}
+										checked={diseaseSeverity === 0}
+										type='radio'
+										id='newUserRadio20'
+										onChange={()=> setDiseaseSeverity(0)}
+										/>
+								</Col>
+								<Col xs={3}>
 									<Form.Check
 										label='enyhe'
 										name='diseaseSeverity'
@@ -602,7 +613,7 @@ export default function Newclient( {
 										onChange={()=> setDiseaseSeverity(2)}
 									/>
 								</Col>
-								<Col xs={4}>
+								<Col xs={3}>
 									<Form.Check
 										label='súlyos'
 										name='diseaseSeverity'

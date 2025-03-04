@@ -3,13 +3,19 @@ import { Bar } from "react-chartjs-2";
 
 export default function Diseaseseveritychart({diseaseSeverityData, options}) {
     let ownOptions = structuredClone(options);
-    let amountOfDiseases = diseaseSeverityData.map((data) => data.early + data.middle + data.late).reduce((a, c)=> a + c);
+    let amountOfDiseases = diseaseSeverityData.map((data) => data.none + data.early + data.middle + data.late).reduce((a, c)=> a + c);
 
     ownOptions.plugins.title.display = true;
     ownOptions.plugins.title.text = 'Az aktív ügyfelek betegségének foka felhasználónként (' + amountOfDiseases + ' fő)';
     const barData = {
-        labels: diseaseSeverityData.map((data)=> data.name + ' (' +[data.early + data.middle + data.late].reduce((a,c) => a + c)+' fő)'),
+        labels: diseaseSeverityData.map((data)=> data.name + ' (' +[data.none + data.early + data.middle + data.late].reduce((a,c) => a + c)+' fő)'),
         datasets: [
+            {
+                label: 'Nincs',
+                data: diseaseSeverityData.map((data)=> data.none),
+                borderRadius: 5,
+                backgroundColor: ['#A09CB0'],
+            },
             {
                 label: 'Enyhe',
                 data: diseaseSeverityData.map((data)=> data.early),
