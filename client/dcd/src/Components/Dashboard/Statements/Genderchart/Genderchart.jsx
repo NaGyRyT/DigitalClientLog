@@ -3,12 +3,12 @@ import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 import './Genderchart.css';
 
-export default function Genderchart( { genderData, options } ) {
+export default function Genderchart( { genderData, options, label } ) {
     let amountOfClients = 0;
     const barData = {
         labels: genderData.map((data)=> data.gender),
         datasets: [{
-            label: 'Az aktív ügyfelek nemek szerinti eloszlása',
+            label: label,
             data: genderData.map((data)=> {
               amountOfClients += data.piece;
               return data.piece}),

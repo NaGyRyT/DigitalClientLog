@@ -17,8 +17,10 @@ import Diseaseseveritychart from './Diseaseseveritychart/Diseaseseveritychart';
 export default function Statements( { darkMode, loggedInUserData}) {
   const [genderData, setGenderData] = useState([]);
   const [genderDataPerUser, setGenderDataPerUser] = useState([]);
+  const [genderDataPerYear, setGenderDataPerYear] = useState([]);
   const [agesData, setAgesData] = useState([]);
   const [agesDataPerUser, setAgesDataPerUser] = useState([]);
+  const [agesDataPerYear, setAgesDataPerYear] = useState([]);
   const [logData, setLogData] = useState([]);
   const [allLogData, setAllLogData] = useState([]);
   const [logDataPerUser, setLogDataPerUser] = useState([]);
@@ -224,6 +226,20 @@ export default function Statements( { darkMode, loggedInUserData}) {
         setDiseaseSeverity(data)
       );
   };
+
+  const loadGenderDataPerYear = () => {
+    axios.get(`${API.address}/getgenderdataperyear/${selectedYear}/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
+      .then (({data}) => 
+        setGenderDataPerYear(data)
+      );
+  };
+
+  const loadAgesDataPerYear = () => {
+    axios.get(`${API.address}/getagesnumberperyear/${selectedYear}/${loggedInUserData.accessgroup}`, {headers: { 'x-api-key': loggedInUserData.password }})
+      .then (({data}) => 
+        setAgesDataPerYear(data)
+      );
+  };
   
   useEffect(() => {
     if (genderData.length === 0) loadGenderNumber();
@@ -243,6 +259,15 @@ export default function Statements( { darkMode, loggedInUserData}) {
     if (shapeOfActivitiesPerUser.length === 0) loadShapeOfActivitiesPerUser();
     if (diseaseSeverity.length === 0) loadDiseaseSeverity();
     if (userList.length === 0 && (loggedInUserData.accessgroup === 1 || loggedInUserData.statementpermission === 1)) loadNotEmptyLogUserList();
+    if (selectedYear === 'összes') {
+      setGenderDataPerYear(genderData);
+      setAgesDataPerYear(agesData);
+    }
+    else 
+      {
+        loadGenderDataPerYear();
+        loadAgesDataPerYear();
+      }
   },[selectedYear]);
 
   useEffect(()=> {
@@ -284,16 +309,26 @@ export default function Statements( { darkMode, loggedInUserData}) {
     setTestsPerUser(e.target.value === 'összes' ? allTestsPerUser : allTestsPerUser.filter((i)=> i.log_date.slice(0,4) === e.target.value));
     setShapeOfActivitiesPerUser(e.target.value === 'összes' ? allShapeOfActivitiesPerUser : allShapeOfActivitiesPerUser.filter((i)=> i.log_date.slice(0,4) === e.target.value));
   };
-
+  
   return (
     <>
       <p className='text-center'>{loggedInUserData.accessgroup === 1 ? 'Az összes csoportra vonatkozó kimutatás' : loggedInUserData.group_name +' csoportra vonatkozó kimutatás'}</p>
       <Row className='justify-content-center mb-5 mx-1 p-1'>
         <Col className='m-1' xs={12} md={5}>
-          {genderData.length > 0 ? <Genderchart genderData={genderData} options={options}/> : ''}
+          {genderData.length > 0 ? 
+            <Genderchart 
+              genderData={genderData} 
+              options={options}
+              label={'Az aktív ügyfelek nemek szerinti eloszlása'}/> :
+               ''}
         </Col>
         <Col className='m-1' xs={12} md={5}>
-          {agesData.filter((data)=> data.piece !== null).length > 0 ? <Ageschart agesData={agesData} options={options}/> : ''}
+          {agesData.filter((data)=> data.piece !== null).length > 0 ?
+            <Ageschart 
+              agesData={agesData}
+              options={options}
+              label={'Az aktív ügyfelek korosztály szerinti eloszlása'}/> : 
+            ''}
         </Col>
       </Row>
       {/*<Row className='justify-content-center mb-5 mx-1 p-1'>
@@ -336,7 +371,25 @@ export default function Statements( { darkMode, loggedInUserData}) {
         </Col>
       </Row>
       <Row className='justify-content-center mb-5 mx-1 p-1'>
-      <Col className='m-1' xs={12} md={5}>
+        <Col className='m-1' xs={12} md={5}>
+          {genderDataPerYear.length > 0 ? 
+            <Genderchart
+              genderData={genderDataPerYear} 
+              options={options} 
+              label= {selectedYear === 'összes' ? 'Az aktív ügyfelek nemek szerinti eloszlása' : 'Az ügyfelek '+ selectedYear +'. évre vonatkozó nemek szerinti eloszlása'}/>
+              : ''}
+        </Col>
+        <Col className='m-1' xs={12} md={5}>
+          {agesDataPerYear.filter((data)=> data.piece !== null).length > 0 ? 
+            <Ageschart 
+              agesData={agesDataPerYear}
+              options={options}
+              label={selectedYear === 'üsszes' ? 'Az aktív ügyfelek korosztály szerinti eloszlása' : 'Az ügyfelek '+ selectedYear +'. évre vonatkozó korosztály szerinti eloszlása'}/>
+              : ''}
+        </Col>
+      </Row>
+      <Row className='justify-content-center mb-5 mx-1 p-1'>
+        <Col className='m-1' xs={12} md={5}>
           {logData.length > 0 ?<Logchart logData={logData} options={options}/> : ''}
         </Col>
         <Col className='m-1' xs={12} md={5}>
@@ -379,10 +432,10 @@ export default function Statements( { darkMode, loggedInUserData}) {
           }
       <Row className='justify-content-center mx-1 p-1'>
         <Col className='m-1' xs={12} md={5}>
-          {genderDataPerUser.length > 0 && <Genderchart genderData={genderDataPerUser} options={options}/>}
+          {genderDataPerUser.length > 0 && <Genderchart genderData={genderDataPerUser} options={options} label={'Az aktív ügyfelek nemek szerinti eloszlása'}/>}
         </Col>
         <Col className='m-1' xs={12} md={5}>
-          {agesDataPerUser.filter((data)=> data.piece !== null).length > 0 ? <Ageschart agesData={agesDataPerUser} options={options}/> : ''}
+          {agesDataPerUser.filter((data)=> data.piece !== null).length > 0 ? <Ageschart agesData={agesDataPerUser} options={options} label={'Az aktív ügyfelek korosztály szerinti eloszása'}/> : ''}
         </Col>
       </Row>
       <Row className='justify-content-center mx-1 p-1'>

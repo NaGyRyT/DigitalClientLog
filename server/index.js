@@ -882,6 +882,28 @@ app.get('/api/getgendernumberperuser/:userid', authenticateKey, (req,res) => {
     });
 });
 
+app.get('/api/getgenderdataperyear/:selectedyear/:accessgroup', authenticateKey, (req,res) => {
+    const selectedyear = req.params.selectedyear;
+    const accessgroup = req.params.accessgroup;
+    const sqlSelectCount =
+    `
+    SELECT 
+        c.gender, 
+    COUNT(DISTINCT c.id) AS piece
+    FROM clients c
+    JOIN log l ON c.id = l.client_id
+    WHERE YEAR(l.date_time) = ? AND accessgroup = ?
+    GROUP BY c.gender;
+    `
+    database.db.query(sqlSelectCount, [selectedyear, accessgroup],(err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
 app.get('/api/getagesnumber/:accessgroup', authenticateKey, (req,res) => {
     const accessgroup = req.params.accessgroup;
     const sqlSelectCount = accessgroup === '1' ?
@@ -1086,6 +1108,40 @@ app.get('/api/getagesnumberperuser/:userid', authenticateKey, (req,res) => {
         FROM clients WHERE user_id = ? AND end_of_service = '3000-01-01'
         `;
     database.db.query(sqlSelectCount, [userid, userid, userid, userid, userid, userid, userid, userid, userid, userid], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+app.get('/api/getagesnumberperyear/:selectedyear/:accessgroup', authenticateKey, (req,res) => {
+    const selectedyear = req.params.selectedyear+'-01-01';
+    const accessgroup = req.params.accessgroup;
+    const sqlSelectCount =
+        `
+        SELECT 
+            CASE 
+                WHEN TIMESTAMPDIFF(YEAR, c.birth_date, ?) < 60 THEN '<60'
+                WHEN TIMESTAMPDIFF(YEAR, c.birth_date, ?) BETWEEN 60 AND 64 THEN '60-64'
+                WHEN TIMESTAMPDIFF(YEAR, c.birth_date, ?) BETWEEN 65 AND 69 THEN '65-69'
+                WHEN TIMESTAMPDIFF(YEAR, c.birth_date, ?) BETWEEN 70 AND 74 THEN '70-74'
+                WHEN TIMESTAMPDIFF(YEAR, c.birth_date, ?) BETWEEN 75 AND 79 THEN '75-79'
+                WHEN TIMESTAMPDIFF(YEAR, c.birth_date, ?) BETWEEN 80 AND 84 THEN '80-84'
+                WHEN TIMESTAMPDIFF(YEAR, c.birth_date, ?) BETWEEN 85 AND 89 THEN '85-89'
+                WHEN TIMESTAMPDIFF(YEAR, c.birth_date, ?) BETWEEN 90 AND 94 THEN '90-94'
+                WHEN TIMESTAMPDIFF(YEAR, c.birth_date, ?) BETWEEN 95 AND 99 THEN '95-99'
+                ELSE '99<'
+            END AS ages,
+            COUNT(DISTINCT c.id) AS piece
+        FROM clients c
+        JOIN log l ON c.id = l.client_id
+        WHERE YEAR(l.date_time) = ? AND accessgroup = ?
+        GROUP BY ages
+        ORDER BY MIN(TIMESTAMPDIFF(YEAR, c.birth_date, CURDATE()));
+        `
+    database.db.query(sqlSelectCount, [selectedyear, selectedyear, selectedyear, selectedyear, selectedyear, selectedyear, selectedyear, selectedyear, selectedyear, selectedyear, accessgroup],(err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -1388,6 +1444,7 @@ app.get('/api/getdiseaseseverity/:accessgroup', authenticateKey, (req,res) => {
     `
     SELECT
         users.name,
+        COUNT(if (disease_severity = 0 , 0, null)) as none,
         COUNT(if (disease_severity = 1 , 1, null)) as early,
         COUNT(if (disease_severity = 2 , 1, null)) as middle,
         COUNT(if (disease_severity = 3 , 1, null)) as late
@@ -1399,6 +1456,7 @@ app.get('/api/getdiseaseseverity/:accessgroup', authenticateKey, (req,res) => {
     `
     SELECT
         users.name,
+        COUNT(if (disease_severity = 0 , 0, null)) as none,
         COUNT(if (disease_severity = 1 , 1, null)) as early,
         COUNT(if (disease_severity = 2 , 1, null)) as middle,
         COUNT(if (disease_severity = 3 , 1, null)) as late
