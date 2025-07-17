@@ -5,6 +5,7 @@ import { CloseButton, Form, Alert, Button, Modal, Row, Col, ListGroup, OverlayTr
 import { validateLog } from '../Validatelog/Validatelog';
 import Select from 'react-select';
 import API from '../../../../api';
+import {activitiesFromOptions, activitiesDurationFromOptions, shapeOfActivitiesFromOptions } from '../Options';
 
 export default function Newlog( { 
     loggedInUserData,
@@ -19,7 +20,7 @@ export default function Newlog( {
     const [time, setTime] = useState(new Date().toString().slice(16,21));
     const [date, setDate] = useState(new Date().toJSON().slice(0,10));
     const [duration, setDuration] = useState('');
-    const [activities, setActivities] = useState('')
+    const [activities, setActivities] = useState('');
     const [shapeOfActivities, setShapeOfActivities] = useState('')
     const [description, setDescription] = useState('');
 	const [errorMessage, setErrorMessage] = useState({
@@ -59,6 +60,51 @@ export default function Newlog( {
 			error : false, 
 		})
 	}
+
+    const selectStyle = {
+        control: (baseStyles) => ({
+            ...baseStyles,
+            background: darkMode ? '#212529' : '#fff',
+            borderColor: '#495057',
+            borderWidth: '1px',
+            cursor: 'pointer',
+            '&:hover': {
+            borderColor: '#495057',
+        }
+        }),
+        input: (baseStyles) => ({
+            ...baseStyles,
+            color : darkMode ? '#dee2e6' : '#212529',
+        }),
+        menu: (baseStyles) => ({
+            ...baseStyles,
+            background: darkMode ? '#212529' : 'white',
+            color : darkMode ? '#dee2e6' : '#212529',
+            border: '1px solid #495057',
+        }),
+        option: (provided) => ({
+            ...provided,
+            background: darkMode ? '#212529' : 'white',
+            color : darkMode ? '#dee2e6' : '#212529',
+            '&:hover': {
+                color: darkMode ? '#212529' : '#fff',
+                backgroundColor: darkMode ? '#8bb9fe' : '#0d6efd',
+                cursor: 'pointer',
+            }
+        }),
+        placeholder: (baseStyles) => ({
+            ...baseStyles,
+            color: darkMode ?'#dee2e6' : '#212529',
+            }),
+        indicatorSeparator: () => ({
+            display: 'none'
+        }),
+        singleValue: (provided) => ({
+            ...provided,
+            color : darkMode ? '#dee2e6' : '#212529',
+        }),
+    };
+
 	const handleShowNewLogForm = (e) => {
         e.stopPropagation();
         setShowNewLogForm(true);
@@ -101,7 +147,7 @@ export default function Newlog( {
 	};
 
     const renderTooltip = (props) => (
-        <Tooltip id="View-button-tooltip" {...props} >
+        <Tooltip id="View-button-tooltip" {...props}>
             Új naplóbejegyzés
         </Tooltip>
         );
@@ -167,35 +213,36 @@ export default function Newlog( {
                             </Col>
                             <Col xs={12} sm={3}>
                                 <Form.Group controlId="formSelectFromDuration">
-                                    <Form.Label>Időtartam (perc)</Form.Label>
+                                    <p className='mb-2'>Időtartam (perc)</p>
                                     {errorMessage.duration === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.duration}</Alert>}
-                                    <Form.Select onChange={(e) => setDuration(e.target.value)}>
-                                        <option key='0' value=''>Válassz időtartamot!</option>
-                                        <option key='5' value='5'>5</option>
-                                        <option key='10' value='10'>10</option>
-                                        <option key='15' value='15'>15</option>
-                                        <option key='30' value='30'>30</option>
-                                        <option key='45' value='45'>45</option>
-                                        <option key='60' value='60'>60</option>
-                                        <option key='90' value='90'>90</option>
-                                        <option key='120' value='120'>120</option>
-                                        <option key='150' value='150'>150</option>
-                                        <option key='180' value='180'>180</option>
-                                        <option key='240' value='240'>240</option>
-                                        <option key='300' value='300'>300</option>
-                                    </Form.Select>	
+                                    <Select
+                                        placeholder='Válassz időtartamot!'
+                                        noOptionsMessage={() => 'Nincs találat!'}
+                                        onChange={(e) => setDuration(e.value)}
+                                        styles={selectStyle}
+                                        options={activitiesDurationFromOptions
+                                            .map(item => ({
+                                                    value: item.value,
+                                                    label: item.value
+                                        }))}
+                                        />
                                 </Form.Group>
                             </Col>
                             <Col xs={12} sm={3}>
                                 <Form.Group controlId="formSelectShapeOfActivities">
-                                    <Form.Label>Tevékenység formája</Form.Label>
+                                    <p className='mb-2'>Tevékenység formája</p>
                                     {errorMessage.shapeOfActivities === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.shapeOfActivities}</Alert>}
-                                    <Form.Select onChange={(e) => setShapeOfActivities(e.target.value)}>
-                                        <option key='0' value=''>Válassz tevékenység formáját!</option>
-                                        <option key='10' value='Személyes'>Személyes</option>
-                                        <option key='15' value='Telefonos'>Telefonos</option>
-                                        <option key='30' value='Online'>Online</option>
-                                    </Form.Select>	
+                                    <Select
+                                        placeholder='Válassz tevékenység formáját!'
+                                        noOptionsMessage={() => 'Nincs találat!'}
+                                        onChange={(e) => setShapeOfActivities(e.value)}
+                                        styles={selectStyle}
+                                        options={shapeOfActivitiesFromOptions
+                                            .map(item => ({
+                                                    value: item.value,
+                                                    label: item.value
+                                        }))}
+                                        />
                                 </Form.Group>
                             </Col>
                         </Row>
@@ -244,69 +291,14 @@ export default function Newlog( {
                                         placeholder='Válassz tevékenységet!'
                                         noOptionsMessage={() => 'Nincs találat!'}
                                         onChange={(e) => setActivities(e.value)}
-                                        styles={{
-                                            control: (baseStyles) => ({
-                                              ...baseStyles,
-                                              background: darkMode ? '#212529' : '#fff',
-                                              borderColor: '#495057',
-                                              borderWidth: '1px',
-                                              cursor: 'pointer',
-                                              '&:hover': {
-                                                borderColor: '#495057',
-                                            }
-                                            }),
-                                            input: (baseStyles) => ({
-                                                ...baseStyles,
-                                                color : darkMode ? '#dee2e6' : '#212529',
-                                            }),
-                                            menu: (baseStyles) => ({
-                                                ...baseStyles,
-                                                background: darkMode ? '#212529' : 'white',
-                                                color : darkMode ? '#dee2e6' : '#212529',
-                                                border: '1px solid #495057',
-                                            }),
-                                            option: (provided) => ({
-                                                ...provided,
-                                                background: darkMode ? '#212529' : 'white',
-                                                color : darkMode ? '#dee2e6' : '#212529',
-                                                '&:hover': {
-                                                    color: darkMode ? '#212529' : '#fff',
-                                                    backgroundColor: darkMode ? '#8bb9fe' : '#0d6efd',
-                                                    cursor: 'pointer',
-                                                }
-                                                  
-                                              }),
-                                            placeholder: (baseStyles) => ({
-                                                ...baseStyles,
-                                                color: darkMode ?'#dee2e6' : '#212529',
-                                              }),
-                                            indicatorSeparator: () => ({
-                                                display: 'none'
-                                              }),
-                                            singleValue: (provided) => ({
-                                                ...provided,
-                                                color : darkMode ? '#dee2e6' : '#212529',
-                                              }), 
-                                          }}
-                                        options={
-                                            [
-                                            {value: 'Segítség nyújtása a demencia korai felismerésében, kapcsolódó kihívások azonosításában és az egyéni megküzdési stratégiák kialakításában. ', label: 'Segítség nyújtása a demencia korai felismerésében, kapcsolódó kihívások azonosításában és az egyéni megküzdési stratégiák kialakításában.'},
-                                            {value: 'Demenciaszűrésben való közreműködés.', label: 'Demenciaszűrésben való közreműködés.'},
-                                            {value: 'Demenciaszűrésben való közreműködés, együttműködésben a háziorvossal.', label: 'Demenciaszűrésben való közreműködés, együttműködésben a háziorvossal.'},
-                                            {value: 'A diagnózisalkotást követő időszakban tájékoztatás nyújtása a demenciáról, annak tüneteiről, lefolyásáról, életvitelre gyakorolt hatásairól és az állapotromlás megelőzésének lehetőségeiről.', label: 'A diagnózisalkotást követő időszakban tájékoztatás nyújtása a demenciáról, annak tüneteiről, lefolyásáról, életvitelre gyakorolt hatásairól és az állapotromlás megelőzésének lehetőségeiről.'},
-                                            {value: 'Egyénreszabott, szükségletalapú gondozás keretében állapotkövetés, tanácsadás és mentális, pszichés támogatás biztosítása a feledékenységgel küzdő személy és családtagjai számára.', label: 'Egyénreszabott, szükségletalapú gondozás keretében állapotkövetés, tanácsadás és mentális, pszichés támogatás biztosítása a feledékenységgel küzdő személy és családtagjai számára. '},
-                                            {value: 'Együttműködés a háziorvossal, asszisztenssel illetve egyéb egészségügyi, szociális szakemberekkel, természetes támogatókkal a hatékonyabb segítségnyújtás érdekében.', label: 'Együttműködés a háziorvossal, asszisztenssel illetve egyéb egészségügyi, szociális szakemberekkel, természetes támogatókkal a hatékonyabb segítségnyújtás érdekében.'},
-                                            {value: 'Támogatás nyújtása az érintettek számára a szociális és egészségügyi ellátásokban való eligazodáshoz, az elérhető szolgáltatások és támogatások igénybevételéhez.', label: 'Támogatás nyújtása az érintettek számára a szociális és egészségügyi ellátásokban való eligazodáshoz, az elérhető szolgáltatások és támogatások igénybevételéhez.'},
-                                            {value: 'Az önálló életvitelt és személyes biztonságot támogató technológiák és digitális eszközök bemutatása, megismertetése, bevezetésüket és használatukat támogatása.', label: 'Az önálló életvitelt és személyes biztonságot támogató technológiák és digitális eszközök bemutatása, megismertetése, bevezetésüket és használatukat támogatása.'},
-                                            {value: 'Digitálisan elérhető tájékoztató tartalmak részletes bemutatása a weboldalon, facebook oldalon.', label: 'Digitálisan elérhető tájékoztató tartalmak részletes bemutatása a weboldalon, facebook oldalon.'},
-                                            {value: 'Csoportos rendezvények szervezése.', label: 'Csoportos rendezvények szervezése.'},
-                                            {value: 'Csoportos rendezvények szervezése, lebonyolítása - DPP.', label: 'Csoportos rendezvények szervezése, lebonyolítása - DPP.'},
-                                            {value: 'Csoportos rendezvények szervezése, lebonyolítása - Ginko Klub.', label: 'Csoportos rendezvények szervezése, lebonyolítása - Ginko Klub.'},
-                                            {value: 'Csoportos rendezvények szervezése, lebonyolítása - Memória Kuckó.', label: 'Csoportos rendezvények szervezése, lebonyolítása - Memória Kuckó.'},
-                                            {value: 'Csoportos rendezvények szervezése, lebonyolítása - Múzeum járat.', label: 'Csoportos rendezvények szervezése, lebonyolítása - Múzeum járat.'},
-                                            {value: 'Telefonhívás.', label: 'Telefonhívás.'},
-                                            {value: 'Ginko Hírlevél küldése negyedévi rendszerességgel.', label: 'Ginko Hírlevél küldése negyedévi rendszerességgel.'}]
-                                        }
+                                        styles={selectStyle}
+                                        options={activitiesFromOptions
+                                            .slice() 
+                                            .sort((a, b) => a.value.localeCompare(b.value, 'hu'))
+                                            .map(item => ({
+                                                    value: item.value,
+                                                    label: item.value
+                                        }))}
                                         />
                                 </Form.Group>
                             </Col>
