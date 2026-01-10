@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Tooltip, Table, Form, CloseButton, InputGroup, OverlayTrigger } from 'react-bootstrap';
 import InputGroupText from 'react-bootstrap/esm/InputGroupText';
 import Tablepagination from '../../Tablepagination/Tablepagination';
@@ -6,7 +6,6 @@ import Viewlog from '../Viewlog/Viewlog';
 import Editlog from '../Editlog/Editlog';
 import Deletelog from '../Deletelog/Deletelog';
 import Auditlog from '../Auditlog/Auditlog';
-
 
 export default function Logentries( {
   logEntries,
@@ -26,18 +25,13 @@ export default function Logentries( {
   const [dateTimeSearch, setDateTimeSearch] = useState('');
   const [durationSearch, setDurationSearch] = useState('');
   const [descriptionSearch, setDescriptionSearch] = useState('');
-  const [hideForeignlog, setHideForeignLog] = useState(
-    sessionStorage.getItem('logTableHideForeignLog') === null ? 
-    true : 
-    sessionStorage.getItem('logTableHideForeignLog') === "false" ? 
-    false : 
-    true);
-
+  const [userId, setUserId] = useState(String(loggedInUserData.id));
   const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>;
   
-  const filteredList = logEntries
+  const filteredList = useMemo(() => {
+    const list = logEntries
                         .filter((listItem) => loggedInUserData.accessgroup === 1 ? listItem : loggedInUserData.accessgroup === listItem.accessgroup_id)
-                        .filter((listItem) => hideForeignlog ? listItem.user_id === loggedInUserData.id : listItem)
+                        .filter((listItem) => userId === 'all' ? true : listItem.user_id === Number(userId))
                         .filter((listItem) => usernameSearch.toLowerCase() === '' 
                           ? listItem 
                           : listItem.user_name.toLowerCase().includes(usernameSearch.toLowerCase()))
@@ -52,7 +46,45 @@ export default function Logentries( {
                           : listItem.duration === durationSearch)
                         .filter((listItem) => descriptionSearch.toLowerCase() === '' 
                           ? listItem 
-                          : listItem.description.toLowerCase().includes(descriptionSearch.toLowerCase()));
+                          : listItem.description.toLowerCase().includes(descriptionSearch.toLowerCase())
+                        );
+                          if (sortedColumn) {
+    list.sort((a, b) => {
+      const aVal = a[sortedColumn];
+      const bVal = b[sortedColumn];
+
+      if (aVal == null) return 1;
+      if (bVal == null) return -1;
+
+      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  return list;
+}, [
+  logEntries,
+  userId,
+  usernameSearch,
+  clientnameSearch,
+  dateTimeSearch,
+  durationSearch,
+  descriptionSearch,
+  sortedColumn,
+  sortDirection,
+  loggedInUserData
+]);
+
+const userListFromEntries = useMemo(() => {
+  const users = {};
+  logEntries.forEach(entry => {
+    if (!users[entry.user_id]) {
+      users[entry.user_id] = entry.user_name;
+    }
+  });
+  return Object.keys(users).map(id => ({ id: Number(id), name: users[id] }));
+}, [logEntries]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowPerPage] = useState(10);
@@ -62,8 +94,7 @@ export default function Logentries( {
       setCurrentPage(1);
     if (rowsPerPage > filteredList.length && filteredList.length >=10) {
         setRowPerPage(filteredList.length);
-      }
-      
+      }     
     }}, [logEntries.length, filteredList.length, rowsPerPage]);
 
   const paginatedList = filteredList.slice(currentPage * rowsPerPage - rowsPerPage, currentPage * rowsPerPage);
@@ -84,11 +115,10 @@ export default function Logentries( {
   }
 
   const renderTooltip = (props) => (
-    <Tooltip id="hide-foreign-log-tooltip"  {...props}>
-      Összes/csak saját naplóbejegyzés
+    <Tooltip id="hide-foreign-log-tooltip" {...props}>
+      Naplóbejegyzések szűrése felhasználóra
     </Tooltip>)
 
- 
   return (
     <div className='m-1 m-sm-3'>
       <Table striped bordered hover size="sm">
@@ -107,17 +137,6 @@ export default function Logentries( {
               </span>
             </th>
             <th>Ell.</th>
-            <th>Felhasználónév
-              <span 
-                className="cursor-pointer mx-2"
-                onClick={() => {
-                  handleSort(logEntries, sortDirection, 'user_name', 'log')
-                  setSortedColumn('user_name');
-                  setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
-                }}>
-                {chooseOrderSign('user_name')}
-              </span>
-            </th>
             <th className='max-width-115'>Ügyfélnév
               <span 
                 className="cursor-pointer mx-2"
@@ -157,19 +176,10 @@ export default function Logentries( {
           <tr>
             <th className='d-none d-sm-table-cell'>{filteredList.length}</th>
             <th></th>
-            <th>
-              <InputGroup>
-                <Form.Control
-                  id="userNameSearch" 
-                  onChange={(e) => setUsernameSearch(e.target.value)}
-                  placeholder="Felhasználónév..."
-                  value={usernameSearch}/>
-                {usernameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setUsernameSearch('')}/></InputGroupText> : ''}
-              </InputGroup>
-            </th>
             <th className='max-width-115'>
               <InputGroup>
                 <Form.Control
+                  size="sm"
                   id="usernameSearch"
                   onChange={(e) => setClientnameSearch(e.target.value)}
                   placeholder="Ügyfélnév..."
@@ -180,6 +190,7 @@ export default function Logentries( {
             <th>
               <InputGroup>
                 <Form.Control
+                  size="sm"
                   id="datetimeSearch"
                   onKeyDown={(e) => dateTimeSearchValue(e)}
                   onChange={() => setDateTimeSearch(dateTimeSearch)}
@@ -192,6 +203,7 @@ export default function Logentries( {
             <th className='max-width-65 d-none d-md-table-cell'>
               <InputGroup>
                 <Form.Control
+                  size="sm"
                   id="durationSearch"
                   onChange={(e) => setDurationSearch(e.target.value)}
                   maxLength={2}
@@ -203,6 +215,7 @@ export default function Logentries( {
             <th className='d-none d-lg-table-cell'>
               <InputGroup>
                 <Form.Control
+                  size="sm"
                   id="descriptionSearch"
                   onChange={(e) => setDescriptionSearch(e.target.value)}
                   placeholder="Leírás..."
@@ -210,21 +223,23 @@ export default function Logentries( {
                   {descriptionSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setDescriptionSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
-            <th className='d-none d-sm-table-cell'>            
+            <th className='d-sm-table-cell max-width-115'>
               <OverlayTrigger
                   placement="top"
                   delay={{ show: 50, hide: 100 }}
                   overlay={renderTooltip}> 
-                <Form.Check
-                  role="button"
-                  type='switch'
-                  id='own-log-switcher'
-                  defaultChecked={hideForeignlog}
-                  onChange={(e) => {
-                    sessionStorage.setItem('logTableHideForeignLog', e.target.checked)
-                    setHideForeignLog(e.target.checked)
-                  }}
-                  />
+                <Form.Group controlId="formSelectUser">
+                  <Form.Select
+                    size="sm"
+                    value={userId || "all"}
+                    onChange={(e) => setUserId(e.target.value)}
+                  >
+                    <option value="all">Összes</option>
+                    {userListFromEntries.map(user => (
+                      <option key={user.id} value={String(user.id)}>{user.name}</option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
               </OverlayTrigger>
             </th>
             </tr>
@@ -243,15 +258,13 @@ export default function Logentries( {
               }}>
                 <td className='d-none d-sm-table-cell'>{listItem.id}</td>
                 {listItem.auditor !== null ? <td>&#x2714;</td> : <td></td>}
-
-                <td>{listItem.user_name}</td>
                 <td>{listItem.client_name}</td>
                 <td className='max-width-115'>{listItem.date_time}</td>
                 <td className='max-width-65 d-none d-md-table-cell'>{listItem.duration}</td>                    
                 <td className='d-none d-lg-table-cell'>{listItem.description !== null && listItem.description.length > 100 ? 
                                                           listItem.description.slice(0, 100)+ '...' : 
                                                           listItem.description}</td>
-                <td className='d-none d-sm-table-cell fit'>
+                <td className='d-sm-table-cell'>
                 <>
                   <Viewlog
                     showLogDetailsButton={true}
@@ -287,12 +300,11 @@ export default function Logentries( {
         <tr>
             <th className='d-none d-sm-table-cell'>#</th>
             <th></th>
-            <th>Felhasználónév</th>
             <th className='max-width-115'>Ügyfélnév</th>
             <th className='max-width-115'>Időpont</th>
             <th className='max-width-65 d-none d-md-table-cell'>Perc</th>
             <th className='d-none d-lg-table-cell'>Leírás</th>
-            <th className='d-none d-sm-table-cell'></th>
+            <th className=''></th>
           </tr>
         </tfoot>
       </Table>
@@ -306,4 +318,4 @@ export default function Logentries( {
       />
     </div>
   )
-}        
+}

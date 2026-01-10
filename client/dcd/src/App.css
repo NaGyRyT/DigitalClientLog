@@ -56,6 +56,10 @@ html {
   max-width: 65px;
 }
 
+.min-width-130 {
+  min-width: 130px;
+}
+
 .modal {
   --bs-modal-zindex: 1050 !important;
 }
