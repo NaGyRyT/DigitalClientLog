@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo} from 'react';
 import { Table, Form, CloseButton, InputGroup, Tooltip, OverlayTrigger, Row, Col } from 'react-bootstrap';
 import Editclient from '../Editclient/Editclient';
 import Deleteclient from '../Deleteclient/Deleteclient';
@@ -6,12 +6,13 @@ import Viewclient from '../Viewclient/Viewclient';
 import Tablepagination from '../../Tablepagination/Tablepagination';
 import InputGroupText from 'react-bootstrap/esm/InputGroupText';
 import Newlog from '../../Log/Newlog/Newlog';
+import axios from 'axios';
+import API from '../../../../api';
 
 export default function Clientlist({
     clientList,
     loadClientList,
     cityList,
-    handleSort,
     sortDirection,
     sortedColumn,
     setSortedColumn,
@@ -28,13 +29,6 @@ export default function Clientlist({
   const [phoneSearch, setPhoneSearch] = useState('');
   const [addressSearch, setAddressSearch] = useState('');
 
-  const [hideForeignClient, setHideForeignClient] = useState(
-    sessionStorage.getItem('clientTableHideForeignClient') === null ? 
-    true : 
-    sessionStorage.getItem('clientTableHideForeignClient') === "false" ? 
-    false : 
-    true);
-
   const [hidePassiveClient, setHidePassiveClient] = useState(
     sessionStorage.getItem('clientTableHidePassiveClient') === null ? 
     true : 
@@ -42,12 +36,30 @@ export default function Clientlist({
     false : 
     true);
 
+  const [userList, setUserList] = useState([]);
+  const [userId, setUserId] = useState(
+    loggedInUserData?.id ? String(loggedInUserData.id) : 'all'
+  );
+
+  function loadUsers() {
+    axios
+      .get(`${API.address}/getnotemptyloguserlist`, {
+        headers: { 'x-api-key': loggedInUserData.password }
+      })
+      .then(({ data }) => setUserList(data));
+  }
+
+  useEffect(() => {
+    loadUsers();
+  }, [loggedInUserData.password]);
+
   const chooseOrderSign = (data) => sortedColumn === data ? sortDirection === 'asc' ? <>⇓</> : <>⇑</> : <>⇅</>
 
-  const filteredList = clientList
+  const filteredList = useMemo(() => {
+      const list = clientList
                         .filter((listItem) => loggedInUserData.accessgroup === 1 ? listItem : loggedInUserData.accessgroup === listItem.accessgroup)
-                        .filter((listItem) => hideForeignClient ? listItem.user_id === loggedInUserData.id : listItem)
-                        .filter((listItem) => hidePassiveClient ? listItem.end_of_service === '3000-01-01' : listItem)
+                        .filter((listItem) => userId === 'all' ? true : listItem.user_id === Number(userId))
+                        .filter((listItem) => !hidePassiveClient || listItem.end_of_service === '3000-01-01')
                         .filter((listItem) => clientnameSearch.toLowerCase() === '' ? listItem 
                           : listItem.name.toLowerCase().includes(clientnameSearch.toLowerCase()))
                         .filter((listItem) => clientIdSearch === '' 
@@ -67,8 +79,34 @@ export default function Clientlist({
                         : listItem.phone.includes(phoneSearch))
                         .filter((listItem) => addressSearch.toLowerCase() === '' 
                         ? listItem 
-                        : listItem.address.toLowerCase().includes(addressSearch.toLowerCase()))
-  
+                        : listItem.address.toLowerCase().includes(addressSearch.toLowerCase()));
+  if (!sortedColumn) return list;
+  return [...list].sort((a, b) => {
+        const aVal = a[sortedColumn];
+        const bVal = b[sortedColumn];
+
+        if (aVal == null) return 1;
+        if (bVal == null) return -1;
+
+        if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+}, [
+  clientList,
+  userId,
+  hidePassiveClient,
+  clientnameSearch,
+  clientIdSearch,
+  birthDateSearch,
+  ageSearch,
+  emailSearch,
+  phoneSearch,
+  addressSearch,
+  loggedInUserData.accessgroup,
+  sortedColumn,
+  sortDirection
+]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowPerPage] = useState(10);
 
@@ -83,20 +121,21 @@ export default function Clientlist({
 
   const paginatedList = filteredList.slice(currentPage * rowsPerPage - rowsPerPage, currentPage * rowsPerPage);
 
-  function birthDateSearchValue(e) {
-    if (!isNaN(Number(e.key)) && birthDateSearch.length < 10) {
-      setBirthDateSearch(birthDateSearch + e.key);
-      if (birthDateSearch.length ===  3) setBirthDateSearch(birthDateSearch + e.key + '-');
-      if (birthDateSearch.length ===  6) setBirthDateSearch(birthDateSearch + e.key + '-');
-    } else if (e.key === 'Backspace') setBirthDateSearch(
-        birthDateSearch.slice(-1) === '-' ? 
-        birthDateSearch.slice(0,-2) : 
-        birthDateSearch.slice(0,-1));
+  function handleBirthDateChange(e) {
+    let value = e.target.value.replace(/[^0-9]/g, '');
+    if (value.length > 8) return;
+    if (value.length >= 5) {
+      value = value.slice(0, 4) + '-' + value.slice(4);
+    }
+    if (value.length >= 8) {
+      value = value.slice(0, 7) + '-' + value.slice(7);
+    }
+  setBirthDateSearch(value);
   }
 
   const renderTooltip = (props) => (
     <Tooltip id="hide-foreign-client-tooltip"  {...props}>
-      Összes/csak saját ügyfél
+      Ügyfelek felhasználónkénti szűrése
     </Tooltip>)
 
   return (
@@ -109,7 +148,7 @@ export default function Clientlist({
             <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-                  handleSort(clientList, sortDirection, 'id', 'client');
+                  
                   setSortedColumn('id');
                   setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
                 }}>
@@ -120,7 +159,6 @@ export default function Clientlist({
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-                  handleSort(clientList, sortDirection, 'name', 'client')
                   setSortedColumn('name');
                   setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
                 }}>
@@ -131,7 +169,6 @@ export default function Clientlist({
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-                  handleSort(clientList, sortDirection, 'client_id', 'client')
                   setSortedColumn('client_id');
                   setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
                 }}>
@@ -142,7 +179,6 @@ export default function Clientlist({
                 <span 
                     className="cursor-pointer mx-2"
                     onClick={() => {
-                    handleSort(clientList, sortDirection, 'birth_date', 'client')
                     setSortedColumn('birth_date');
                     setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
                     }}>
@@ -153,7 +189,7 @@ export default function Clientlist({
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-                  handleSort(clientList, sortDirection, 'age', 'client')
+                  
                   setSortedColumn('age');
                   setSortDirection(sortDirection ==='des' ? 'asc' : 'des');
                 }}>
@@ -165,125 +201,129 @@ export default function Clientlist({
             <th className='d-none d-lg-table-cell'>E-mail</th>
             <th className='d-none d-lg-table-cell'>Telefon</th>
             <th className='d-none d-xl-table-cell'>Cím</th>
-            <th className='d-none d-sm-table-cell'></th>
+            <th className='d-none d-sm-table-cell'>
+              <OverlayTrigger
+                placement="top"
+                delay={{ show: 50, hide: 100 }}
+                overlay={ (props)=> (<Tooltip id="hide-foreign-client-tooltip"  {...props}>
+                Passzivált ügyfelek elrejtése
+              </Tooltip>)}> 
+              <Form.Check
+                role="button"
+                type='switch'
+                id='passive-client-switcher'
+                defaultChecked={hidePassiveClient}
+                onChange={(e) => {
+                  sessionStorage.setItem('clientTableHidePassiveClient', e.target.checked)
+                  setHidePassiveClient(e.target.checked)
+                }}
+                />
+              </OverlayTrigger>
+
+            </th>
           </tr>
           <tr>
             <th className='d-none d-sm-table-cell'>{filteredList.length}</th>
             <th>
               <InputGroup>
                 <Form.Control
+                  size="sm"
                   id="clientNameSearch" 
                   onChange={(e) => setClientnameSearch(e.target.value)}
                   placeholder="Név..."
                   value={clientnameSearch}/>
-                {clientnameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setClientnameSearch('')}/></InputGroupText> : ''}
+                {clientnameSearch !== '' ? <InputGroupText><CloseButton className="p-0 m-0" onClick={()=> setClientnameSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
             <th className='max-width-115'>
               <InputGroup>
                 <Form.Control
+                  size="sm"
                   id="clientIdSearch"
                   maxLength={9}
                   onChange={(e) => setClientIdSearch(e.target.value)}
                   placeholder="Iktatószám..."
                   value={clientIdSearch}/>
-                {clientIdSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setClientIdSearch('')}/></InputGroupText> : ''}
+                {clientIdSearch !== '' ? <InputGroupText><CloseButton className="p-0 m-0" onClick={()=> setClientIdSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
             <th className='max-width-115'>
               <InputGroup>
                 <Form.Control
+                  size="sm"
                   id="birthSearch"
-                  onKeyDown={(e) => birthDateSearchValue(e)}
-                  onChange={(e) => setBirthDateSearch(birthDateSearch)}
+                  onChange={handleBirthDateChange}
                   placeholder="Születés..."
                   value={birthDateSearch}/>
-                  {birthDateSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setBirthDateSearch('')}/></InputGroupText> : ''}
+                  {birthDateSearch !== '' ? <InputGroupText><CloseButton className="p-0 m-0" onClick={()=> setBirthDateSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
             <th className='max-width-65 d-none d-md-table-cell'>
               <InputGroup>
                 <Form.Control
+                  size="sm"
                   id="ageSearch"
                   maxLength={3}
                   onChange={(e) => setAgeSearch(e.target.value)}
                   placeholder="Kor..."
                   value={ageSearch}/>
-                  {ageSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setAgeSearch('')}/></InputGroupText> : ''}
+                  {ageSearch !== '' ? <InputGroupText><CloseButton className="p-0 m-0" onClick={()=> setAgeSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
             <th className='d-none d-md-table-cell'></th>
             <th className='d-none d-lg-table-cell'>
               <InputGroup>
                 <Form.Control
+                  size="sm"
                   id="emailSearch"
                   onChange={(e) => setEmailSearch(e.target.value)}
                   placeholder="E-mail..."
                   value={emailSearch}/>
-                  {emailSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setEmailSearch('')}/></InputGroupText> : ''}
+                  {emailSearch !== '' ? <InputGroupText><CloseButton className="p-0 m-0" onClick={()=> setEmailSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
             <th className='max-width-115 d-none d-lg-table-cell'>
                 <InputGroup>
-                    <Form.Control
+                  <Form.Control
+                    size="sm"
                     id="phoneSearch"
                     onChange={(e) => setPhoneSearch(e.target.value)}
                     placeholder="Telefon..."
                     value={phoneSearch}/>
-                    {phoneSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setPhoneSearch('')}/></InputGroupText> : ''}
+                    {phoneSearch !== '' ? <InputGroupText><CloseButton className="p-0 m-0" onClick={()=> setPhoneSearch('')}/></InputGroupText> : ''}
                 </InputGroup>
                 </th>
                 <th className='d-none d-xl-table-cell'>
                 <InputGroup>
                     <Form.Control
+                    size="sm"
                     id="addressSearch"
                     onChange={(e) => setAddressSearch(e.target.value)}
                     placeholder="Cím..."
                     value={addressSearch}/>
-                    {addressSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setAddressSearch('')}/></InputGroupText> : ''}
+                    {addressSearch !== '' ? <InputGroupText><CloseButton className="p-0 m-0" onClick={()=> setAddressSearch('')}/></InputGroupText> : ''}
                 </InputGroup>
                 </th>
-                <th className='d-none d-sm-table-cell'>
-                  <div className='d-flex justify-content-around m-0 p-0'>
-                    <div>
-                      <OverlayTrigger
-                          placement="top"
-                          delay={{ show: 50, hide: 100 }}
-                          overlay={renderTooltip}> 
-                        <Form.Check
-                          role="button"
-                          type='switch'
-                          id='own-client-switcher'
-                          defaultChecked={hideForeignClient}
-                          onChange={(e) => {
-                            sessionStorage.setItem('clientTableHideForeignClient', e.target.checked)
-                            setHideForeignClient(e.target.checked)
-                          }}
-                          />
-                      </OverlayTrigger>
-                    </div>
-                    <div>
-                      <OverlayTrigger
-                          placement="top"
-                          delay={{ show: 50, hide: 100 }}
-                          overlay={ (props)=> (<Tooltip id="hide-foreign-client-tooltip"  {...props}>
-                          Passzivált ügyfelek elrejtése
-                        </Tooltip>)}> 
-                        <Form.Check
-                          role="button"
-                          type='switch'
-                          id='passive-client-switcher'
-                          defaultChecked={hidePassiveClient}
-                          onChange={(e) => {
-                            sessionStorage.setItem('clientTableHidePassiveClient', e.target.checked)
-                            setHidePassiveClient(e.target.checked)
-                          }}
-                          />
-                      </OverlayTrigger>
-                    </div>
-                  </div>
+                <th className='d-none d-sm-table-cell min-width-130'>
+                  <OverlayTrigger
+                    placement="top"
+                    delay={{ show: 50, hide: 100 }}
+                    overlay={renderTooltip}> 
+                    <Form.Select
+                        size="sm"
+                        value={userId}
+                        onChange={(e) => setUserId(e.target.value)}
+                      >
+                      <option value="all">Összes</option>
+                      {userList.map(user => (
+                        <option key={user.id} value={String(user.id)}>
+                          {user.name}
+                        </option>
+                        ))}
+                    </Form.Select>
+                  </OverlayTrigger>
             </th>
-            </tr>
+          </tr>
         </thead>
         <tbody>
           {paginatedList
