@@ -10,7 +10,6 @@ import Auditlog from '../Auditlog/Auditlog';
 export default function Logentries( {
   logEntries,
   loadLogEntries,
-  handleSort,
   sortDirection,
   sortedColumn,
   setSortedColumn,
@@ -20,7 +19,6 @@ export default function Logentries( {
   } ) {
 
   const [clickedRowIndex, setClickedRowIndex] = useState(null);
-  const [usernameSearch, setUsernameSearch] = useState('');
   const [clientnameSearch, setClientnameSearch] = useState('');
   const [dateTimeSearch, setDateTimeSearch] = useState('');
   const [durationSearch, setDurationSearch] = useState('');
@@ -32,9 +30,6 @@ export default function Logentries( {
     const list = logEntries
                         .filter((listItem) => loggedInUserData.accessgroup === 1 ? listItem : loggedInUserData.accessgroup === listItem.accessgroup_id)
                         .filter((listItem) => userId === 'all' ? true : listItem.user_id === Number(userId))
-                        .filter((listItem) => usernameSearch.toLowerCase() === '' 
-                          ? listItem 
-                          : listItem.user_name.toLowerCase().includes(usernameSearch.toLowerCase()))
                         .filter((listItem) => clientnameSearch.toLowerCase() === '' 
                           ? listItem 
                           : listItem.client_name.toLowerCase().includes(clientnameSearch.toLowerCase()))
@@ -48,25 +43,21 @@ export default function Logentries( {
                           ? listItem 
                           : listItem.description.toLowerCase().includes(descriptionSearch.toLowerCase())
                         );
-                          if (sortedColumn) {
-    list.sort((a, b) => {
-      const aVal = a[sortedColumn];
-      const bVal = b[sortedColumn];
+    if (!sortedColumn) return list;
+  return [...list].sort((a, b) => {
+        const aVal = a[sortedColumn];
+        const bVal = b[sortedColumn];
 
-      if (aVal == null) return 1;
-      if (bVal == null) return -1;
+        if (aVal == null) return 1;
+        if (bVal == null) return -1;
 
-      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+        if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
       return 0;
     });
-  }
-
-  return list;
 }, [
   logEntries,
   userId,
-  usernameSearch,
   clientnameSearch,
   dateTimeSearch,
   durationSearch,
@@ -129,7 +120,7 @@ const userListFromEntries = useMemo(() => {
             <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-                  handleSort(logEntries, sortDirection, 'id', 'log');
+               /*    handleSort(logEntries, sortDirection, 'id', 'log'); */
                   setSortedColumn('id');
                   setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
@@ -141,7 +132,7 @@ const userListFromEntries = useMemo(() => {
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-                  handleSort(logEntries, sortDirection, 'client_name', 'log')
+                  /* handleSort(logEntries, sortDirection, 'client_name', 'log') */
                   setSortedColumn('client_name');
                   setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
@@ -152,7 +143,7 @@ const userListFromEntries = useMemo(() => {
                 <span 
                     className="cursor-pointer mx-2"
                     onClick={() => {
-                    handleSort(logEntries, sortDirection, 'date_time', 'log')
+                    /* handleSort(logEntries, sortDirection, 'date_time', 'log') */
                     setSortedColumn('date_time');
                     setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                     }}>
@@ -163,7 +154,7 @@ const userListFromEntries = useMemo(() => {
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-                  handleSort(logEntries, sortDirection, 'duration', 'log');
+                  /* handleSort(logEntries, sortDirection, 'duration', 'log'); */
                   setSortedColumn('duration');
                   setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
@@ -184,7 +175,7 @@ const userListFromEntries = useMemo(() => {
                   onChange={(e) => setClientnameSearch(e.target.value)}
                   placeholder="Ügyfélnév..."
                   value={clientnameSearch}/>
-                {clientnameSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setClientnameSearch('')}/></InputGroupText> : ''}
+                {clientnameSearch !== '' ? <InputGroupText><CloseButton className="p-0 m-0" onClick={()=> setClientnameSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
             <th>
@@ -197,7 +188,7 @@ const userListFromEntries = useMemo(() => {
                   maxLength={16}
                   placeholder="Időpont..."
                   value={dateTimeSearch} />
-                  {dateTimeSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setDateTimeSearch('')}/></InputGroupText> : ''}
+                  {dateTimeSearch !== '' ? <InputGroupText><CloseButton className="p-0 m-0" onClick={()=> setDateTimeSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
             <th className='max-width-65 d-none d-md-table-cell'>
@@ -209,7 +200,7 @@ const userListFromEntries = useMemo(() => {
                   maxLength={2}
                   placeholder="Perc..."
                   value={durationSearch}/>
-                  {durationSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setDurationSearch('')}/></InputGroupText> : ''}
+                  {durationSearch !== '' ? <InputGroupText><CloseButton className="p-0 m-0" onClick={()=> setDurationSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
             <th className='d-none d-lg-table-cell'>
@@ -220,7 +211,7 @@ const userListFromEntries = useMemo(() => {
                   onChange={(e) => setDescriptionSearch(e.target.value)}
                   placeholder="Leírás..."
                   value={descriptionSearch}/>
-                  {descriptionSearch !== '' ? <InputGroupText><CloseButton onClick={()=> setDescriptionSearch('')}/></InputGroupText> : ''}
+                  {descriptionSearch !== '' ? <InputGroupText><CloseButton className="p-0 m-0" onClick={()=> setDescriptionSearch('')}/></InputGroupText> : ''}
               </InputGroup>
             </th>
             <th className='d-sm-table-cell max-width-115'>

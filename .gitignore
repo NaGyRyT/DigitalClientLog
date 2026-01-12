@@ -25,3 +25,6 @@ node_modules
 api.js
 apikey.js
 database_connect.js
+
+# info file
+lekerdezesek.mysql
