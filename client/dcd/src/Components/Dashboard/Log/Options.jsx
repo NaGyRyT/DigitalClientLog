@@ -54,7 +54,7 @@ export const activitiesFromOptions =
     },
     {
         "id": 14,
-        "value": "Csoportos rendezvények szervezése, lebonyolítása - Múzeum járat."
+        "value": "Csoportos rendezvények szervezése, lebonyolítása - Emlék-képek."
     },
     {
         "id": 15,

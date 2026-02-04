@@ -1328,7 +1328,8 @@ app.get('/api/getgroupevents', authenticateKey, (req,res) => {
                             COUNT(if  (activities like  '%dpp%', 1, null)) as dpp,
                             COUNT(if (activities like '%ginko klub%', 1, null)) as ginko_klub,
                             COUNT(if (activities like '%mem%ria kuck%', 1, null)) as memoria_kucko,
-                            COUNT(if (activities like '%m%zeum j%rat%', 1, null)) as muzeum_jarat
+                            COUNT(if (activities like '%m%zeum j%rat%', 1, null)) as muzeum_jarat,
+                            COUNT(if (activities like '%eml%k-k%pek%', 1, null)) as emlek_kepek
                             FROM log
                             GROUP BY DATE_FORMAT(date_time, '%Y-%m')
                             ORDER BY log_date`
@@ -1348,7 +1349,8 @@ app.get('/api/getgroupeventsperuser/:userid', authenticateKey, (req,res) => {
                             COUNT(if  (activities like  '%dpp%', 1, null)) as dpp,
                             COUNT(if (activities like '%ginko klub%', 1, null)) as ginko_klub,
                             COUNT(if (activities like '%mem%ria kuck%', 1, null)) as memoria_kucko,
-                            COUNT(if (activities like '%m%zeum j%rat%', 1, null)) as muzeum_jarat
+                            COUNT(if (activities like '%m%zeum j%rat%', 1, null)) as muzeum_jarat,
+                            COUNT(if (activities like '%eml%k-k%pek%', 1, null)) as emlek_kepek
                             FROM log
                             WHERE user_id = ?
                             GROUP BY DATE_FORMAT(date_time, '%Y-%m')
