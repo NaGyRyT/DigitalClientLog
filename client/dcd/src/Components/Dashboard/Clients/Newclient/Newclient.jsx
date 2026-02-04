@@ -339,7 +339,7 @@ export default function Newclient( {
 							<Row>
 								<Col xs={12} sm={12}>
 									<Form.Group controlId="formOtherData">
-										<Form.Label>Egyéb Adatok</Form.Label>
+										<Form.Label>Egyéb adatok</Form.Label>
 										<Form.Control
 											as="textarea"
 											rows={3}
