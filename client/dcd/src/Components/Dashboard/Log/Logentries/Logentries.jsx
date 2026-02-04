@@ -45,16 +45,22 @@ export default function Logentries( {
                         );
     if (!sortedColumn) return list;
   return [...list].sort((a, b) => {
-        const aVal = a[sortedColumn];
-        const bVal = b[sortedColumn];
+    let aVal = a[sortedColumn];
+    let bVal = b[sortedColumn];
 
-        if (aVal == null) return 1;
-        if (bVal == null) return -1;
+    if (aVal == null) return 1;
+    if (bVal == null) return -1;
 
-        if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
-        if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
+    // 👉 numerikus mezők - perc
+    if (['duration'].includes(sortedColumn)) {
+      aVal = Number(aVal);
+      bVal = Number(bVal);
+    }
+
+    if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+    if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+    return 0;
+  });
 }, [
   logEntries,
   userId,
@@ -120,7 +126,6 @@ const userListFromEntries = useMemo(() => {
             <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-               /*    handleSort(logEntries, sortDirection, 'id', 'log'); */
                   setSortedColumn('id');
                   setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
@@ -132,7 +137,6 @@ const userListFromEntries = useMemo(() => {
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-                  /* handleSort(logEntries, sortDirection, 'client_name', 'log') */
                   setSortedColumn('client_name');
                   setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
@@ -143,7 +147,6 @@ const userListFromEntries = useMemo(() => {
                 <span 
                     className="cursor-pointer mx-2"
                     onClick={() => {
-                    /* handleSort(logEntries, sortDirection, 'date_time', 'log') */
                     setSortedColumn('date_time');
                     setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                     }}>
@@ -154,7 +157,6 @@ const userListFromEntries = useMemo(() => {
               <span 
                 className="cursor-pointer mx-2"
                 onClick={() => {
-                  /* handleSort(logEntries, sortDirection, 'duration', 'log'); */
                   setSortedColumn('duration');
                   setSortDirection(sortDirection === 'des' ? 'asc' : 'des');
                 }}>
@@ -197,7 +199,7 @@ const userListFromEntries = useMemo(() => {
                   size="sm"
                   id="durationSearch"
                   onChange={(e) => setDurationSearch(e.target.value)}
-                  maxLength={2}
+                  maxLength={3}
                   placeholder="Perc..."
                   value={durationSearch}/>
                   {durationSearch !== '' ? <InputGroupText><CloseButton className="p-0 m-0" onClick={()=> setDurationSearch('')}/></InputGroupText> : ''}
@@ -222,9 +224,11 @@ const userListFromEntries = useMemo(() => {
                 <Form.Group controlId="formSelectUser">
                   <Form.Select
                     size="sm"
-                    value={userId || "all"}
+                    disabled={userListFromEntries.length === 0}
+                    value={userId ?? ""}
                     onChange={(e) => setUserId(e.target.value)}
                   >
+                    <option value="">— Válassz felhasználót —</option>
                     <option value="all">Összes</option>
                     {userListFromEntries.map(user => (
                       <option key={user.id} value={String(user.id)}>{user.name}</option>
