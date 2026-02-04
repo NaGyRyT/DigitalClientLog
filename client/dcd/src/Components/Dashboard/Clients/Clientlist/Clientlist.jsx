@@ -311,9 +311,10 @@ export default function Clientlist({
                     overlay={renderTooltip}> 
                     <Form.Select
                         size="sm"
-                        value={userId}
+                        value={userId ?? ""}
                         onChange={(e) => setUserId(e.target.value)}
                       >
+                      <option value="">— Válassz felhasználót —</option>
                       <option value="all">Összes</option>
                       {userList.map(user => (
                         <option key={user.id} value={String(user.id)}>
