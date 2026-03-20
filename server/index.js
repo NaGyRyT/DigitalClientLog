@@ -64,10 +64,17 @@ app.use('/api/login', authenticateKey, (req, res) => {
                         users.statementpermission,
                         users.readonlypermission,
                         users.calendarcolor,
-                        accessgroups.group_name 
+                        users.calendaronlypermission,
+                        users.extracalendargroup,
+                        accessgroups.group_name,
+                        accessgroups.calendarcolor AS group_calendarcolor,
+                        extra_ag.group_name AS extracalendargroup_name,
+                        extra_ag.calendarcolor AS extracalendargroup_color
                        FROM users 
                        INNER JOIN accessgroups 
                        ON users.accessgroup = accessgroups.id
+                       LEFT JOIN accessgroups AS extra_ag
+                       ON users.extracalendargroup = extra_ag.id
                        WHERE users.username = ?`
     database.db.query(sqlSelect, [username], (err, result) => {
         if (err) {
@@ -106,10 +113,17 @@ app.use('/api/checkloggedinuser', authenticateKey, (req, res) => {
                         users.statementpermission,
                         users.readonlypermission,
                         users.calendarcolor,
-                        accessgroups.group_name 
+                        users.calendaronlypermission,
+                        users.extracalendargroup,
+                        accessgroups.group_name,
+                        accessgroups.calendarcolor AS group_calendarcolor,
+                        extra_ag.group_name AS extracalendargroup_name,
+                        extra_ag.calendarcolor AS extracalendargroup_color
                        FROM users 
                        INNER JOIN accessgroups 
                        ON users.accessgroup = accessgroups.id
+                       LEFT JOIN accessgroups AS extra_ag
+                       ON users.extracalendargroup = extra_ag.id
                        WHERE users.username = ? AND users.password = ?`
     database.db.query(sqlSelect, [username, password], (err, result) => {
         if (err) {
@@ -137,7 +151,9 @@ app.post('/api/newuser', authenticateKey, (req,res) => {
     const statementpermission = req.body.statementpermission;
     const readonlypermission = req.body.readonlypermission;
     const calendarcolor = req.body.calendarcolor;
-    database.db.query('INSERT INTO users (username, password, name, auditpermission, statementpermission, readonlypermission, calendarcolor, accessgroup, inactive) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)', [username, password, name, auditpermission, statementpermission, readonlypermission, calendarcolor, group], (err, result) => {
+    const calendaronlypermission = req.body.calendaronlypermission;
+    const extracalendargroup = req.body.extracalendargroup;
+    database.db.query('INSERT INTO users (username, password, name, auditpermission, statementpermission, readonlypermission, calendarcolor, accessgroup, calendaronlypermission, extracalendargroup, inactive) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)', [username, password, name, auditpermission, statementpermission, readonlypermission, calendarcolor, group, calendaronlypermission, extracalendargroup], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -188,8 +204,10 @@ app.post('/api/edituser', authenticateKey, (req,res) => {
     const statementpermission = req.body.statementpermission;
     const readonlypermission = req.body.readonlypermission;
     const calendarcolor = req.body.calendarcolor;
+    const calendaronlypermission = req.body.calendaronlypermission;
+    const extracalendargroup = req.body.extracalendargroup;
     if (password === '') {
-        database.db.query('UPDATE users SET name = ?, accessgroup = ?, auditpermission = ?, statementpermission = ?, readonlypermission = ?, calendarcolor = ? WHERE id = ?', [name, group, auditpermission, statementpermission, readonlypermission, calendarcolor, id], (err, result) => {
+        database.db.query('UPDATE users SET name = ?, accessgroup = ?, auditpermission = ?, statementpermission = ?, readonlypermission = ?, calendarcolor = ?, calendaronlypermission = ?, extracalendargroup = ? WHERE id = ?', [name, group, auditpermission, statementpermission, readonlypermission, calendarcolor, calendaronlypermission, extracalendargroup, id], (err, result) => {
             if (err) {
                 console.log(err);
             } else {
@@ -197,7 +215,7 @@ app.post('/api/edituser', authenticateKey, (req,res) => {
             };
         });
     } else {
-        database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ?, auditpermission = ?, statementpermission = ?, readonlypermission = ?, calendarcolor = ? WHERE id = ?', [name, group, password, auditpermission, statementpermission, readonlypermission, calendarcolor, id], (err, result) => {
+        database.db.query('UPDATE users SET name = ?, accessgroup = ?, password = ?, auditpermission = ?, statementpermission = ?, readonlypermission = ?, calendarcolor = ?, calendaronlypermission = ?, extracalendargroup = ? WHERE id = ?', [name, group, password, auditpermission, statementpermission, readonlypermission, calendarcolor, calendaronlypermission, extracalendargroup, id], (err, result) => {
             if (err) {
                 console.log(err);
             } else {
@@ -229,6 +247,8 @@ app.get('/api/getuserlist', authenticateKey, (req,res) => {
                         users.statementpermission,
                         users.readonlypermission,
                         users.calendarcolor,
+                        users.calendaronlypermission,
+                        users.extracalendargroup,
                         accessgroups.group_name 
                        FROM users 
                        INNER JOIN accessgroups 
@@ -272,7 +292,8 @@ app.get('/api/getgrouplist', authenticateKey, (req,res) => {
 app.post('/api/newgroup', authenticateKey, (req,res) => {
     const groupname = req.body.groupname;
     const description = req.body.description;
-    database.db.query('INSERT INTO accessgroups (group_name, description) VALUES (?, ?)', [groupname, description,], (err, result) => {
+    const calendarcolor = req.body.calendarcolor || '#557722';
+    database.db.query('INSERT INTO accessgroups (group_name, description, calendarcolor) VALUES (?, ?, ?)', [groupname, description, calendarcolor], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -297,14 +318,16 @@ app.post('/api/editgroup', authenticateKey, (req,res) => {
     const id = req.body.id;
     const groupname = req.body.groupname;
     const description = req.body.description;
+    const calendarcolor = req.body.calendarcolor || '#557722';
     const sqlUpdate = `
         UPDATE
             accessgroups
         SET
             group_name = ?,
-            description = ?
+            description = ?,
+            calendarcolor = ?
         WHERE id = ?`
-    database.db.query(sqlUpdate, [groupname, description, id], (err, result) => {
+    database.db.query(sqlUpdate, [groupname, description, calendarcolor, id], (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -1596,9 +1619,10 @@ app.post('/api/deleteevent', authenticateKey, (req,res) => {
     });
 });
 
-app.get('/api/geteventsfromcalendar/:accessgroup/:userid', authenticateKey, (req,res) => {
+app.get('/api/geteventsfromcalendar/:accessgroup/:userid/:extracalendargroup', authenticateKey, (req,res) => {
     const userid = req.params.userid;
     const accessgroup = req.params.accessgroup;
+    const extracalendargroup = req.params.extracalendargroup === 'null' ? null : req.params.extracalendargroup;
     const sqlSelect =
         `
         SELECT
@@ -1613,9 +1637,14 @@ app.get('/api/geteventsfromcalendar/:accessgroup/:userid', authenticateKey, (req
             DATE_FORMAT(calendar.date_time_end, '%Y-%m-%dT%H:%i') as end
         FROM calendar
         INNER JOIN users ON users.id = calendar.user_id
-        WHERE calendar.user_id = ? OR calendar.group_id = ?
+        WHERE calendar.user_id = ? 
+           OR calendar.group_id = ?
+           ${extracalendargroup ? 'OR calendar.group_id = ?' : ''}
         `;
-    database.db.query(sqlSelect, [userid, accessgroup], (err, result) => {
+    const params = extracalendargroup 
+        ? [userid, accessgroup, extracalendargroup] 
+        : [userid, accessgroup];
+    database.db.query(sqlSelect, params, (err, result) => {
         if (err) {
             console.log(err);
         } else {

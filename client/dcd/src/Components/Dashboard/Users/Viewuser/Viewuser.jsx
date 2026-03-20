@@ -59,6 +59,7 @@ export default function Viewuser( {
                             {listItem.auditpermission ? <li>Ellenőrzési jog aktív</li> : ''}
                             {listItem.statementpermission ? <li>Kimutatási jog aktív</li> : ''}
                             {listItem.readonlypermission ? <li>Csak olvasási jog aktív</li> : ''}
+                            {listItem.calendaronlypermission ? <li>Csak naptár jog aktív</li> : ''}
                         </ul>
                     </Modal.Body>
                     <Modal.Footer>

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Form, Alert, Button, Modal, Row, Col, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { CirclePicker } from 'react-color';
 import { validateGroup } from '../Validategroup/Validategroup';
 import API from '../../../../api';
 
 export default function Editgroup( { loadGroupList, listItem, loggedInUserData, buttonTitle} ) {
 	const [groupName, setGroupName] = useState(listItem.group_name);
 	const [description, setDescription] = useState(listItem.description);
+	const [calendarColor, setCalendarColor] = useState(listItem.calendarcolor || '#557722');
 	const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 	const [errorMessage, setErrorMessage] = useState({
 		groupName : '',
@@ -19,6 +21,7 @@ export default function Editgroup( { loadGroupList, listItem, loggedInUserData, 
 		setShowEditGroupForm(false);
 		setGroupName(listItem.group_name);
 		setDescription(listItem.description);
+		setCalendarColor(listItem.calendarcolor || '#557722');
 		setErrorMessage({
 			groupName : '',
 			description : '',
@@ -39,6 +42,7 @@ export default function Editgroup( { loadGroupList, listItem, loggedInUserData, 
                 id : listItem.id,
                 groupname : groupName.trim(),
                 description : description,
+                calendarcolor : calendarColor,
 			}, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
 			setShowEditGroupForm(false);
@@ -105,6 +109,19 @@ export default function Editgroup( { loadGroupList, listItem, loggedInUserData, 
                                     onChange={(e) => setDescription(e.target.value)}/>
                             </Form.Group>
 						</Col>
+						</Row>
+						<Row>
+							<Col>
+								<Form.Group className='pt-2'>
+									<Form.Label>Csoport naptárbejegyzés színe</Form.Label>
+									<CirclePicker
+										colors={["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#2196f3", "#03a9f4", "#00bcd4", "#009688", "#4caf50", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc107", "#ff9800", "#ff5722", "#795548", "#607d8b", "#265985", "#557722", "#8B3A8B"]}
+										width='auto'
+										color={calendarColor}
+										onChangeComplete={(color) => setCalendarColor(color.hex)}
+									/>
+								</Form.Group>
+							</Col>
 						</Row>
                         
 					</Form>

@@ -23,6 +23,7 @@ export default function EditEvent( {
     const [groupEvent, setGroupEvent] = useState('');
     const [disableSubmitButton, setDisableSubmitButton] = useState(false);
     const [onlyView, setOnlyView] = useState(false);
+    const hasExtraGroup = loggedInUserData.extracalendargroup != null;
     const [errorMessage, setErrorMessage] = useState({
         startDate : '',
         startTime : '',
@@ -179,14 +180,19 @@ return (
             </Row>
             <Row>
                 <Col>
-                <Form.Check
-                    disabled={onlyView}
-                    type='checkbox'
-                    id='groupCheckBox'
-                    label='Csoport naptárbejegyzés'
-                    checked={groupEvent === 0 ? false : true}
-                    onChange={(e)=> setGroupEvent(groupEvent === 0 ? loggedInUserData.accessgroup : 0)}
-                />
+                    <Form.Group controlId='formGroupEvent'>
+                        <Form.Label>Naptár</Form.Label>
+                        <Form.Select
+                            disabled={onlyView}
+                            value={groupEvent}
+                            onChange={(e) => setGroupEvent(Number(e.target.value))}>
+                            <option value={0}>Saját naptár</option>
+                            <option value={loggedInUserData.accessgroup}>{loggedInUserData.group_name} (csoport)</option>
+                            {hasExtraGroup &&
+                                <option value={loggedInUserData.extracalendargroup}>{loggedInUserData.extracalendargroup_name} (csoport)</option>
+                            }
+                        </Form.Select>
+                    </Form.Group>
                 </Col>
             </Row>
         </Form>

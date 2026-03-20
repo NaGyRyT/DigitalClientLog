@@ -18,9 +18,13 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
   const [logList, setLogList] = useState([]);
   const [userEventList, setUserEventList] = useState([]);
   const [groupEventList, setGroupEventList] = useState([]);
+  const [extraGroupEventList, setExtraGroupEventList] = useState([]);
   const [mergedList, setMergedList] = useState([]);
   const [viewLogChecked, setViewLogChecked] = useState(true);
+  const [viewUserChecked, setViewUserChecked] = useState(true);
   const [viewGroupChecked, setViewGroupChecked] = useState(true);
+  const [viewExtraGroupChecked, setViewExtraGroupChecked] = useState(true);
+  const hasExtraGroup = loggedInUserData.extracalendargroup != null;
   const [calendarEvent, setCalendarEvent] = useState({
     startDate : '',
     startTime : '',
@@ -33,15 +37,6 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
   moment.locale('hu');
   const eventFetchInterval = 60000;
   const views = ['day', 'week', 'month', 'agenda'];
-  const logBackgroundColor = '#ead2ac';
-  const logColor = '#363636';
-  const groupCalendarEventBackgroundColor = '#557722'; 
-  const groupCalendarEventColor = '#FFFFFF';
-  const calendarEventBackgroundColor = loggedInUserData.calendarcolor;
-  const calendarEventColor = getTextColorSimple(calendarEventBackgroundColor);
-  const localizer = momentLocalizer(moment);
-  const min = '2024-03-14T07:00:00+01:00';
-  const max = '2024-03-14T19:00:00+01:00';
 
   function hexToRgb(hex) {
     hex = hex.replace('#', '');
@@ -64,6 +59,18 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
     const brightness = getBrightness(rgb);
     return brightness > 128 ? '#000000' : '#FFFFFF';
   };
+
+  const logBackgroundColor = '#ead2ac';
+  const logColor = '#363636';
+  const groupCalendarEventBackgroundColor = loggedInUserData.group_calendarcolor || '#557722';
+  const groupCalendarEventColor = getTextColorSimple(groupCalendarEventBackgroundColor);
+  const extraGroupCalendarEventBackgroundColor = loggedInUserData.extracalendargroup_color || '#8B3A8B';
+  const extraGroupCalendarEventColor = getTextColorSimple(extraGroupCalendarEventBackgroundColor);
+  const calendarEventBackgroundColor = loggedInUserData.calendarcolor;
+  const calendarEventColor = getTextColorSimple(calendarEventBackgroundColor);
+  const localizer = momentLocalizer(moment);
+  const min = '2024-03-14T07:00:00+01:00';
+  const max = '2024-03-14T19:00:00+01:00';
   
   const [date, setDate] = useState(moment().toDate());
   const [view, setView] = useState(Views.WEEK);
@@ -78,11 +85,13 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
     };
 
   const loadEventsFromCalendar = () => {
-    axios.get(`${API.address}/geteventsfromcalendar/${loggedInUserData.accessgroup}/${loggedInUserData.id}`,
+    const extraGroup = loggedInUserData.extracalendargroup ?? 'null';
+    axios.get(`${API.address}/geteventsfromcalendar/${loggedInUserData.accessgroup}/${loggedInUserData.id}/${extraGroup}`,
       {headers: { 'x-api-key': loggedInUserData.password }})
         .then (({data}) => {
           setUserEventList(data.filter((event) => event.group_id === 0));
-          setGroupEventList(data.filter((event) => event.group_id > 0));
+          setGroupEventList(data.filter((event) => event.group_id === loggedInUserData.accessgroup));
+          setExtraGroupEventList(data.filter((event) => hasExtraGroup && event.group_id === loggedInUserData.extracalendargroup));
         });
     };
   
@@ -110,11 +119,13 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
   const eventPropGetter = (e) => {
     let backgroundColor;
     let color;
-    if (e.group_id > 0) {
+    if (e.group_id === loggedInUserData.accessgroup) {
       backgroundColor = groupCalendarEventBackgroundColor;
       color = groupCalendarEventColor;
-    }
-    else if (e.group_id === undefined) {
+    } else if (hasExtraGroup && e.group_id === loggedInUserData.extracalendargroup) {
+      backgroundColor = extraGroupCalendarEventBackgroundColor;
+      color = extraGroupCalendarEventColor;
+    } else if (e.group_id === undefined) {
       backgroundColor = logBackgroundColor;
       color = logColor;
     } else {
@@ -130,13 +141,12 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
   }, []);
 
   const mergeLists = () => {
-    let tempMergedList = [];
-    if (viewLogChecked && viewGroupChecked) tempMergedList = [...userEventList, ...logList, ...groupEventList];
-      else if (!viewLogChecked && !viewGroupChecked) tempMergedList = userEventList;
-      else if (viewLogChecked && !viewGroupChecked) tempMergedList=[...userEventList, ...logList];
-      else if (!viewLogChecked && viewGroupChecked) tempMergedList=[...userEventList, ...groupEventList];
-      tempMergedList.map((item, index) => {item.key = index});
-      setMergedList(tempMergedList)
+    let tempMergedList = viewUserChecked ? [...userEventList] : [];
+    if (viewLogChecked) tempMergedList = [...tempMergedList, ...logList];
+    if (viewGroupChecked) tempMergedList = [...tempMergedList, ...groupEventList];
+    if (viewExtraGroupChecked && hasExtraGroup) tempMergedList = [...tempMergedList, ...extraGroupEventList];
+    tempMergedList.map((item, index) => {item.key = index});
+    setMergedList(tempMergedList);
   };
 
   const [scheduler, setScheduler] = useState(false);
@@ -158,7 +168,7 @@ useEffect(() => {
 
   useEffect(()=> {
     mergeLists();
-  }, [viewGroupChecked, viewLogChecked, logList, groupEventList, userEventList]);
+  }, [viewGroupChecked, viewLogChecked, viewUserChecked, viewExtraGroupChecked, logList, groupEventList, extraGroupEventList, userEventList]);
 
   return (
     <div>
@@ -230,25 +240,73 @@ useEffect(() => {
         </>
         }
         
-        <Row className='mx-0 my-2 mx-sm-3'>
-          <Col>
-            <Form.Check
-              className='log-checkbox'
-              type='checkbox'
-              id='viewLogCheckBox'
-              label='Naplóbejegyzések'
-              defaultChecked={viewLogChecked}
-              onChange={()=> setViewLogChecked(!viewLogChecked)}/>
+        <Row className='mx-0 my-2 mx-sm-3' style={{gap: '6px'}}>
+          <Col xs='auto'>
+            <div style={{
+              backgroundColor: calendarEventBackgroundColor,
+              color: calendarEventColor,
+              borderRadius: '6px',
+              padding: '4px 10px',
+              display: 'inline-block'
+            }}>
+              <Form.Check
+                type='checkbox'
+                id='viewUserCheckBox'
+                label='Saját naptár'
+                checked={viewUserChecked}
+                onChange={()=> setViewUserChecked(!viewUserChecked)}/>
+            </div>
           </Col>
-          <Col>
-            <Form.Check          
-              className='group-checkbox'
-              type='checkbox'
-              id='viewGroupEvenetCheckBox'
-              label='Csoport naptárbejegyzések'
-              defaultChecked={viewGroupChecked}
-              onChange={()=> setViewGroupChecked(!viewGroupChecked)}/>
+          {!loggedInUserData.calendaronlypermission &&
+          <Col xs='auto'>
+            <div style={{
+              backgroundColor: logBackgroundColor,
+              color: logColor,
+              borderRadius: '6px',
+              padding: '4px 10px',
+              display: 'inline-block'
+            }}>
+              <Form.Check
+                type='checkbox'
+                id='viewLogCheckBox'
+                label='Naplóbejegyzések'
+                checked={viewLogChecked}
+                onChange={()=> setViewLogChecked(!viewLogChecked)}/>
+            </div>
+          </Col>}
+          <Col xs='auto'>
+            <div style={{
+              backgroundColor: groupCalendarEventBackgroundColor,
+              color: groupCalendarEventColor,
+              borderRadius: '6px',
+              padding: '4px 10px',
+              display: 'inline-block'
+            }}>
+              <Form.Check
+                type='checkbox'
+                id='viewGroupEventCheckBox'
+                label={`${loggedInUserData.group_name} naptár`}
+                checked={viewGroupChecked}
+                onChange={()=> setViewGroupChecked(!viewGroupChecked)}/>
+            </div>
           </Col>
+          {hasExtraGroup &&
+          <Col xs='auto'>
+            <div style={{
+              backgroundColor: extraGroupCalendarEventBackgroundColor,
+              color: extraGroupCalendarEventColor,
+              borderRadius: '6px',
+              padding: '4px 10px',
+              display: 'inline-block'
+            }}>
+              <Form.Check
+                type='checkbox'
+                id='viewExtraGroupEventCheckBox'
+                label={`${loggedInUserData.extracalendargroup_name} naptár`}
+                checked={viewExtraGroupChecked}
+                onChange={()=> setViewExtraGroupChecked(!viewExtraGroupChecked)}/>
+            </div>
+          </Col>}
         </Row>
     </div>
   )};

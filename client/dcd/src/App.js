@@ -8,7 +8,7 @@ import Groups from './Components/Dashboard/Groups/Groups';
 import Clients from './Components/Dashboard/Clients/Clients';
 import Usercalendar from './Components/Dashboard/Usercalendar/Usercalendar';
 import Log from './Components/Dashboard/Log/Log';
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Link, Navigate } from 'react-router-dom';
 import { Nav, Navbar, Container, Offcanvas } from 'react-bootstrap';
 import * as Icon from 'react-bootstrap-icons';
 import './App.css';
@@ -17,8 +17,17 @@ import API from './api';
 import Company from './Components/Dashboard/Company/Company';
 axios.defaults.headers.common['subdomain'] = window.location.host.split('.')[0];
 
+function ProtectedRoute({ loggedInUserData, isLoading, children }) {
+    if (isLoading) return null;
+    if (loggedInUserData.calendaronlypermission) {
+        return <Navigate to='/dashboard/calendar' replace />;
+    }
+    return children;
+}
+
 function App() {
     const [isToken, setIsToken] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [loggedInUserData, setLoggedInUserData] = useState('');
     const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true'? true : false);
     const [activeMenuItem, setActiveMenuItem] = useState('users');
@@ -52,9 +61,11 @@ function App() {
                     setIsToken(true);
                     setLoggedInUserData(data.data[0]);
                 } else setIsToken(false);
+                setIsLoading(false);
             });
         } else {
             setIsToken(false);
+            setIsLoading(false);
             }
     };
 
@@ -160,9 +171,9 @@ function App() {
                                             </>  :
                                             ''
                                         }
-                                    <Nav.Link eventKey='clients'as={Link} to='/dashboard/clients'>Ügyfél</Nav.Link>
-                                    <Nav.Link eventKey='log'as={Link} to='/dashboard/log'>Napló</Nav.Link>
-                                    <Nav.Link eventKey='statements'as={Link} to='/dashboard/statements'>Kimutatás</Nav.Link>
+                                    {!loggedInUserData.calendaronlypermission && <Nav.Link eventKey='clients'as={Link} to='/dashboard/clients'>Ügyfél</Nav.Link>}
+                                    {!loggedInUserData.calendaronlypermission && <Nav.Link eventKey='log'as={Link} to='/dashboard/log'>Napló</Nav.Link>}
+                                    {!loggedInUserData.calendaronlypermission && <Nav.Link eventKey='statements'as={Link} to='/dashboard/statements'>Kimutatás</Nav.Link>}
                                     <Nav.Link eventKey='calendar'as={Link} to='/dashboard/calendar'>Naptár</Nav.Link>
                                 </Nav>
                                 <Container className='display-none menu-assets'>
@@ -189,17 +200,35 @@ function App() {
                     </Container>
             </Navbar>
             <Routes className='mx-3'>
-                <Route path='/' element={<Clients loggedInUserData={loggedInUserData}/>}/>
+                <Route path='/' element={
+                    <ProtectedRoute loggedInUserData={loggedInUserData} isLoading={isLoading}>
+                        <Clients loggedInUserData={loggedInUserData}/>
+                    </ProtectedRoute>}/>
                 {loggedInUserData.group_name === 'Admin' ?
                     <>
-                        <Route path='/dashboard/users' element={<Users darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
-                        <Route path='/dashboard/groups' element={<Groups loggedInUserData={loggedInUserData}/>}/>
+                        <Route path='/dashboard/users' element={
+                            <ProtectedRoute loggedInUserData={loggedInUserData} isLoading={isLoading}>
+                                <Users darkMode={darkMode} loggedInUserData={loggedInUserData}/>
+                            </ProtectedRoute>}/>
+                        <Route path='/dashboard/groups' element={
+                            <ProtectedRoute loggedInUserData={loggedInUserData} isLoading={isLoading}>
+                                <Groups loggedInUserData={loggedInUserData}/>
+                            </ProtectedRoute>}/>
                     </> :
                     ''
                 }
-                <Route path='/dashboard/clients' element={<Clients darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
-                <Route path='/dashboard/log' element={<Log darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
-                <Route path='/dashboard/statements' element={<Statements darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>
+                <Route path='/dashboard/clients' element={
+                    <ProtectedRoute loggedInUserData={loggedInUserData} isLoading={isLoading}>
+                        <Clients darkMode={darkMode} loggedInUserData={loggedInUserData}/>
+                    </ProtectedRoute>}/>
+                <Route path='/dashboard/log' element={
+                    <ProtectedRoute loggedInUserData={loggedInUserData} isLoading={isLoading}>
+                        <Log darkMode={darkMode} loggedInUserData={loggedInUserData}/>
+                    </ProtectedRoute>}/>
+                <Route path='/dashboard/statements' element={
+                    <ProtectedRoute loggedInUserData={loggedInUserData} isLoading={isLoading}>
+                        <Statements darkMode={darkMode} loggedInUserData={loggedInUserData}/>
+                    </ProtectedRoute>}/>
                 <Route path='/dashboard/calendar' element={<Usercalendar darkMode={darkMode} loggedInUserData={loggedInUserData}/>}/>          
             </Routes>
             </BrowserRouter>

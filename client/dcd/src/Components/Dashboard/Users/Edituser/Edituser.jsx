@@ -29,6 +29,8 @@ export default function Edituser( {
 	const [auditPermission, setAuditPermission] = useState(listItem.auditpermission);
 	const [statementPermission, setStatementPermission] = useState(listItem.statementpermission);
 	const [readOnlyPermission, setReadOnlyPermission] = useState(listItem.readonlypermission);
+	const [calendarOnlyPermission, setCalendarOnlyPermission] = useState(listItem.calendaronlypermission);
+	const [extraCalendarGroup, setExtraCalendarGroup] = useState(listItem.extracalendargroup ?? null);
 	const [calendarColor, setCalendarColor] = useState(listItem.calendarcolor);
 
 	const handleCloseEditUserForm = () => {
@@ -37,6 +39,8 @@ export default function Edituser( {
 		setAuditPermission(listItem.auditpermission);
 		setStatementPermission(listItem.statementpermission);
 		setReadOnlyPermission(listItem.readonlypermission)
+		setCalendarOnlyPermission(listItem.calendaronlypermission);
+		setExtraCalendarGroup(listItem.extracalendargroup ?? null);
 		setPassword('');
 		setCalendarColor(listItem.calendarcolor)
 		setErrorMessage({
@@ -65,6 +69,8 @@ export default function Edituser( {
 				auditpermission : auditPermission,
 				statementpermission : statementPermission,
 				readonlypermission : readOnlyPermission,
+				calendaronlypermission : calendarOnlyPermission,
+				extracalendargroup : extraCalendarGroup,
 				calendarcolor : calendarColor,
 				id : listItem.id
 			}, {headers: { 'x-api-key': loggedInUserData.password }})
@@ -183,7 +189,30 @@ export default function Edituser( {
 									defaultChecked={readOnlyPermission ? true : false}
 									onChange={(e) => setReadOnlyPermission(e.target.checked ? 1 : 0)}/>
 							</Col>
+							<Col xs={12} sm={4}>
+								<Form.Check
+									disabled={loggedInUser !== undefined ? true : false}
+									type='switch'
+									label='Csak naptár'
+									id='formCalendarOnlyPermission'
+									defaultChecked={calendarOnlyPermission ? true : false}
+									onChange={(e) => setCalendarOnlyPermission(e.target.checked ? 1 : 0)}/>
+							</Col>
 						</Row>
+						<Form.Group className={`pt-2 ${loggedInUser !== undefined ? 'd-none' : ''}`} controlId='formExtraCalendarGroup'>
+							<Form.Label>Extra naptár csoport</Form.Label>
+							<Form.Select
+								value={extraCalendarGroup ?? 0}
+								onChange={(e) => setExtraCalendarGroup(Number(e.target.value) === 0 ? null : Number(e.target.value))}>
+								<option key={0} value={0}>– Nincs extra csoport –</option>
+								{loggedInUser === undefined && groupList ?
+									groupList.map((groupListItem) => (
+										<option key={groupListItem.id} value={groupListItem.id}>{groupListItem.group_name}</option>
+									)) : null
+								}
+							</Form.Select>
+							<Form.Text>Melyik másik csoport naptárát láthassa és szerkeszthesse a felhasználó.</Form.Text>
+						</Form.Group>
 						<Form.Group className={listItem.username === "admin" ? "d-none" : ""} controlId="formSelectFromGroup">
 							<Form.Label>Csoport</Form.Label>
 							<Form.Select 

@@ -24,6 +24,8 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 	const [auditPermission, setAuditPermission] = useState(0);
 	const [statementPermission, setStatementPermission] = useState(0);
 	const [readOnlyPermission, setReadOnlyPermission] = useState(0);
+	const [calendarOnlyPermission, setCalendarOnlyPermission] = useState(0);
+	const [extraCalendarGroup, setExtraCalendarGroup] = useState(null);
 	const [calendarColor, setCalendarColor] = useState('#265985');
 
 	const handleCloseNewUserForm = () => {
@@ -35,6 +37,8 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 		setAuditPermission(0);
 		setStatementPermission(0);
 		setReadOnlyPermission(0);
+		setCalendarOnlyPermission(0);
+		setExtraCalendarGroup(null);
 		setCalendarColor('#265985');
 		setErrorMessage({
 			name : '',
@@ -61,6 +65,8 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 														auditpermission : auditPermission,
 														statementpermission : statementPermission,
 														readonlypermission : readOnlyPermission,
+														calendaronlypermission : calendarOnlyPermission,
+														extracalendargroup : extraCalendarGroup,
 														calendarcolor: calendarColor,
 													}, {headers: { 'x-api-key': loggedInUserData.password }})
 			.then(() => {
@@ -142,7 +148,27 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 									defaultChecked={readOnlyPermission ? true : false}
 									onChange={(e) => setReadOnlyPermission(e.target.checked ? 1 : 0)}/>
 							</Col>
+							<Col xs={12} sm={4}>
+								<Form.Check
+									type='switch'
+									label='Csak naptár'
+									id='formCalendarOnlyPermission'
+									defaultChecked={calendarOnlyPermission ? true : false}
+									onChange={(e) => setCalendarOnlyPermission(e.target.checked ? 1 : 0)}/>
+							</Col>
 						</Row>
+						<Form.Group className='pt-2' controlId='formExtraCalendarGroup'>
+							<Form.Label>Extra naptár csoport</Form.Label>
+							<Form.Select
+								value={extraCalendarGroup ?? 0}
+								onChange={(e) => setExtraCalendarGroup(Number(e.target.value) === 0 ? null : Number(e.target.value))}>
+								<option key={0} value={0}>– Nincs extra csoport –</option>
+								{groupList.map((groupListItem) => (
+									<option key={groupListItem.id} value={groupListItem.id}>{groupListItem.group_name}</option>
+								))}
+							</Form.Select>
+							<Form.Text>Melyik másik csoport naptárát láthassa és szerkeszthesse a felhasználó.</Form.Text>
+						</Form.Group>
 						<Form.Group md="4" controlId="formSelectFromGroup">
 							<Form.Label>Csoport</Form.Label>
 							{errorMessage.group === '' ? '' : <Alert variant='danger' size="sm">{errorMessage.group}</Alert>}

@@ -2,12 +2,14 @@ import React from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 import { Form, Alert, Button, Modal, Row, Col } from 'react-bootstrap';
+import { CirclePicker } from 'react-color';
 import { validateGroup } from '../Validategroup/Validategroup';
 import API from '../../../../api';
 
 export default function Newgroup( {loadGroupList, loggedInUserData} ) {
 	const [groupName, setGroupName] = useState('');
 	const [description, setDescription] = useState('');
+	const [calendarColor, setCalendarColor] = useState('#557722');
 	const [errorMessage, setErrorMessage] = useState({
 		groupName : '',
 		description : '',
@@ -19,6 +21,7 @@ export default function Newgroup( {loadGroupList, loggedInUserData} ) {
 		setShowNewGroupForm(false);
 		setGroupName('');
 		setDescription('');
+		setCalendarColor('#557722');
  	 	setErrorMessage({
             groupName : '',
 			description : '',
@@ -35,6 +38,7 @@ export default function Newgroup( {loadGroupList, loggedInUserData} ) {
 			axios.post(`${API.address}/newgroup`, {
                 groupname : groupName.trim(),
                 description : description,
+                calendarcolor : calendarColor,
             }, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
             handleCloseNewGroupForm();
@@ -85,7 +89,19 @@ export default function Newgroup( {loadGroupList, loggedInUserData} ) {
                             </Form.Group>
 						</Col>
 						</Row>
-                        
+						<Row>
+							<Col>
+								<Form.Group className='pt-2'>
+									<Form.Label>Csoport naptárbejegyzés színe</Form.Label>
+									<CirclePicker
+										colors={["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#2196f3", "#03a9f4", "#00bcd4", "#009688", "#4caf50", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc107", "#ff9800", "#ff5722", "#795548", "#607d8b", "#265985", "#557722", "#8B3A8B"]}
+										width='auto'
+										color={calendarColor}
+										onChangeComplete={(color) => setCalendarColor(color.hex)}
+									/>
+								</Form.Group>
+							</Col>
+						</Row>
 					</Form>
 				</Modal.Body>
 				<Modal.Footer>
@@ -99,4 +115,4 @@ export default function Newgroup( {loadGroupList, loggedInUserData} ) {
 			</Modal>
 		</>
 	)
-}
+};

@@ -19,6 +19,7 @@ export default function AddEvent( {
     const [description, setDescription] = useState('');
     const [subject, setSubject] = useState('');
     const [groupEvent, setGroupEvent] = useState(0);
+    const hasExtraGroup = loggedInUserData.extracalendargroup != null;
     const [disableSubmitButton, setDisableSubmitButton] = useState(false);
     const [errorMessage, setErrorMessage] = useState({
         startDate : '',
@@ -162,11 +163,18 @@ export default function AddEvent( {
             </Row>
             <Row>
                 <Col>
-                <Form.Check
-                    type='checkbox'
-                    id='groupCheckBox'
-                    label='Csoport naptárbejegyzés'
-                    onChange={(e)=> e.target.checked ? setGroupEvent(loggedInUserData.accessgroup) : setGroupEvent(0) }/>
+                    <Form.Group controlId='formGroupEvent'>
+                        <Form.Label>Naptár</Form.Label>
+                        <Form.Select
+                            value={groupEvent}
+                            onChange={(e) => setGroupEvent(Number(e.target.value))}>
+                            <option value={0}>Saját naptár</option>
+                            <option value={loggedInUserData.accessgroup}>{loggedInUserData.group_name} (csoport)</option>
+                            {hasExtraGroup &&
+                                <option value={loggedInUserData.extracalendargroup}>{loggedInUserData.extracalendargroup_name} (csoport)</option>
+                            }
+                        </Form.Select>
+                    </Form.Group>
                 </Col>
             </Row>
         </Form>

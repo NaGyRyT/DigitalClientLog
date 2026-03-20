@@ -63,7 +63,9 @@ Ezt a menüpontotot csak az admin csoport tagjai láthatják/kezelhetik.
     - ellenőrzési jog (ellenőrizheti a naplókat egyesével vagy akár egy ügyfél összes naplóját)
     - kimutatási jog (a csoportjában lévő többi felhasználó kimutatását is megnézheti)
     - olvasási jog (ha ez aktív akkor csak lekérdezheti az adatokat)
+    - csak naptár jog (a felhasználó kizárólag a naptár menüpontot érheti el, más oldalra URL-lel sem lehet belépni)
 - lehetőség a saját naptárbejegyzés színének beállítására
+- extra naptár csoport választása: megadható hogy melyik másik csoport naptárát láthassa és szerkeszthesse a felhasználó a saját csoportján kívül
 
 ### Felhasználók listája
 - keresés/rendezés
@@ -89,6 +91,7 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 ### Új csoport felvitele
 - név minimum 5 karakter, két ugyanolyan nevű csoport nem lehet
 - leírás kötelező
+- lehetőség a csoport naptárbejegyzéseinek színét beállítani
 
 ### Csoportok listája
 - keresés/rendezés
@@ -152,10 +155,22 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 - admin csoport tagjai vaalmint a lekérdezési joggal rendelkező felhasználók azoknak felhasználóknak a kimutatásait is lekérdezhetik akiknek van naplóbejegyzésük, egyéb csoport tagjai csak a saját kimutatásaikat láthatják
 
 ## Naptár
-- létrehozható saját illetve csoport naptárbejegyzés
+- létrehozható saját, saját csoport illetve extra csoport naptárbejegyzés (legördülő listából választható)
+- ha a felhasználónak van extra naptár csoportja beállítva, akkor annak bejegyzéseit is látja és abba is tud bejegyzést létrehozni
 - megjeleníthetőek a csoport naptárbejegyzések, a sajátok szerkeszthetőek és törölhetőek
 - megjeleníthetőek a naplóbejegyzések, a sajátok szerkeszthetőek, törölhetőek
 - keresés funkció a tárgy mezőben
+- a naptár alján checkboxokkal szabályozható, hogy mely naptárak jelenjenek meg:
+    - saját naptárbejegyzések
+    - naplóbejegyzések (csak naptár jogosultsággal rendelkező felhasználóknál nem jelenik meg)
+    - saját csoport naptárbejegyzései
+    - extra csoport naptárbejegyzései (csak akkor látható ha van extra csoport beállítva)
+- minden checkbox háttérszíne az adott naptártípus színével egyezik meg
+- a naptárbejegyzések színei:
+    - saját bejegyzés: a felhasználónál beállított szín
+    - csoport bejegyzés: a csoportnál beállított szín
+    - extra csoport bejegyzés: az extra csoportnál beállított szín
+    - naplóbejegyzés: fix bézs szín
 
 ### Cég adatok
  A cég rövid nevére kattintva az adminisztrátor csoport tagjaként módosíthatóak a cég adatok (név, rövid név, cím). Egyik mező sem lehet üres.
@@ -230,10 +245,11 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 |          | accessgroup(int)   |
 |          | inactive(tinyint)  |
 |          | auditpermission(tinyint)|
-|          | statementpermission(tinyint)
+|          | statementpermission(tinyint)|
 |          | readonlypermission(tinyint)|
 |          | calendarcolor(vc7) |
-
+|          | calendaronlypermission(tinyint)|
+|          | extracalendargroup(int)|
 
 | Táblanév | company            |
 |----------|--------------------|
@@ -242,11 +258,12 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 |          | shortname(vc20)    |
 |          | address(vc100)     |
 
-| Táblanév | accessgroup        |
+| Táblanév | accessgroups       |
 |----------|--------------------|
 | Mezők    | id(int)            |
 |          | group_name(vc100)  |
 |          | description(text)  |
+|          | calendarcolor(vc7) |
 
 | Táblanév | cities             |
 |----------|--------------------|
