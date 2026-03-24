@@ -72,7 +72,8 @@ export default function Edituser( {
 				calendaronlypermission : calendarOnlyPermission,
 				extracalendargroup : extraCalendarGroup,
 				calendarcolor : calendarColor,
-				id : listItem.id
+				id : listItem.id,
+				userid : loggedInUserData.id
 			}, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
 			if (loggedInUser === undefined) loadUserList(false) 

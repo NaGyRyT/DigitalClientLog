@@ -172,6 +172,24 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
     - extra csoport bejegyzés: az extra csoportnál beállított szín
     - naplóbejegyzés: fix bézs szín
 
+## Rendszernapló
+Ezt a menüpontot csak az admin csoport tagjai láthatják/kezelhetik.
+
+- az alkalmazás naplózza a fontosabb adatbázis műveleteket és a belépési eseményeket
+- a következő műveletek kerülnek rögzítésre:
+    - belépés (sikeres és sikertelen)
+    - felhasználó létrehozás, módosítás, törlés, inaktiválás, aktiválás
+    - csoport létrehozás, módosítás, törlés
+    - ügyfél létrehozás, módosítás, törlés
+    - naplóbejegyzés létrehozás, módosítás, törlés, ellenőrzés
+    - naptárbejegyzés létrehozás, módosítás, törlés
+- szűrési lehetőségek:
+    - dátum intervallum szerint
+    - felhasználónév szerint
+    - művelet típusa szerint
+    - érintett tábla szerint
+- a műveletek színkódolt badge-dzsel jelennek meg (zöld: belépés, piros: törlés, sárga: módosítás, kék: új bejegyzés stb.)
+
 ### Cég adatok
  A cég rövid nevére kattintva az adminisztrátor csoport tagjaként módosíthatóak a cég adatok (név, rövid név, cím). Egyik mező sem lehet üres.
 
@@ -270,6 +288,17 @@ Ha a felhasználó "átmegy" másik csoportba akkor az eddigi ügyfeleit, napló
 | Mezők    | id(int)            |
 |          | zip(vc4)           |
 |          | city(vc100)        |
+
+| Táblanév | action_log         |
+|----------|--------------------|
+| Mezők    | id(int)            |
+|          | user_id(int)       |
+|          | username(vc20)     |
+|          | action(vc30)       |
+|          | target_table(vc20) |
+|          | target_id(int)     |
+|          | details(text)      |
+|          | created_at(datetime)|
 
 ---
 

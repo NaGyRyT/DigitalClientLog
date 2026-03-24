@@ -24,13 +24,13 @@ export default function Deleteuser( {listItem, loadUserList, loggedInUserData, b
 
     const handleDeleteUserSubmit = async () => {
         if (existUserIdInLog) {
-            axios.post(`${API.address}/inactiveuser`, {id : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
+            axios.post(`${API.address}/inactiveuser`, {id : listItem.id, userid : loggedInUserData.id}, {headers: { 'x-api-key': loggedInUserData.password }})
             .then(() => {
                 loadUserList(false);
                 setShowDeleteUserForm(false);
             })
         } else {
-            axios.post(`${API.address}/deleteuser`, {id : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
+            axios.post(`${API.address}/deleteuser`, {id : listItem.id, userid : loggedInUserData.id}, {headers: { 'x-api-key': loggedInUserData.password }})
             .then(() => {
                 loadUserList(false);
                 setShowDeleteUserForm(false);

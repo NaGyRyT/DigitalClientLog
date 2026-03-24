@@ -8,6 +8,7 @@ import Groups from './Components/Dashboard/Groups/Groups';
 import Clients from './Components/Dashboard/Clients/Clients';
 import Usercalendar from './Components/Dashboard/Usercalendar/Usercalendar';
 import Log from './Components/Dashboard/Log/Log';
+import Actionlog from './Components/Dashboard/Actionlog/Actionlog';
 import { BrowserRouter, Route, Routes, Link, Navigate } from 'react-router-dom';
 import { Nav, Navbar, Container, Offcanvas } from 'react-bootstrap';
 import * as Icon from 'react-bootstrap-icons';
@@ -168,6 +169,7 @@ function App() {
                                             <>
                                                 <Nav.Link eventKey='users'as={Link} to='/dashboard/users'>Felhasználó</Nav.Link>
                                                 <Nav.Link eventKey='groups'as={Link} to='/dashboard/groups'>Csoport</Nav.Link>
+                                                <Nav.Link eventKey='actionlog'as={Link} to='/dashboard/actionlog'>Rendszernapló</Nav.Link>
                                             </>  :
                                             ''
                                         }
@@ -213,6 +215,10 @@ function App() {
                         <Route path='/dashboard/groups' element={
                             <ProtectedRoute loggedInUserData={loggedInUserData} isLoading={isLoading}>
                                 <Groups loggedInUserData={loggedInUserData}/>
+                            </ProtectedRoute>}/>
+                        <Route path='/dashboard/actionlog' element={
+                            <ProtectedRoute loggedInUserData={loggedInUserData} isLoading={isLoading}>
+                                <Actionlog loggedInUserData={loggedInUserData}/>
                             </ProtectedRoute>}/>
                     </> :
                     ''

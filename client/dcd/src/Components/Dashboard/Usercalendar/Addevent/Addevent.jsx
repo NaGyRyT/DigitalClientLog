@@ -153,8 +153,8 @@ export default function AddEvent( {
                         <Form.Control
                             as="textarea"
                             rows={8}
-                            autoComplete="tel"
-                            type='tel'
+                            autoComplete="text"
+                            type='text'
                             placeholder='Esemény leírása...'
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}/>

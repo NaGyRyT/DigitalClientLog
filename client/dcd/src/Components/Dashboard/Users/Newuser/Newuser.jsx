@@ -68,6 +68,7 @@ export default function Newuser( { loadUserList, groupList, loggedInUserData } )
 														calendaronlypermission : calendarOnlyPermission,
 														extracalendargroup : extraCalendarGroup,
 														calendarcolor: calendarColor,
+														userid : loggedInUserData.id
 													}, {headers: { 'x-api-key': loggedInUserData.password }})
 			.then(() => {
 				handleCloseNewUserForm();

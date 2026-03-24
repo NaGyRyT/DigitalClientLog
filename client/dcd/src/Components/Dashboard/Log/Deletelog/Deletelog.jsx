@@ -21,7 +21,7 @@ export default function Deletelog( {
     
     const handleDeleteLogSubmit = (e) => {
         e.preventDefault();
-        axios.post(`${API.address}/deletelog`, {id : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
+        axios.post(`${API.address}/deletelog`, {id : listItem.id, userid : loggedInUserData.id}, {headers: { 'x-api-key': loggedInUserData.password }})
             .then(() => {
                 loadLogEntries(false);
                 setShowDeleteLogForm(false);

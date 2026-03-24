@@ -127,7 +127,8 @@ export default function Editlog({ logEntry, loadLogEntries, loggedInUserData, bu
                 shapeofactivities : shapeOfActivities,
                 test_ora : testOra ? date : '3000-01-01',
                 test_mmse : testMmse ? date : '3000-01-01',
-                test_tym_hun : testTymHun ? date : '3000-01-01'
+                test_tym_hun : testTymHun ? date : '3000-01-01',
+                userid: loggedInUserData.id
             }, {headers: { 'x-api-key': loggedInUserData.password }})
 		    .then(() => {
                 setShowEditLogForm(false);

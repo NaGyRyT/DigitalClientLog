@@ -39,6 +39,7 @@ export default function Newgroup( {loadGroupList, loggedInUserData} ) {
                 groupname : groupName.trim(),
                 description : description,
                 calendarcolor : calendarColor,
+				userid : loggedInUserData.id
             }, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
             handleCloseNewGroupForm();

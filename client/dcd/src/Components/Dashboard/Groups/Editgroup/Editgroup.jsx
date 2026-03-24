@@ -43,6 +43,7 @@ export default function Editgroup( { loadGroupList, listItem, loggedInUserData, 
                 groupname : groupName.trim(),
                 description : description,
                 calendarcolor : calendarColor,
+				userid : loggedInUserData.id
 			}, {headers: { 'x-api-key': loggedInUserData.password }})
 		.then(() => {
 			setShowEditGroupForm(false);

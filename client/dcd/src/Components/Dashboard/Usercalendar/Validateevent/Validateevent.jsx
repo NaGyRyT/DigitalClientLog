@@ -23,9 +23,9 @@ export async function validateEvent(
         errorMessage.subject = 'Tárgy megadása kötelező';
         errorMessage.error = true;
     } else errorMessage.subject = '';
-    if (description.trim() === '') {
+    /* if (description.trim() === '') {
         errorMessage.description = 'Esemény megadása kötelező';
         errorMessage.error = true;
-    } else errorMessage.description = '';
+    } else errorMessage.description = ''; */
     return errorMessage
 };

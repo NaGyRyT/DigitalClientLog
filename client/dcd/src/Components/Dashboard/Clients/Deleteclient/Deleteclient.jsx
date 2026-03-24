@@ -15,7 +15,7 @@ export default function Deleteclient( { listItem, loadClientList, loggedInUserDa
         setShowDeleteClientForm(true)};
     const handleDeleteClientSubmit = (e) => {
         e.preventDefault();
-        axios.post(`${API.address}/deleteclient`, {id : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
+        axios.post(`${API.address}/deleteclient`, {id : listItem.id, userid : loggedInUserData.id}, {headers: { 'x-api-key': loggedInUserData.password }})
             .then(() => {
                 loadClientList(false);
                 setShowDeleteClientForm(false);

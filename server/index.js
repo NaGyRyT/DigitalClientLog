@@ -49,6 +49,27 @@ const authenticateKey = (req, res, next) => {
   };
 
 
+/*------------------------------Action Logger--------------------------*/
+function logAction(db, userId, username, action, targetTable, targetId, details) {
+    if (userId && !username) {
+        db.query('SELECT username FROM users WHERE id = ?', [userId], (err, result) => {
+            const resolvedUsername = (!err && result.length > 0) ? result[0].username : null;
+            db.query(
+                'INSERT INTO action_log (user_id, username, action, target_table, target_id, details) VALUES (?, ?, ?, ?, ?, ?)',
+                [userId || null, resolvedUsername, action, targetTable || null, targetId || null, details || null],
+                (err) => { if (err) console.log('Log error:', err); }
+            );
+        });
+    } else {
+        db.query(
+            'INSERT INTO action_log (user_id, username, action, target_table, target_id, details) VALUES (?, ?, ?, ?, ?, ?)',
+            [userId || null, username || null, action, targetTable || null, targetId || null, details || null],
+            (err) => { if (err) console.log('Log error:', err); }
+        );
+    }
+}
+
+
 /*------------------------------Login--------------------------*/
 app.use('/api/login', authenticateKey, (req, res) => {
     const username = req.body.username;
@@ -86,14 +107,17 @@ app.use('/api/login', authenticateKey, (req, res) => {
                         console.log(err);
                     } else if (!isMatch) {
                         res.send([]);
+                        logAction(database.db, null, username, 'LOGIN_FAILED', 'users', null, 'Hibás jelszó');
                         console.log('Username matches passwords do not match');
                     } else {
                         console.log('Username and passwords match');
+                        logAction(database.db, result[0].id, username, 'LOGIN', 'users', result[0].id, 'Sikeres belépés');
                         res.send(result);
                     }
                 }) 
             } else {
                 res.send([]);   
+                logAction(database.db, null, username, 'LOGIN_FAILED', 'users', null, 'Nem létező vagy inaktív felhasználó');
                 console.log("Username doesn't match or inactivated user");
             }
         }
@@ -153,10 +177,12 @@ app.post('/api/newuser', authenticateKey, (req,res) => {
     const calendarcolor = req.body.calendarcolor;
     const calendaronlypermission = req.body.calendaronlypermission;
     const extracalendargroup = req.body.extracalendargroup;
+    const user_id = req.body.userid;
     database.db.query('INSERT INTO users (username, password, name, auditpermission, statementpermission, readonlypermission, calendarcolor, accessgroup, calendaronlypermission, extracalendargroup, inactive) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)', [username, password, name, auditpermission, statementpermission, readonlypermission, calendarcolor, group, calendaronlypermission, extracalendargroup], (err, result) => {
         if (err) {
             console.log(err);
         } else {
+            logAction(database.db, user_id, null, 'NEW_USER', 'users', result.insertId, `Új felhasználó: ${username} (${name})`);
             res.send({username : username});
         }
     });
@@ -164,10 +190,12 @@ app.post('/api/newuser', authenticateKey, (req,res) => {
 
 app.post('/api/deleteuser', authenticateKey, (req,res) => {
     const id = req.body.id;
+    const user_id = req.body.userid;
     database.db.query('DELETE FROM users WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.log(err);
-        } else {                
+        } else {
+            logAction(database.db, user_id, null, 'DELETE_USER', 'users', id, `Felhasználó törölve, id: ${id}`);
             res.send({result});
         }
     });
@@ -175,21 +203,25 @@ app.post('/api/deleteuser', authenticateKey, (req,res) => {
 
 app.post('/api/inactiveuser', authenticateKey, (req,res) => {
     const id = req.body.id;
+    const user_id = req.body.userid;
     database.db.query('UPDATE users SET inactive = 1 WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.log(err);
-        } else {                
+        } else {
+            logAction(database.db, user_id, null, 'INACTIVE_USER', 'users', id, `Felhasználó inaktiválva, id: ${id}`);
             res.send({result});
         }
     });
 });
 
 app.post('/api/activeuser', authenticateKey, (req,res) => {
+    const user_id = req.body.userid;
     const id = req.body.id;
     database.db.query('UPDATE users SET inactive = 0 WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.log(err);
-        } else {                
+        } else {
+            logAction(database.db, user_id, null, 'ACTIVE_USER', 'users', id, `Felhasználó aktiválva, id: ${id}`);
             res.send({result});
         }
     });
@@ -206,11 +238,13 @@ app.post('/api/edituser', authenticateKey, (req,res) => {
     const calendarcolor = req.body.calendarcolor;
     const calendaronlypermission = req.body.calendaronlypermission;
     const extracalendargroup = req.body.extracalendargroup;
+    const user_id = req.body.userid;
     if (password === '') {
         database.db.query('UPDATE users SET name = ?, accessgroup = ?, auditpermission = ?, statementpermission = ?, readonlypermission = ?, calendarcolor = ?, calendaronlypermission = ?, extracalendargroup = ? WHERE id = ?', [name, group, auditpermission, statementpermission, readonlypermission, calendarcolor, calendaronlypermission, extracalendargroup, id], (err, result) => {
             if (err) {
                 console.log(err);
             } else {
+                logAction(database.db, user_id, null, 'EDIT_USER', 'users', id, `Felhasználó módosítva, id: ${id}`);
                 res.send(result);
             };
         });
@@ -219,6 +253,7 @@ app.post('/api/edituser', authenticateKey, (req,res) => {
             if (err) {
                 console.log(err);
             } else {
+                logAction(database.db, user_id, null, 'EDIT_USER', 'users', id, `Felhasználó módosítva (jelszóval), id: ${id}`);
                 res.send({result});
             }
         });
@@ -293,10 +328,12 @@ app.post('/api/newgroup', authenticateKey, (req,res) => {
     const groupname = req.body.groupname;
     const description = req.body.description;
     const calendarcolor = req.body.calendarcolor || '#557722';
+    const user_id = req.body.userid;
     database.db.query('INSERT INTO accessgroups (group_name, description, calendarcolor) VALUES (?, ?, ?)', [groupname, description, calendarcolor], (err, result) => {
         if (err) {
             console.log(err);
         } else {
+            logAction(database.db, user_id, null, 'NEW_GROUP', 'accessgroups', result.insertId, `Új csoport: ${groupname}`);
             res.send(result);
         }
     });
@@ -319,6 +356,7 @@ app.post('/api/editgroup', authenticateKey, (req,res) => {
     const groupname = req.body.groupname;
     const description = req.body.description;
     const calendarcolor = req.body.calendarcolor || '#557722';
+    const user_id = req.body.userid;
     const sqlUpdate = `
         UPDATE
             accessgroups
@@ -331,6 +369,7 @@ app.post('/api/editgroup', authenticateKey, (req,res) => {
         if (err) {
             console.log(err);
         } else {
+            logAction(database.db, user_id, null, 'EDIT_GROUP', 'accessgroups', id, `Csoport módosítva: ${groupname}`);
             res.send({id : id});
             console.log(id+'.', 'group modified in the database');
         }
@@ -361,10 +400,12 @@ app.post('/api/checkexistgroupidinclients', authenticateKey, (req,res) => {
 
 app.post('/api/deletegroup', authenticateKey, (req,res) => {
     const id = req.body.id;
+    const user_id = req.body.userid;
     database.db.query('DELETE FROM accessgroups WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.log(err);
-        } else {                
+        } else {
+            logAction(database.db, user_id, null, 'DELETE_GROUP', 'accessgroups', id, `Csoport törölve, id: ${id}`);
             res.send({result});
             console.log(id+'.', 'group deleted in the database');
         }
@@ -470,6 +511,7 @@ app.post('/api/newclient', authenticateKey, (req,res) => {
         if (err) {
             console.log(err);
         } else {
+            logAction(database.db, user_id, null, 'NEW_CLIENT', 'clients', result.insertId, `Új ügyfél: ${name}`);
             res.send({name : name});
             console.log(name, 'client added to the database');
         }
@@ -560,6 +602,7 @@ app.post('/api/editclient', authenticateKey, (req,res) => {
         if (err) {
             console.log(err);
         } else {
+            logAction(database.db, user_id, null, 'EDIT_CLIENT', 'clients', id, `Ügyfél módosítva: ${name}`);
             res.send({name : name});
             console.log(name, 'client modified in the database');
         }
@@ -601,10 +644,12 @@ app.post('/api/checkexistclientid', authenticateKey, (req,res) => {
 
 app.post('/api/deleteclient', authenticateKey, (req,res) => {
     const id = req.body.id;
+    const userid = req.body.userid;
     database.db.query('DELETE FROM clients WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.log(err);
-        } else {                
+        } else {
+            logAction(database.db, userid, null, 'DELETE_CLIENT', 'clients', id, `Ügyfél törölve, id: ${id}`);
             res.send({result});
         }
     });
@@ -763,6 +808,7 @@ app.post('/api/newlog', authenticateKey, (req,res) => {
         if (err) {
             console.log(err);
         } else {
+            logAction(database.db, user_id, null, 'NEW_LOG', 'log', result.insertId, `Új naplóbejegyzés, ügyfél id: ${client_id}`);
             res.send(result);
         }
     });
@@ -775,9 +821,10 @@ app.post('/api/editlog', authenticateKey, (req,res) => {
     const description = req.body.description;
     const activities = req.body.activities;
     const shape_of_activities = req.body.shapeofactivities;
-    const test_ora = req.body.test_ora
-    const test_mmse = req.body.test_mmse
-    const test_tym_hun = req.body.test_tym_hun
+    const test_ora = req.body.test_ora;
+    const test_mmse = req.body.test_mmse;
+    const test_tym_hun = req.body.test_tym_hun;
+    const user_id = req.body.userid;
     const sqlUpdate = `UPDATE
                         log
                        SET
@@ -794,6 +841,7 @@ app.post('/api/editlog', authenticateKey, (req,res) => {
         if (err) {
             console.log(err);
         } else {
+            logAction(database.db, user_id, null, 'EDIT_LOG', 'log', id, `Naplóbejegyzés módosítva, id: ${id}`);
             res.send({id : id});
             console.log(id, 'log modified in the database');
         }
@@ -802,10 +850,12 @@ app.post('/api/editlog', authenticateKey, (req,res) => {
 
 app.post('/api/deletelog', authenticateKey, (req,res) => {
     const id = req.body.id;
+    const user_id = req.body.userid;
     database.db.query('DELETE FROM log WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.log(err);
-        } else {                
+        } else {
+            logAction(database.db, user_id, null, 'DELETE_LOG', 'log', id, `Naplóbejegyzés törölve, id: ${id}`);
             res.send({result});
         }
     });
@@ -825,6 +875,7 @@ app.post('/api/auditlog', authenticateKey, (req,res) => {
         if (err) {
             console.log(err);
         } else {
+            logAction(database.db, auditor_id, null, 'AUDIT_LOG', 'log', id, `Naplóbejegyzés ellenőrizve, id: ${id}`);
             res.send({id : id});
             console.log(id,'. log audited');
         }
@@ -845,6 +896,7 @@ app.post('/api/auditalllog', authenticateKey, (req,res) => {
         if (err) {
             console.log(err);
         } else {
+            logAction(database.db, auditor_id, null, 'AUDIT_ALL_LOG', 'log', selectedclientid, `Összes naplóbejegyzés ellenőrizve, ügyfél id: ${selectedclientid}`);
             res.send({selected_client_id : selectedclientid});
             console.log('All logs of client', selectedclientid, 'have been audited.');
         }
@@ -1524,6 +1576,28 @@ app.get('/api/getdiseaseseverity/:accessgroup', authenticateKey, (req,res) => {
         }
     });
 }); */
+/*------------------------------Action Log--------------------------*/
+app.get('/api/getactionlog', authenticateKey, (req, res) => {
+    const sqlSelect = `
+        SELECT
+            id,
+            user_id,
+            username,
+            action,
+            target_table,
+            target_id,
+            details,
+            DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at
+        FROM action_log
+        ORDER BY id DESC`;
+    database.db.query(sqlSelect, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
 
 
 /*------------------------------Company--------------------------*/
@@ -1575,6 +1649,7 @@ app.post('/api/newcalendarevent', authenticateKey, (req,res) => {
         if (err) {
             console.log(err);
         } else {
+            logAction(database.db, user_id, null, 'NEW_CALENDAR_EVENT', 'calendar', result.insertId, `Új naptárbejegyzés: ${subject}`);
             res.send(result);
         }
     });
@@ -1602,6 +1677,7 @@ app.post('/api/editcalendarevent', authenticateKey, (req,res) => {
         if (err) {
             console.log(err);
         } else {
+            logAction(database.db, user_id, null, 'EDIT_CALENDAR_EVENT', 'calendar', id, `Naptárbejegyzés módosítva: ${subject}`);
             res.send({id : id});
             console.log(id, 'event modified in calendar table');
         }
@@ -1610,10 +1686,12 @@ app.post('/api/editcalendarevent', authenticateKey, (req,res) => {
 
 app.post('/api/deleteevent', authenticateKey, (req,res) => {
     const id = req.body.id;
+    const userid = req.body.userid;
     database.db.query('DELETE FROM calendar WHERE id = ?', [id], (err, result) => {
         if (err) {
             console.log(err);
-        } else {                
+        } else {
+            logAction(database.db, userid, null, 'DELETE_CALENDAR_EVENT', 'calendar', id, `Naptárbejegyzés törölve, id: ${id}`);
             res.send({result});
         }
     });

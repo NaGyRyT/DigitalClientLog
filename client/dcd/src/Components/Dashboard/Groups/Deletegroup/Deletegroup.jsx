@@ -15,7 +15,7 @@ export default function Deletegroup( {listItem, loadGroupList, loggedInUserData,
     
   const handleDeleteGroupSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${API.address}/deletegroup`, {id : listItem.id}, {headers: { 'x-api-key': loggedInUserData.password }})
+    axios.post(`${API.address}/deletegroup`, {id : listItem.id, userid : loggedInUserData.id}, {headers: { 'x-api-key': loggedInUserData.password }})
       .then(() => {
         loadGroupList(false);
         setShowDeleteGroupForm(false);

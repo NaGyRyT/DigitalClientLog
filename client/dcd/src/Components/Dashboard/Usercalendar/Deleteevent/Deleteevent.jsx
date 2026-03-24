@@ -16,7 +16,7 @@ export default function Deleteevent( {selectedEvent, loadEventsFromCalendar, log
     const handleDeleteEventSubmit = (e) => {
         e.stopPropagation();
         e.preventDefault();
-        axios.post(`${API.address}/deleteevent`, {id : selectedEvent.id}, {headers: { 'x-api-key': loggedInUserData.password }})
+        axios.post(`${API.address}/deleteevent`, {id : selectedEvent.id, userid : loggedInUserData.id}, {headers: { 'x-api-key': loggedInUserData.password }})
             .then(() => {
                 loadEventsFromCalendar();
                 setShowDeleteEventForm(false);
