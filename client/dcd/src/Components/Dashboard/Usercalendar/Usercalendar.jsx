@@ -15,15 +15,19 @@ import { language } from './Language/Language';
 import { Views } from 'react-big-calendar';
 
 export default function Usercalendar({ darkMode, loggedInUserData }) {
+  const isAdmin = loggedInUserData.group_name === 'Admin';
   const [logList, setLogList] = useState([]);
   const [userEventList, setUserEventList] = useState([]);
   const [groupEventList, setGroupEventList] = useState([]);
   const [extraGroupEventList, setExtraGroupEventList] = useState([]);
+  const [otherGroupsEventList, setOtherGroupsEventList] = useState([]);
+  const [allGroupsList, setAllGroupsList] = useState([]);
   const [mergedList, setMergedList] = useState([]);
   const [viewLogChecked, setViewLogChecked] = useState(true);
   const [viewUserChecked, setViewUserChecked] = useState(true);
   const [viewGroupChecked, setViewGroupChecked] = useState(true);
   const [viewExtraGroupChecked, setViewExtraGroupChecked] = useState(true);
+  const [viewOtherGroupsChecked, setViewOtherGroupsChecked] = useState(true);
   const hasExtraGroup = loggedInUserData.extracalendargroup != null;
   const [calendarEvent, setCalendarEvent] = useState({
     startDate : '',
@@ -90,11 +94,25 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
       {headers: { 'x-api-key': loggedInUserData.password }})
         .then (({data}) => {
           setUserEventList(data.filter((event) => event.group_id === 0));
-          setGroupEventList(data.filter((event) => event.group_id === loggedInUserData.accessgroup));
-          setExtraGroupEventList(data.filter((event) => hasExtraGroup && event.group_id === loggedInUserData.extracalendargroup));
+          if (isAdmin) {
+            setGroupEventList(data.filter((event) => event.group_id === loggedInUserData.accessgroup));
+            setExtraGroupEventList([]);
+            setOtherGroupsEventList(data.filter((event) => event.group_id > 0 && event.group_id !== loggedInUserData.accessgroup));
+          } else {
+            setGroupEventList(data.filter((event) => event.group_id === loggedInUserData.accessgroup));
+            setExtraGroupEventList(data.filter((event) => hasExtraGroup && event.group_id === loggedInUserData.extracalendargroup));
+          }
         });
     };
-  
+
+  const loadAllGroupsForAdmin = () => {
+    if (!isAdmin) return;
+    axios.get(`${API.address}/getgrouplist`, {headers: { 'x-api-key': loggedInUserData.password }})
+      .then(({data}) => {
+        setAllGroupsList(data.map(g => ({ id: g.id, group_name: g.group_name, calendarcolor: g.calendarcolor })));
+      });
+  };
+
   const addEvent = (e) => {
     setShowAddEventForm(true);
     setCalendarEvent({
@@ -125,6 +143,9 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
     } else if (hasExtraGroup && e.group_id === loggedInUserData.extracalendargroup) {
       backgroundColor = extraGroupCalendarEventBackgroundColor;
       color = extraGroupCalendarEventColor;
+    } else if (isAdmin && e.group_id > 0 && e.group_calendarcolor) {
+      backgroundColor = e.group_calendarcolor;
+      color = getTextColorSimple(e.group_calendarcolor);
     } else if (e.group_id === undefined) {
       backgroundColor = logBackgroundColor;
       color = logColor;
@@ -138,6 +159,7 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
   useEffect(()=> {
     loadEventsFromLog();
     loadEventsFromCalendar();
+    loadAllGroupsForAdmin();
   }, []);
 
   const mergeLists = () => {
@@ -145,13 +167,14 @@ export default function Usercalendar({ darkMode, loggedInUserData }) {
     if (viewLogChecked) tempMergedList = [...tempMergedList, ...logList];
     if (viewGroupChecked) tempMergedList = [...tempMergedList, ...groupEventList];
     if (viewExtraGroupChecked && hasExtraGroup) tempMergedList = [...tempMergedList, ...extraGroupEventList];
+    if (viewOtherGroupsChecked && isAdmin) tempMergedList = [...tempMergedList, ...otherGroupsEventList];
     tempMergedList.map((item, index) => {item.key = index});
     setMergedList(tempMergedList);
   };
 
   const [scheduler, setScheduler] = useState(false);
   
-useEffect(() => {
+  useEffect(() => {
     const interval = setInterval(() => setScheduler(true), eventFetchInterval);
     if (!(showEditEventForm || showAddEventForm || selectedEvent.duration !== undefined)) {
       loadEventsFromCalendar();
@@ -168,7 +191,7 @@ useEffect(() => {
 
   useEffect(()=> {
     mergeLists();
-  }, [viewGroupChecked, viewLogChecked, viewUserChecked, viewExtraGroupChecked, logList, groupEventList, extraGroupEventList, userEventList]);
+  }, [viewGroupChecked, viewLogChecked, viewUserChecked, viewExtraGroupChecked, viewOtherGroupsChecked, logList, groupEventList, extraGroupEventList, otherGroupsEventList, userEventList]);
 
   return (
     <div>
@@ -228,6 +251,7 @@ useEffect(() => {
           calendarEvent={calendarEvent}
           loggedInUserData={loggedInUserData}
           loadEventsFromCalendar={loadEventsFromCalendar}
+          allGroupsList={allGroupsList}
         />
         {selectedEvent !== undefined && <Editevent
           showEditEventForm={showEditEventForm}
@@ -236,6 +260,7 @@ useEffect(() => {
           setSelectedEvent={setSelectedEvent}
           loggedInUserData={loggedInUserData}
           loadEventsFromCalendar={loadEventsFromCalendar}
+          allGroupsList={allGroupsList}
         />}
         </>
         }
@@ -305,6 +330,23 @@ useEffect(() => {
                 label={`${loggedInUserData.extracalendargroup_name} naptár`}
                 checked={viewExtraGroupChecked}
                 onChange={()=> setViewExtraGroupChecked(!viewExtraGroupChecked)}/>
+            </div>
+          </Col>}
+          {isAdmin && otherGroupsEventList.length > 0 &&
+          <Col xs='auto'>
+            <div style={{
+              backgroundColor: '#6c757d',
+              color: '#ffffff',
+              borderRadius: '6px',
+              padding: '4px 10px',
+              display: 'inline-block'
+            }}>
+              <Form.Check
+                type='checkbox'
+                id='viewOtherGroupsCheckBox'
+                label='Többi csoport naptára'
+                checked={viewOtherGroupsChecked}
+                onChange={()=> setViewOtherGroupsChecked(!viewOtherGroupsChecked)}/>
             </div>
           </Col>}
         </Row>

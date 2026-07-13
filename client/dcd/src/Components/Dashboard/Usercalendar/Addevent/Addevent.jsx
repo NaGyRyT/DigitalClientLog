@@ -10,7 +10,8 @@ export default function AddEvent( {
     calendarEvent,
     showAddEventForm,
     setShowAddEventForm,
-    loadEventsFromCalendar
+    loadEventsFromCalendar,
+    allGroupsList = []
     }) {
     const [startDate, setStartDate] = useState('');
     const [startTime, setStartTime] = useState('');
@@ -20,6 +21,7 @@ export default function AddEvent( {
     const [subject, setSubject] = useState('');
     const [groupEvent, setGroupEvent] = useState(0);
     const hasExtraGroup = loggedInUserData.extracalendargroup != null;
+    const isAdmin = loggedInUserData.group_name === 'Admin';
     const [disableSubmitButton, setDisableSubmitButton] = useState(false);
     const [errorMessage, setErrorMessage] = useState({
         startDate : '',
@@ -169,9 +171,16 @@ export default function AddEvent( {
                             value={groupEvent}
                             onChange={(e) => setGroupEvent(Number(e.target.value))}>
                             <option value={0}>Saját naptár</option>
-                            <option value={loggedInUserData.accessgroup}>{loggedInUserData.group_name} (csoport)</option>
-                            {hasExtraGroup &&
-                                <option value={loggedInUserData.extracalendargroup}>{loggedInUserData.extracalendargroup_name} (csoport)</option>
+                            {isAdmin
+                                ? allGroupsList.map(g => (
+                                    <option key={g.id} value={g.id}>{g.group_name} (csoport)</option>
+                                ))
+                                : <>
+                                    <option value={loggedInUserData.accessgroup}>{loggedInUserData.group_name} (csoport)</option>
+                                    {hasExtraGroup &&
+                                        <option value={loggedInUserData.extracalendargroup}>{loggedInUserData.extracalendargroup_name} (csoport)</option>
+                                    }
+                                  </>
                             }
                         </Form.Select>
                     </Form.Group>

@@ -28,7 +28,7 @@ app.listen(8080, () => {
 
 const authenticateKey = (req, res, next) => {
     const password = req.header('x-api-key');
-    const subdomain = req.header('subdomain');
+    const subdomain = req.header('subdomain'); 
     database.db.changeUser( {database : subdomain}, (err) => {
         if (err) throw err;
       });
@@ -1701,7 +1701,26 @@ app.get('/api/geteventsfromcalendar/:accessgroup/:userid/:extracalendargroup', a
     const userid = req.params.userid;
     const accessgroup = req.params.accessgroup;
     const extracalendargroup = req.params.extracalendargroup === 'null' ? null : req.params.extracalendargroup;
-    const sqlSelect =
+    const isAdmin = accessgroup === '1';
+    const sqlSelect = isAdmin ?
+        `
+        SELECT
+            calendar.id,
+            calendar.user_id,
+            calendar.group_id,
+            calendar.description,
+            calendar.subject,
+            calendar.subject as title,
+            users.name as author,
+            accessgroups.group_name as group_name,
+            accessgroups.calendarcolor as group_calendarcolor,
+            DATE_FORMAT(calendar.date_time_start, '%Y-%m-%dT%H:%i') as start,
+            DATE_FORMAT(calendar.date_time_end, '%Y-%m-%dT%H:%i') as end
+        FROM calendar
+        INNER JOIN users ON users.id = calendar.user_id
+        LEFT JOIN accessgroups ON accessgroups.id = calendar.group_id
+        WHERE (calendar.group_id > 0 OR calendar.user_id = ?)
+        ` :
         `
         SELECT
             calendar.id,
@@ -1719,9 +1738,9 @@ app.get('/api/geteventsfromcalendar/:accessgroup/:userid/:extracalendargroup', a
            OR calendar.group_id = ?
            ${extracalendargroup ? 'OR calendar.group_id = ?' : ''}
         `;
-    const params = extracalendargroup 
+    const params = isAdmin ? [userid] : (extracalendargroup 
         ? [userid, accessgroup, extracalendargroup] 
-        : [userid, accessgroup];
+        : [userid, accessgroup]);
     database.db.query(sqlSelect, params, (err, result) => {
         if (err) {
             console.log(err);
