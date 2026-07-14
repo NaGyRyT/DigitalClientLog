@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import { OverlayTrigger, Tooltip, Form, Alert, Button, Modal, Row, Col, Stack } from 'react-bootstrap';
 import { validateClient } from '../Validateclient/Validateclient';
+import { useDuplicateClientCheck } from '../Duplicateclientcheck/useDuplicateClientCheck';
+import DuplicateWarningModal from '../Duplicateclientcheck/DuplicateWarningModal';
 import API from '../../../../api';
 import moment from 'moment';
 
@@ -53,9 +55,40 @@ export default function Editclient( {
 	const [diseaseSeverity, setDiseaseSeverity] = useState(listItem.disease_severity);
 
     const [showEditClientForm, setShowEditClientForm] = useState(false);
+	const { showDuplicateWarning, duplicateClients, checkDuplicate, acknowledgeAndHide, resetDuplicateCheck } = useDuplicateClientCheck(loggedInUserData);
+
+	useEffect(() => {
+		if (!showEditClientForm) {
+			setName(listItem.name);
+			setClientId(listItem.client_id);
+			setBirthDate(listItem.birth_date);
+			setGender(listItem.gender);
+			setZip(listItem.zip);
+			setCityId(listItem.city_id);
+			setStreet(listItem.street);
+			setHouseNumber(listItem.house_number);
+			setFloor(listItem.floor);
+			setDoor(listItem.door);
+			setPhone(listItem.phone);
+			setEmail(listItem.email);
+			setRegistrationDate(listItem.registration_date);
+			setPetition(listItem.petition);
+			setPremissionNoticeAffected(listItem.affected);
+			setPremissionNoticeRelative(listItem.relative);
+			setPremissionNoticeLegalRepresentative(listItem.legal_representative);
+			setAgreement(listItem.agreement);
+			setSelfCare(listItem.self_care);
+			setSocialSkills(listItem.social_skills);
+			setInterested(listItem.interested);
+			setEndOfService(listItem.end_of_service);
+			setOtherData(listItem.other_data);
+			setDiseaseSeverity(listItem.disease_severity);
+		}
+	}, [listItem]);
 
 	const handleCloseEditClientForm = () => {
         setShowEditClientForm(false);
+		resetDuplicateCheck();
         setName(listItem.name);
 		setClientId(listItem.client_id);
         setBirthDate(listItem.birth_date);
@@ -106,6 +139,8 @@ export default function Editclient( {
 		const tempErrorMessage = await validateClient(name, clientId, listItem.client_id, birthDate, gender, email, phone, zip, cityId, listItem.id, loggedInUserData, registrationDate, endOfService);
 		setErrorMessage(tempErrorMessage);
  		if (! tempErrorMessage.error) {
+			const hasDuplicate = await checkDuplicate(name, birthDate, listItem.id);
+			if (hasDuplicate) { setDisableSubmitButton(false); return; }
 			axios.post(`${API.address}/editclient`, {
                 name : name.trim(),
                 id : listItem.id,
@@ -138,6 +173,7 @@ export default function Editclient( {
                 setShowEditClientForm(false);
                 loadClientList();
                 setDisableSubmitButton(false);
+				resetDuplicateCheck();
 		    });
 		} else setDisableSubmitButton(false);
 	}
@@ -201,7 +237,8 @@ return (
                                     maxLength={100}
                                     type='text'
                                     value={name}
-                                    onChange={(e) => setName(e.target.value)}/>
+                                    onChange={(e) => setName(e.target.value)}
+                                    onBlur={(e) => checkDuplicate(e.target.value, birthDate, listItem.id)}/>
                             </Form.Group>
                             </Col>
                             <Col xs={12} sm={4}>
@@ -225,7 +262,8 @@ return (
                                         <Form.Control
                                             type='date'
                                             value={birthDate}
-                                            onChange={(e) => setBirthDate(e.target.value)}/>
+                                            onChange={(e) => setBirthDate(e.target.value)}
+                                        onBlur={(e) => checkDuplicate(name, e.target.value, listItem.id)}/>
                                     </Form.Group>
                                 </Col>
                                 <Col xs={12} sm={6}>
@@ -699,6 +737,11 @@ return (
             </Button>
             </Modal.Footer>
         </Modal>
+		<DuplicateWarningModal
+			show={showDuplicateWarning}
+			onAcknowledge={() => acknowledgeAndHide(name, birthDate)}
+			duplicateClients={duplicateClients}
+		/>
     </>
     )
 };

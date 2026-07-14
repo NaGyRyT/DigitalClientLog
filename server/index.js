@@ -424,6 +424,30 @@ app.get('/api/getcities', authenticateKey, (req,res) => {
     });
 });
 
+app.post('/api/checkclientduplicate', authenticateKey, (req, res) => {
+    const { name, birth_date, exclude_id } = req.body;
+    const query = exclude_id
+        ? `SELECT clients.id, clients.name, DATE_FORMAT(clients.birth_date, '%Y-%m-%d') AS birth_date, 
+           clients.client_id, users.name AS user_name
+           FROM clients
+           LEFT JOIN users ON users.id = clients.user_id
+           WHERE clients.name = ? AND clients.birth_date = ? AND clients.id != ?`
+        : `SELECT clients.id, clients.name, DATE_FORMAT(clients.birth_date, '%Y-%m-%d') AS birth_date, 
+           clients.client_id, users.name AS user_name
+           FROM clients
+           LEFT JOIN users ON users.id = clients.user_id
+           WHERE clients.name = ? AND clients.birth_date = ?`;
+    const params = exclude_id ? [name, birth_date, exclude_id] : [name, birth_date];
+    database.db.query(query, params, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+
 app.post('/api/newclient', authenticateKey, (req,res) => {
     const name = req.body.name;
     const client_id = req.body.client_id;
@@ -437,7 +461,7 @@ app.post('/api/newclient', authenticateKey, (req,res) => {
     const birth_date = req.body.birth_date;
     const email = req.body.email;
     const phone = req.body.phone;
-    
+
     const user_id = req.body.user_id;
     const petition = req.body.petition;
     const affected = req.body.affected;

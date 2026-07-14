@@ -4,6 +4,8 @@ import { useState } from 'react';
 import moment from 'moment';
 import { Form, Alert, Button, Modal, Row, Col, Stack } from 'react-bootstrap';
 import { validateClient } from '../Validateclient/Validateclient';
+import { useDuplicateClientCheck } from '../Duplicateclientcheck/useDuplicateClientCheck';
+import DuplicateWarningModal from '../Duplicateclientcheck/DuplicateWarningModal';
 import API from '../../../../api';
 
 export default function Newclient( { 
@@ -50,8 +52,10 @@ export default function Newclient( {
 	
     const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 	const [showNewClientForm, setShowNewClientForm] = useState(false);
+	const { showDuplicateWarning, duplicateClients, checkDuplicate, acknowledgeAndHide, resetDuplicateCheck } = useDuplicateClientCheck(loggedInUserData);
 	const handleCloseNewClientForm = async () => {
 		setShowNewClientForm(false);
+		resetDuplicateCheck();
 		setName('');
 		setClientId('');
         setBirthDate('');
@@ -89,26 +93,8 @@ export default function Newclient( {
 		})
 	}
 	const handleShowNewClientForm = () => setShowNewClientForm(true);
-  	const handleNewClientSubmit = async (e) => {
-		setDisableSubmitButton(true);
-		e.preventDefault();
-		const tempErrorMessage = await validateClient(
-			name, 
-			clientId, 
-			'', 
-			birthDate, 
-			gender, 
-			email, 
-			phone, 
-			zip, 
-			cityId, 
-			loggedInUserData.accessgroup, 
-			loggedInUserData, 
-			registrationDate
-		);
-		setErrorMessage(tempErrorMessage);
- 		if (! tempErrorMessage.error) {
-			axios.post(`${API.address}/newclient`, {name : name.trim(),
+	const saveClient = () => {
+		axios.post(`${API.address}/newclient`, {name : name.trim(),
 														client_id : clientId,
 														accessgroup : loggedInUserData.accessgroup,
 														birth_date : birthDate,
@@ -139,9 +125,33 @@ export default function Newclient( {
 				handleCloseNewClientForm();
 				loadClientList();
 				setDisableSubmitButton(false);
+				resetDuplicateCheck();
 			});
+	};
+
+  	const handleNewClientSubmit = async (e) => {
+		setDisableSubmitButton(true);
+		e.preventDefault();
+		const tempErrorMessage = await validateClient(
+			name, 
+			clientId, 
+			'', 
+			birthDate, 
+			gender, 
+			email, 
+			phone, 
+			zip, 
+			cityId, 
+			loggedInUserData.accessgroup, 
+			loggedInUserData, 
+			registrationDate
+		);
+		setErrorMessage(tempErrorMessage);
+ 		if (! tempErrorMessage.error) {
+			const hasDuplicate = await checkDuplicate(name, birthDate);
+			if (!hasDuplicate) saveClient();
+			else setDisableSubmitButton(false);
 		} else setDisableSubmitButton(false);
-		
 	}
     
 	function findCity(zip) {
@@ -182,7 +192,8 @@ export default function Newclient( {
 											maxLength={100}
 											type='text'
 											value={name}
-											onChange={(e) => setName(e.target.value)}/>
+											onChange={(e) => setName(e.target.value)}
+											onBlur={(e) => checkDuplicate(e.target.value, birthDate)}/>
 									</Form.Group>
 								</Col>
 								<Col xs={12} sm={4}>
@@ -208,7 +219,8 @@ export default function Newclient( {
 											max='2099-12-31'
 											type='date'
 											value={birthDate}
-											onChange={(e) => setBirthDate(e.target.value)}/>
+											onChange={(e) => setBirthDate(e.target.value)}
+										onBlur={(e) => checkDuplicate(name, e.target.value)}/>
 									</Form.Group>
 								</Col>
 								<Col xs={12} sm={6}>
@@ -638,6 +650,11 @@ export default function Newclient( {
 				</Button>
 			</Modal.Footer>
 			</Modal>
+			<DuplicateWarningModal
+				show={showDuplicateWarning}
+				onAcknowledge={() => acknowledgeAndHide(name, birthDate)}
+				duplicateClients={duplicateClients}
+			/>
 		</>
 	);
 }
